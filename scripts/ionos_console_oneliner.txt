@@ -1,0 +1,7 @@
+# Paste this entire line in IONOS VPS → Console (login as root):
+
+mkdir -p /root/.ssh && chmod 700 /root/.ssh && echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbUy5jtJl8/6c1Bi4XzcXNgPdvyJ1Vznxwd9ym54Ume sentinel-ionos' >> /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && echo KEY_INSTALLED
+
+# Then from Mac:
+#   ssh sentinel-ionos 'uname -a'
+#   ./scripts/deploy_to_ionos.sh

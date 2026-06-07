@@ -1,0 +1,22 @@
+2026-06-07 01:04:26,774 [INFO    ] === BEHAVIORAL-ONLY MODE: [C2]/[MALWARE] stripped from IPG ===
+2026-06-07 01:04:26,774 [INFO    ] === This matches the evaluation scope of WATSON/UNICORN ===
+2026-06-07 01:04:26,774 [INFO    ] Hard-case fraction 50.0% → 25 hard (nginx_ts) + 25 easy (c2_detected)
+2026-06-07 01:04:26,774 [INFO    ] Dataset: CADETS (ta1-cadets-e3-official.json.2)
+2026-06-07 01:04:26,774 [INFO    ] Pass 1: building entity maps from ta1-cadets-e3-official.json.2 ...
+2026-06-07 01:04:43,934 [INFO    ] Pass 1 done: 19859 subjects, 219046 objects
+2026-06-07 01:04:43,934 [INFO    ] Pass 2: emitting events ...
+2026-06-07 01:05:03,750 [INFO    ] Pass 2 done: 2351832 events emitted (1310586 skipped)
+2026-06-07 01:05:04,003 [INFO    ] Windows: 50 attack (c2=25, malware=0, parent_chain=0, nginx_ts=25), 50 benign | parent-chain injections=81 | ancestor PIDs=7
+2026-06-07 01:05:04,212 [INFO    ] Evaluating 100 windows with Ollama llama3.1:8b ...
+2026-06-07 01:05:30,104 [INFO    ] HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-07 01:05:30 [debug    ] ollama_inference               latency_ms=25891.9 model=llama3.1:8b
+2026-06-07 01:05:30,106 [INFO    ] ✗ [ATTACK→BENIGN] conf=0.99 lat=25893ms pid=59137 c2_detected
+2026-06-07 01:05:52,782 [INFO    ] HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-07 01:05:52 [debug    ] ollama_inference               latency_ms=22676.0 model=llama3.1:8b
+2026-06-07 01:05:52,784 [INFO    ] ✗ [ATTACK→BENIGN] conf=0.42 lat=22677ms pid=59137 c2_detected
+2026-06-07 01:06:18,714 [INFO    ] HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-07 01:06:18 [debug    ] ollama_inference               latency_ms=25929.8 model=llama3.1:8b
+2026-06-07 01:06:18,716 [INFO    ] ✗ [ATTACK→BENIGN] conf=0.02 lat=25931ms pid=59137 c2_detected
+2026-06-07 01:06:44,355 [INFO    ] HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-07 01:06:44 [debug    ] ollama_inference               latency_ms=25639.0 model=llama3.1:8b
+2026-06-07 01:06:44,357 [INFO    ] ✗ [ATTACK→BENIGN] conf=0.02 lat=25640ms pid=59137 c2_detected

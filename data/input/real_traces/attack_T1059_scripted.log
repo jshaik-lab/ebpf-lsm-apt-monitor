@@ -1,0 +1,102 @@
+10    08:04:31.893537 execve("/usr/bin/bash", ["bash", "-c", "python3 -c \"import socket; s=soc"...], 0xffffd8f85b80 /* 6 vars */) = 0 <0.000161>
+10    08:04:31.893829 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfcb2c58a5000 <0.000018>
+10    08:04:31.893915 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000021>
+10    08:04:31.894011 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xfcb2c58a3000 <0.000020>
+10    08:04:31.894088 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000021>
+10    08:04:31.894209 mmap(NULL, 325800, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfcb2c5820000 <0.000021>
+10    08:04:31.894251 mmap(0xfcb2c5820000, 260264, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfcb2c5820000 <0.000024>
+10    08:04:31.894376 mmap(0xfcb2c585b000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2b000) = 0xfcb2c585b000 <0.000022>
+10    08:04:31.894466 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000021>
+10    08:04:31.894591 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfcb2c5661000 <0.000021>
+10    08:04:31.894622 mmap(0xfcb2c5670000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfcb2c5670000 <0.000005>
+10    08:04:31.894649 mmap(0xfcb2c580d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xfcb2c580d000 <0.000003>
+10    08:04:31.894659 mmap(0xfcb2c5813000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xfcb2c5813000 <0.000004>
+10    08:04:31.894682 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfcb2c58a1000 <0.000003>
+10    08:04:31.894820 openat(AT_FDCWD, "/dev/tty", O_RDWR|O_NONBLOCK) = -1 ENXIO (No such device or address) <0.000005>
+10    08:04:31.895101 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000007>
+10    08:04:31.895127 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000003>
+10    08:04:31.895150 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3 <0.000003>
+10    08:04:31.895189 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3 <0.000003>
+10    08:04:31.895429 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xfcb2c58a10f0) = 11 <0.000095>
+11    08:04:31.895783 execve("/usr/bin/python3", ["python3", "-c", "import socket; s=socket.socket()"...], 0xbce6f56e22e0 /* 6 vars */) = 0 <0.000084>
+11    08:04:31.895944 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb443000 <0.000015>
+11    08:04:31.896011 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000016>
+11    08:04:31.896084 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xf072bb441000 <0.000016>
+11    08:04:31.896151 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000019>
+11    08:04:31.896252 mmap(NULL, 680048, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb367000 <0.000016>
+11    08:04:31.896287 mmap(0xf072bb370000, 614512, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf072bb370000 <0.000018>
+11    08:04:31.896423 mmap(0xf072bb405000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x85000) = 0xf072bb405000 <0.000016>
+11    08:04:31.896500 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libexpat.so.1", O_RDONLY|O_CLOEXEC) = 3 <0.000021>
+11    08:04:31.896630 mmap(NULL, 299192, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb326000 <0.000016>
+11    08:04:31.896665 mmap(0xf072bb330000, 233656, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf072bb330000 <0.000017>
+11    08:04:31.896893 mmap(0xf072bb367000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x27000) = 0xf072bb367000 <0.000123>
+11    08:04:31.897154 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3 <0.000075>
+11    08:04:31.897391 mmap(NULL, 233648, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb2f6000 <0.000016>
+11    08:04:31.897442 mmap(0xf072bb300000, 168112, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf072bb300000 <0.000031>
+11    08:04:31.897660 mmap(0xf072bb328000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18000) = 0xf072bb328000 <0.000022>
+11    08:04:31.897765 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000028>
+11    08:04:31.897911 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb141000 <0.000021>
+11    08:04:31.897965 mmap(0xf072bb150000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf072bb150000 <0.000021>
+11    08:04:31.898231 mmap(0xf072bb2ed000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xf072bb2ed000 <0.000033>
+11    08:04:31.898294 mmap(0xf072bb2f3000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xf072bb2f3000 <0.000022>
+11    08:04:31.898415 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bb43f000 <0.000034>
+11    08:04:31.899701 openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000037>
+11    08:04:31.899785 openat(AT_FDCWD, "/usr/share/locale/locale.alias", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000032>
+11    08:04:31.899852 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000030>
+11    08:04:31.899917 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = 3 <0.000027>
+11    08:04:31.900022 mmap(NULL, 353616, PROT_READ, MAP_PRIVATE, 3, 0) = 0xf072bb0f9000 <0.000022>
+11    08:04:31.900109 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY) = 3 <0.000025>
+11    08:04:31.900195 mmap(NULL, 27004, PROT_READ, MAP_SHARED, 3, 0) = 0xf072bb407000 <0.000026>
+11    08:04:31.900419 mmap(NULL, 1048576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072baff9000 <0.000019>
+11    08:04:31.900465 mmap(NULL, 266240, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bafb8000 <0.000025>
+11    08:04:31.900522 mmap(NULL, 135168, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072baf97000 <0.000022>
+11    08:04:31.901491 openat(AT_FDCWD, "/usr/bin/pyvenv.cfg", O_RDONLY) = -1 ENOENT (No such file or directory) <0.000026>
+11    08:04:31.901552 openat(AT_FDCWD, "/usr/pyvenv.cfg", O_RDONLY) = -1 ENOENT (No such file or directory) <0.000026>
+11    08:04:31.901798 openat(AT_FDCWD, "/usr/bin/pybuilddir.txt", O_RDONLY) = -1 ENOENT (No such file or directory) <0.000026>
+11    08:04:31.902168 mmap(NULL, 1048576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bae97000 <0.000020>
+11    08:04:31.902487 openat(AT_FDCWD, "/etc/localtime", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000024>
+11    08:04:31.902942 openat(AT_FDCWD, "/usr/lib/python3.10", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000020>
+11    08:04:31.903641 openat(AT_FDCWD, "/usr/lib/python3.10/encodings/__pycache__/__init__.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000040>
+11    08:04:31.904376 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/codecs.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000030>
+11    08:04:31.905200 openat(AT_FDCWD, "/usr/lib/python3.10/encodings", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000025>
+11    08:04:31.905581 openat(AT_FDCWD, "/usr/lib/python3.10/encodings/__pycache__/aliases.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000034>
+11    08:04:31.906265 openat(AT_FDCWD, "/usr/lib/python3.10/encodings/__pycache__/utf_8.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000031>
+11    08:04:31.909763 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/io.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000023>
+11    08:04:31.910392 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/abc.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000031>
+11    08:04:31.912019 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/site.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000038>
+11    08:04:31.913411 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/os.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000029>
+11    08:04:31.913882 mmap(NULL, 151552, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bae72000 <0.000025>
+11    08:04:31.914119 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/stat.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000028>
+11    08:04:31.914680 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/_collections_abc.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000021>
+11    08:04:31.915595 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/posixpath.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000022>
+11    08:04:31.916242 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/genericpath.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000031>
+11    08:04:31.916947 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/_sitebuiltins.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000024>
+11    08:04:31.917828 openat(AT_FDCWD, "/usr/local/lib/python3.10/dist-packages", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000033>
+11    08:04:31.918154 openat(AT_FDCWD, "/usr/lib/python3/dist-packages", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000027>
+11    08:04:31.918625 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/sitecustomize.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000029>
+11    08:04:31.919222 openat(AT_FDCWD, "/usr/lib/python3.10/lib-dynload", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000028>
+11    08:04:31.919620 openat(AT_FDCWD, "/usr/local/lib/python3.10/dist-packages", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000027>
+11    08:04:31.920009 openat(AT_FDCWD, "/usr/lib/python3/dist-packages", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000031>
+11    08:04:31.920686 openat(AT_FDCWD, "/", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000029>
+11    08:04:31.921107 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/socket.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000038>
+11    08:04:31.922351 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/selectors.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000034>
+11    08:04:31.923507 openat(AT_FDCWD, "/usr/lib/python3.10/collections/__pycache__/__init__.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000149>
+11    08:04:31.924855 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/keyword.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000030>
+11    08:04:31.925803 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/operator.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000031>
+11    08:04:31.926627 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/reprlib.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000030>
+11    08:04:31.927738 openat(AT_FDCWD, "/usr/lib/python3.10/collections", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3 <0.000029>
+11    08:04:31.928113 openat(AT_FDCWD, "/usr/lib/python3.10/collections/__pycache__/abc.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000033>
+11    08:04:31.929192 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/enum.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000035>
+11    08:04:31.929948 openat(AT_FDCWD, "/usr/lib/python3.10/__pycache__/types.cpython-310.pyc", O_RDONLY|O_CLOEXEC) = 3 <0.000030>
+11    08:04:31.930428 mmap(NULL, 1048576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf072bad72000 <0.000025>
+11    08:04:31.931642 connect(3, {sa_family=AF_INET, sin_port=htons(31337), sin_addr=inet_addr("10.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress) <0.000108>
+11    08:04:32.934996 openat(AT_FDCWD, "<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000172>
+11    08:04:32.935352 openat(AT_FDCWD, "<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000029>
+11    08:04:32.935433 openat(AT_FDCWD, "/usr/lib/python310.zip/<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000032>
+11    08:04:32.935508 openat(AT_FDCWD, "/usr/lib/python3.10/<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000035>
+11    08:04:32.935597 openat(AT_FDCWD, "/usr/lib/python3.10/lib-dynload/<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000036>
+11    08:04:32.935697 openat(AT_FDCWD, "/usr/local/lib/python3.10/dist-packages/<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000037>
+11    08:04:32.935780 openat(AT_FDCWD, "/usr/lib/python3/dist-packages/<string>", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000032>
+11    08:04:32.940723 +++ exited with 1 +++
+10    08:04:32.941283 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=11, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+10    08:04:32.942160 +++ exited with 0 +++

@@ -20,8 +20,10 @@ results/logs/*.log
 # results/evaluations/*.json
 
 # ── Data / traces ─────────────────────────────────────────────────────────────
-# Real strace captures are large and reproducible via `make capture-traces`
-data/input/real_traces/*.log
+# DARPA TC dataset (multi-GB; upload separately — see docs/REPRO.md)
+data/darpa/
+data/darpa/**
+
 
 # ── eBPF compiled objects ─────────────────────────────────────────────────────
 src/bpf/*.bpf.o

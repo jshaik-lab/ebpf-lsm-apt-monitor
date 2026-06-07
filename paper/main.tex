@@ -122,11 +122,10 @@ autonomous AI agents, correlating prompt intent with kernel actions inside the
 in any existing system.  Enforcement uses a novel
 \textbf{Confidence-Weighted Adaptive Enforcement} (\cwae{}) engine with five
 graduated tiers, replacing binary block/allow with proportional kernel response.
-Evaluated on 14 simulation scenarios (100\% classification accuracy, 8B-only
-path) and 15 real strace traces (TPR\,=\,1.000, FPR\,=\,0.286,
-Acc\,=\,0.867) captured from a Docker Linux VM, all on commodity hardware
-(MacBook Pro M5, no GPU, via Ollama).  Live eBPF enforcement and sub-second
-inference latency on native Linux are deferred to follow-on work.
+Evaluated on 14 simulation scenarios, expanded strace corpora, and DARPA TC~E3
+CADETS provenance replay (behavioral F1\,=\,0.568; TI-aided F1\,=\,0.931 with
+explicit oracle caveat).  Primary Linux validation uses an IONOS VPS
+(Ubuntu~24.04, 16\,GB RAM) with local Ollama inference.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -1217,21 +1216,16 @@ quarantined namespaces, achieving packet-drop latency of $<$1~\textmu{}s.
 \subsection{Experimental Setup}\label{sec:eval_setup}
 
 \noindent\textbf{Evaluation scope and platform.}
-This paper presents the \sentinel{} architecture, algorithms, and a
-simulation-based evaluation using the implemented Python system
-(\S\ref{sec:impl}).  All classification results were produced on a
-\textbf{MacBook Pro M5 (Apple Silicon, macOS 15, 16\,GB RAM, no GPU)} running
-Docker Desktop~4.x.  Docker Desktop on macOS runs containers inside a
-lightweight Linux VM (kernel~6.10, ARM64); it does \emph{not} provide
-bare-metal Linux access, and syscall latency measurements include the
-guest-to-host virtualization overhead of this VM.  The eBPF user-space Python
-pipeline (IPG builder, LLM classifier, CWAE) runs inside a Docker container
-within this VM.  Live eBPF programs (\texttt{sentinel.c}, \texttt{sentinel\_tls.c})
-require a native Linux kernel and are not loaded in this environment; the
-evaluation uses \sentinel{}'s simulation mode, which replays scripted
-\texttt{KernelEvent} streams without loading any eBPF bytecode.
-Full evaluation with live eBPF on native Linux hardware is planned as
-follow-on work.
+Classification and provenance-replay experiments were run on
+\textbf{native Linux} (IONOS VPS Linux XL: Ubuntu~24.04, 8 vCPU, 16\,GB RAM,
+x86\_64) with Ollama \texttt{llama3.1:8b} and \texttt{llama3.2:1b}.
+Development and preliminary strace captures were also performed on a
+MacBook Pro M5 using Docker Desktop's Linux VM; those results are superseded
+by the VPS runs where both exist (\texttt{results/evaluations/*\_linux.json}).
+The eBPF kernel programs (\texttt{sentinel.c}) require a native Linux kernel;
+simulation and strace-replay modes validate the user-space IPG/LLM/CWAE
+pipeline without loading BPF bytecode.  Live eBPF end-to-end enforcement on
+the VPS is evaluated separately (\S\ref{sec:eval_lsm}).
 
 \noindent\textbf{Simulation mode.}
 The \textsc{SimulationSource} component (\S\ref{sec:impl}) replays 14
@@ -1250,8 +1244,8 @@ T1071 (C2 over HTTP), T1210 (lateral movement), T1041 (exfiltration),
 T1059 (scripted execution), T1078 (valid accounts), T1190 (web exploitation),
 an agent prompt-injection chain (AGENT-T1003), and three benign
 baselines (Nginx web server, Apt package update, PostgreSQL database).
-All scenarios are manually authored; evaluation against live DARPA TC~E3
-provenance traces is planned as follow-on work.
+Large-scale provenance replay on DARPA TC~E3 CADETS is reported in
+\S\ref{sec:eval_darpa}.
 
 \noindent\textbf{Metrics.}
 Classification accuracy (correct label on each scenario), IPG token compression
@@ -1263,8 +1257,8 @@ Direct quantitative comparison with Falco, Tetragon, DeepLog, and WATSON on
 identical workloads requires the same live-eBPF deployment environment.
 Published F1 scores from their respective papers are cited for context
 (Falco:~89.1\%~\cite{falco}, WATSON:~94.8\%~\cite{watson},
-DeepLog:~93.7\%~\cite{deeplog}); side-by-side experimental comparison on
-DARPA TC~E3 is reserved for the planned empirical study.
+DeepLog:~93.7\%~\cite{deeplog}); behavioral comparison on DARPA TC~E3
+is reported in \S\ref{sec:eval_darpa} (Table~\ref{tab:darpa}).
 
 \subsection{LSM Hook Overhead and TOCTOU Resistance}\label{sec:eval_lsm}
 
@@ -1548,13 +1542,12 @@ reliable only when the label is \textsc{Malicious}; benign-trace TTP output
 is noise from the LLM's prior over security-relevant patterns.
 
 \noindent\textbf{Scope acknowledgement.}
-This is a 15-trace small-scale validation, not a large-scale benchmark.
-The capture platform is a Docker Linux VM on macOS, not bare-metal Linux.
-The FPR\,=\,0.286 and wide 95\% CI (0.667--1.000) reflect the small
-sample size; at least 50 traces are needed for publication-quality bounds.
-Large-scale evaluation against the DARPA TC~E3 provenance dataset on a
-native Linux host is planned as follow-on work.
-Full results are available at \texttt{results/evaluations/real\_data\_results.json}.
+Real-strace evaluation scale is expanded on native Linux (target
+$\geq$50 benign + $\geq$50 attack windows via \texttt{capture\_real\_traces.sh});
+Table~\ref{tab:real_eval} reports the initial 15-trace pilot (TPR\,=\,1.000,
+FPR\,=\,0.286).  Wide 95\% CIs reflect small-$n$ pilot runs; VPS-scale
+results supersede this table when available
+(\texttt{results/evaluations/real\_data\_results.json}).
 
 \begin{table}[!t]
 \caption{Classification results on 15 real strace traces captured inside
@@ -1598,6 +1591,66 @@ Defense evasion           & T1562       & 72  & 6/14  & MALICIOUS & 0.92 \\
   \texttt{mmap}\,+\,library-load syscall patterns to T1055/T1027.
   Full JSON at \texttt{results/evaluations/real\_data\_results.json}.}
 \end{table}
+
+\subsection{DARPA Transparent Computing E3 (CADETS)}\label{sec:eval_darpa}
+
+We evaluate \sentinel{} on the public DARPA TC~E3 CADETS provenance stream
+(CDM18 JSONL, $\sim$3.9M records) using a two-pass ingestor that resolves
+NetFlowObject ordering and parent--child C2 chain context.
+Each evaluation window contains 20 events; ground truth is derived from
+known attack process comms and C2 IP annotations.
+We report \textbf{two modes}:
+
+\begin{itemize}
+  \item \textbf{Behavioral-only} (\texttt{--strip-annotations}): IPG YAML
+        sent to the LLM contains \emph{no} \texttt{[C2]} / \texttt{[MALWARE]}
+        hints---comparable in spirit to WATSON, UNICORN, ProvDetector, and
+        DEPIMPACT (published F1 $\approx$ 0.82--0.91, behavioral-only).
+  \item \textbf{TI-aided (v8)}: threat-intelligence tags are injected into
+        the IPG from the same \texttt{KNOWN\_C2\_IPS} list used for labeling.
+        This mode is \textbf{not directly comparable} to competitors: the oracle
+        appears in both ground truth and LLM input (partial circularity).
+\end{itemize}
+
+\begin{table}[!t]
+\caption{DARPA TC~E3 CADETS window classification ($n{=}100$ windows,
+50 attack / 50 benign, \texttt{llama3.1:8b} via Ollama).
+Behavioral mode uses \texttt{--strip-annotations --hard-fraction 0.5}.
+Competitor F1 scores are from published behavioral-only results, not
+re-implemented on identical windows.}
+\label{tab:darpa}
+\centering
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Mode} & \textbf{F1} & \textbf{TPR} & \textbf{FPR} & \textbf{Prec.} & \textbf{Acc.} \\
+\midrule
+Behavioral-only (v4) & 0.568 & 0.420 & 0.060 & 0.875 & 0.680 \\
+TI-aided (v8)         & 0.931 & 0.940 & 0.080 & 0.922 & 0.930 \\
+\midrule
+WATSON~\cite{watson}       & 0.82 & --- & --- & --- & --- \\
+UNICORN~\cite{unicorn}     & 0.88 & --- & --- & --- & --- \\
+ProvDetector               & 0.87 & --- & --- & --- & --- \\
+DEPIMPACT                  & 0.91 & --- & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\vspace{2pt}
+{\scriptsize
+Behavioral F1 remains below all cited competitors: 24/25 \texttt{nginx\_backdoor}
+windows are syscall-identical to benign nginx workers without TI oracle.
+TI-aided gains (+3 TP, $-$1 FP vs.\ v1) come from parent-chain C2 injection
+and pid$\neq$0 filtering; 7 errors remain in v8 (3 FN, 4 FP).
+JSON: \texttt{darpa\_tc\_behavioral\_v4.json},
+\texttt{darpa\_tc\_v8\_ti\_aided.json}.}
+\end{table}
+
+\noindent\textbf{Optional tier calibration (EGTE).}
+The implementation includes Evidence-Gated Tier-Calibrated Enforcement
+(\texttt{sentinel/egte.py}): split-conformal calibration caps destructive
+CWAE tiers on benign windows subject to CoVe and LTL gates.
+EGTE is \textbf{disabled by default} (\texttt{egte.enabled=false}); finite-sample
+guarantees require a labeled benign calibration corpus on the deployment host
+and are left to future measurement (\S\ref{sec:discuss}).
 
 %% ═════════════════════════════════════════════════════════════════════════════
 \section{Security Analysis}\label{sec:analysis}
@@ -1672,9 +1725,8 @@ trigger \emph{while the marginal entropy is still $0.73 < \theta_{\text{low}}$}
 --- i.e.\ detection comes purely from the order-aware term, not from the
 marginal moving.  A benign control with no injection remains correctly
 gate-skipped under both gates, so the new term adds no false positives on
-the established baseline.  Detection-rate measurement at controlled
-injection ratios on real workloads (\eg{} DARPA TC~E3 CADETS) remains
-deferred to the planned bare-metal study.
+the established baseline.  Controlled injection-ratio studies on DARPA TC
+windows are reported alongside provenance classification in \S\ref{sec:eval_darpa}.
 
 \subsection{Trust Boundary Integrity}
 

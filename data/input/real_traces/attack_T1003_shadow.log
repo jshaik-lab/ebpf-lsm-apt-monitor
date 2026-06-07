@@ -1,0 +1,84 @@
+root:*:20553:0:99999:7:::
+daemon:*:20553:0:99999:7:::
+bin:*:20553:0:99999:7:::
+sys:*:20553:0:99999:7:::
+sync:*:20553:0:99999:7:::
+games:*:20553:0:99999:7:::
+man:*:20553:0:99999:7:::
+lp:*:20553:0:99999:7:::
+mail:*:20553:0:99999:7:::
+news:*:20553:0:99999:7:::
+uucp:*:20553:0:99999:7:::
+proxy:*:20553:0:99999:7:::
+www-data:*:20553:0:99999:7:::
+backup:*:20553:0:99999:7:::
+list:*:20553:0:99999:7:::
+irc:*:20553:0:99999:7:::
+gnats:*:20553:0:99999:7:::
+nobody:*:20553:0:99999:7:::
+_apt:*:20553:0:99999:7:::
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+9     08:04:30.546278 execve("/usr/bin/bash", ["bash", "-c", "cat /etc/shadow 2>/dev/null; cat"...], 0xffffc8a2b3a0 /* 6 vars */) = 0 <0.000079>
+9     08:04:30.546438 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0f9e5fc1000 <0.000014>
+9     08:04:30.546505 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+9     08:04:30.546571 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xe0f9e5fbf000 <0.000013>
+9     08:04:30.546694 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000017>
+9     08:04:30.546795 mmap(NULL, 325800, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0f9e5f3c000 <0.000015>
+9     08:04:30.546830 mmap(0xe0f9e5f40000, 260264, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xe0f9e5f40000 <0.000016>
+9     08:04:30.546952 mmap(0xe0f9e5f7b000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2b000) = 0xe0f9e5f7b000 <0.000015>
+9     08:04:30.547018 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000016>
+9     08:04:30.547108 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0f9e5d81000 <0.000014>
+9     08:04:30.547139 mmap(0xe0f9e5d90000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xe0f9e5d90000 <0.000015>
+9     08:04:30.547253 mmap(0xe0f9e5f2d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xe0f9e5f2d000 <0.000014>
+9     08:04:30.547285 mmap(0xe0f9e5f33000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xe0f9e5f33000 <0.000015>
+9     08:04:30.547349 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0f9e5fbd000 <0.000013>
+9     08:04:30.547725 openat(AT_FDCWD, "/dev/tty", O_RDWR|O_NONBLOCK) = -1 ENXIO (No such device or address) <0.000016>
+9     08:04:30.548724 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000004>
+9     08:04:30.548756 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000003>
+9     08:04:30.548778 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3 <0.000002>
+9     08:04:30.548817 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3 <0.000002>
+9     08:04:30.549028 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xe0f9e5fbd0f0) = 10 <0.000020>
+10    08:04:30.549308 openat(AT_FDCWD, "/dev/null", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3 <0.000015>
+10    08:04:30.549398 execve("/usr/bin/cat", ["cat", "/etc/shadow"], 0xc136fa3d1320 /* 6 vars */) = 0 <0.000062>
+10    08:04:30.549514 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe3600f523000 <0.000013>
+10    08:04:30.549572 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+10    08:04:30.549663 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xe3600f521000 <0.000026>
+10    08:04:30.549749 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000020>
+10    08:04:30.549850 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe3600f32f000 <0.000016>
+10    08:04:30.549883 mmap(0xe3600f330000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xe3600f330000 <0.000018>
+10    08:04:30.550021 mmap(0xe3600f4cd000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xe3600f4cd000 <0.000017>
+10    08:04:30.550062 mmap(0xe3600f4d3000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xe3600f4d3000 <0.000015>
+10    08:04:30.550509 openat(AT_FDCWD, "/etc/shadow", O_RDONLY) = 3 <0.000032>
+10    08:04:30.550627 mmap(NULL, 139264, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe3600f30e000 <0.000015>
+10    08:04:30.551290 +++ exited with 0 +++
+9     08:04:30.551512 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=10, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+9     08:04:30.551712 execve("/usr/bin/cat", ["cat", "/etc/passwd"], 0xc136fa3d3df0 /* 6 vars */) = 0 <0.000091>
+9     08:04:30.551875 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe1c01d42d000 <0.000015>
+9     08:04:30.551941 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+9     08:04:30.552008 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xe1c01d42b000 <0.000016>
+9     08:04:30.552069 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+9     08:04:30.552158 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe1c01d239000 <0.000013>
+9     08:04:30.552188 mmap(0xe1c01d240000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xe1c01d240000 <0.000017>
+9     08:04:30.552306 mmap(0xe1c01d3dd000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xe1c01d3dd000 <0.000014>
+9     08:04:30.552338 mmap(0xe1c01d3e3000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xe1c01d3e3000 <0.000014>
+9     08:04:30.552761 openat(AT_FDCWD, "/etc/passwd", O_RDONLY) = 3 <0.000014>
+9     08:04:30.552849 mmap(NULL, 139264, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe1c01d21e000 <0.000014>
+9     08:04:30.552966 +++ exited with 0 +++

@@ -195,12 +195,13 @@ Pick one path:
 
 | Section | Status | Notes |
 |---------|--------|-------|
-| A Blockers | ⬜ Not started | |
-| B Recommended | ⬜ | |
-| C Contributions | ⬜ | EGTE paper gap |
-| D eBPF | ⬜ | |
-| E Repro | ⬜ | |
-| F Related work | ⬜ | |
+| A Blockers | 🟡 In progress | SSH key generated; authorize on VPS (docs/IONOS_SSH_SETUP.md) |
+| B Recommended | ⬜ | Pending VPS eval runs |
+| C Contributions | 🟡 | DARPA in paper; EGTE noted as optional/disabled |
+| D eBPF | ⬜ | After SSH + bootstrap |
+| E Repro | ✅ | docs/REPRO.md, scripts/bootstrap_ionos.sh |
+| F Related work | 🟡 | DARPA competitor table in paper |
 | G Optional | ⬜ | |
 
+**GitHub:** https://github.com/jshaik-lab/Paper1_ZeroTrustAgent  
 **Submission target date:** _______________

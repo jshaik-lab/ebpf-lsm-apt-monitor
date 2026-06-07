@@ -1,0 +1,9 @@
+{
+  "trace": "attack_T1055_ptrace.log",
+  "ground_truth": "MALICIOUS",
+  "technique": "T1055",
+  "command": "bash -c \"python3 -c \"import ctypes; ctypes.CDLL(None).ptrace(16, 1, 0, 0)\" 2>/dev/null || true\"",
+  "label_source": "researcher_at_capture_time",
+  "capture_mode": "docker_ubuntu_22.04",
+  "label_rationale": "Label assigned from command intent before LLM classification"
+}

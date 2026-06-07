@@ -77,6 +77,43 @@ COMM_HINTS = {
 }
 
 
+def _load_label_sidecar(scenario: str) -> dict | None:
+    """Load ground truth from capture-time .label.json sidecar if present."""
+    path = os.path.join(TRACE_DIR, f"{scenario}.label.json")
+    if not os.path.isfile(path):
+        return None
+    with open(path) as f:
+        return json.load(f)
+
+
+def _ground_truth_for(scenario: str) -> str | None:
+    sidecar = _load_label_sidecar(scenario)
+    if sidecar and sidecar.get("ground_truth"):
+        return sidecar["ground_truth"]
+    return GROUND_TRUTH.get(scenario)
+
+
+def _comm_hint_for(scenario: str) -> str:
+    sidecar = _load_label_sidecar(scenario)
+    if sidecar:
+        cmd = sidecar.get("command", "")
+        if cmd.startswith("python3"):
+            return "python3"
+        if cmd.startswith("bash"):
+            return "bash"
+        tok = cmd.split()[0].split("/")[-1]
+        if tok:
+            return tok
+    return COMM_HINTS.get(scenario, "proc")
+
+
+def _detect_platform() -> str:
+    return os.environ.get(
+        "SENTINEL_EVAL_PLATFORM",
+        "auto-detect: set SENTINEL_EVAL_PLATFORM for paper table",
+    )
+
+
 async def evaluate_trace(
     path: str,
     scenario: str,
@@ -84,7 +121,7 @@ async def evaluate_trace(
     classifier: OllamaClassifier,
     builder: IPGBuilder,
 ) -> dict:
-    comm = COMM_HINTS.get(scenario, "proc")
+    comm = _comm_hint_for(scenario)
     events = parse_strace_file(path, default_comm=comm)
 
     if not events:
@@ -148,7 +185,7 @@ async def main() -> None:
     print(SEP)
     print("SENTINEL — Real Kernel Syscall Trace Evaluation")
     print(f"Model: {MODEL}  Traces: {len(traces)}")
-    print(f"Source: Docker ubuntu:22.04 Linux VM (ARM64 kernel via Docker Desktop)")
+    print(f"Source: { _detect_platform() }")
     print(f"Capture tool: strace -f -tt -T (actual kernel calls, not simulated)")
     print(SEP)
 
@@ -160,7 +197,7 @@ async def main() -> None:
 
     for trace_path in traces:
         scenario = os.path.basename(trace_path).replace(".log", "")
-        gt = GROUND_TRUTH.get(scenario)
+        gt = _ground_truth_for(scenario)
         if gt is None:
             print(f"  (skipping unknown scenario: {scenario})")
             continue
@@ -215,7 +252,17 @@ async def main() -> None:
     print(f"\n  TPR (Recall):  {tpr:.3f}  [95% CI: {tpr_ci[0]:.3f}–{tpr_ci[1]:.3f}]")
     print(f"  FPR:           {fpr:.3f}  [95% CI: {fpr_ci[0]:.3f}–{fpr_ci[1]:.3f}]")
     print(f"  Accuracy:      {acc:.3f}  [95% CI: {acc_ci[0]:.3f}–{acc_ci[1]:.3f}]")
-    print(f"  Note: Wide CIs reflect n=15 sample size — expand dataset for tighter bounds.")
+    print(f"  Note: Wide CIs reflect small sample size — expand dataset for tighter bounds.")
+
+    platform = _detect_platform()
+    sidecar_modes = set()
+    for trace_path in traces:
+        sc = os.path.basename(trace_path).replace(".log", "")
+        sc_data = _load_label_sidecar(sc)
+        if sc_data and sc_data.get("capture_mode"):
+            sidecar_modes.add(sc_data["capture_mode"])
+    if sidecar_modes:
+        platform = f"{platform}; capture_modes={','.join(sorted(sidecar_modes))}"
 
     if skipped:
         print(f"\n  Skipped (no parseable events):")
@@ -233,7 +280,7 @@ async def main() -> None:
 
     summary = {
         "model":    MODEL,
-        "platform": "Docker ubuntu:22.04 (ARM64 Linux VM via Docker Desktop on macOS M5)",
+        "platform": platform,
         "capture":  "strace -f -tt -T (real kernel syscalls)",
         "n_benign":  len(benign),
         "n_attack":  len(attacks),

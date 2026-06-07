@@ -1,0 +1,417 @@
+{
+  "n_scenarios": 12,
+  "n_detected": 12,
+  "n_evaded": 0,
+  "n_ltl_only": 0,
+  "detection_rate": 1.0,
+  "classifier": "mock (heuristic)",
+  "ltl_guardian": "SymbolicGuardian (RuntimeMonitor + BuchiMonitor)",
+  "entropy_low": 1.2,
+  "entropy_high": 3.8,
+  "window_size": 20,
+  "results": [
+    {
+      "scenario": "EVASION-05",
+      "name": "LOLBins (python3 reads shadow via subprocess)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-2"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 25000,
+          "events": 5,
+          "entropy": 1.371,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.99,
+          "latency_ms": 0.017,
+          "mitre_ttps": [
+            "T1003",
+            "T1071"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-06",
+      "name": "Obfuscated cmd (base64 \u2192 shadow read)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 26000,
+          "events": 6,
+          "entropy": 0.9183,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "KILL",
+          "label": "MALICIOUS",
+          "confidence": 0.55,
+          "latency_ms": 0.015,
+          "mitre_ttps": [
+            "T1003"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-07",
+      "name": "Delayed execution (time-bomb at window boundary)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-2"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 27000,
+          "events": 20,
+          "entropy": 1.319,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.9,
+          "latency_ms": 0.012,
+          "mitre_ttps": [
+            "T1071",
+            "T1562"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-01",
+      "name": "Entropy Evasion (single syscall type)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 20000,
+          "events": 6,
+          "entropy": -0.0,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "KILL",
+          "label": "MALICIOUS",
+          "confidence": 0.55,
+          "latency_ms": 0.008,
+          "mitre_ttps": [
+            "T1003"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-02",
+      "name": "Benign Flood (1 attack in 15-event window)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 21000,
+          "events": 15,
+          "entropy": 1.371,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.95,
+          "latency_ms": 0.013,
+          "mitre_ttps": [
+            "T1003",
+            "T1562"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-03",
+      "name": "Slow-and-Low (one signal per window)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 22000,
+          "events": 8,
+          "entropy": 1.0613,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.95,
+          "latency_ms": 0.011,
+          "mitre_ttps": [
+            "T1003",
+            "T1562"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-04",
+      "name": "Kill-chain Split (two PIDs)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 23000,
+          "events": 4,
+          "entropy": 1.0,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "KILL",
+          "label": "MALICIOUS",
+          "confidence": 0.55,
+          "latency_ms": 0.011,
+          "mitre_ttps": [
+            "T1003"
+          ]
+        },
+        {
+          "pid": 23001,
+          "events": 3,
+          "entropy": 0.9183,
+          "gate": "PARENT-FLAGGED (ppid=23000)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.99,
+          "latency_ms": 0.011,
+          "mitre_ttps": [
+            "T1003",
+            "T1059",
+            "T1071"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-05",
+      "name": "LOLBins (python3 reads shadow via subprocess)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-2"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 25000,
+          "events": 5,
+          "entropy": 1.371,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.99,
+          "latency_ms": 0.012,
+          "mitre_ttps": [
+            "T1003",
+            "T1071"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-06",
+      "name": "Obfuscated cmd (base64 decode \u2192 shadow read)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 0,
+        "ltl_axioms": []
+      },
+      "pids": [
+        {
+          "pid": 26000,
+          "events": 6,
+          "entropy": 0.9183,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "KILL",
+          "label": "MALICIOUS",
+          "confidence": 0.55,
+          "latency_ms": 0.011,
+          "mitre_ttps": [
+            "T1003"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-08",
+      "name": "prctl masquerading (attacker renames to nginx)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 6,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-1",
+          "AX-2",
+          "AX-3"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 28000,
+          "events": 7,
+          "entropy": 2.2359,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.99,
+          "latency_ms": 0.013,
+          "mitre_ttps": [
+            "T1003",
+            "T1071",
+            "T1041"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-09",
+      "name": "Slow-and-low exfiltration (AX-2 temporal property)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-2"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 29000,
+          "events": 10,
+          "entropy": 1.3568,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.99,
+          "latency_ms": 0.013,
+          "mitre_ttps": [
+            "T1003",
+            "T1059",
+            "T1071",
+            "T1562"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "EVASION-07",
+      "name": "Delayed execution (time-bomb at window boundary)",
+      "ground_truth": "MALICIOUS",
+      "detected": true,
+      "evaded": false,
+      "detection_layers": {
+        "llm": true,
+        "ltl_tier1": 0,
+        "ltl_tier2": 1,
+        "ltl_axioms": [
+          "AX-2"
+        ]
+      },
+      "pids": [
+        {
+          "pid": 27000,
+          "events": 20,
+          "entropy": 1.319,
+          "gate": "HARD-TRIGGER (/etc/shadow)",
+          "llm_invoked": true,
+          "detected": true,
+          "tier": "ISOLATE",
+          "label": "MALICIOUS",
+          "confidence": 0.9,
+          "latency_ms": 0.01,
+          "mitre_ttps": [
+            "T1071",
+            "T1562"
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "All scenarios have MALICIOUS ground truth. Detection = LLM label==MALICIOUS OR LTL violations > 0. EVASION-08/09 require LTL guardian for full coverage. Use OllamaClassifier for final paper numbers."
+}

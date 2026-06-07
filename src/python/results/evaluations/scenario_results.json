@@ -1,0 +1,215 @@
+[
+  {
+    "scenario": "Credential Dumping",
+    "ttp_id": "T1003",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.95,
+    "reasoning": "bash reads /etc/shadow (T1003), then cat reads /etc/passwd (T1087) and connects to port 4444 (T1071 C2), finally executing /tmp/sh (T1059) \u2014 a complete credential-dump-to-C2 kill-chain.",
+    "mitre_ttps": [
+      "T1003",
+      "T1087",
+      "T1071",
+      "T1059"
+    ],
+    "entropy": 1.522,
+    "latency_ms": 37282.5,
+    "correct": true
+  },
+  {
+    "scenario": "Privilege Escalation",
+    "ttp_id": "T1068",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.93,
+    "reasoning": "exploit process escalates privileges with setuid, accesses sensitive /etc/sudoers, and executes /bin/sh; then sh writes to cron/init script for persistence \u2014 a complete privilege-escalation-to-persistence kill-chain.",
+    "mitre_ttps": [
+      "T1068",
+      "T1003",
+      "T1059",
+      "T1562",
+      "T1053"
+    ],
+    "entropy": 2.322,
+    "latency_ms": 41168.4,
+    "correct": true
+  },
+  {
+    "scenario": "Process Injection",
+    "ttp_id": "T1055",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.95,
+    "reasoning": "malware injects itself into another process (T1055) and allocates RWX memory (T1620), then connects to a known-suspicious IP range (T1071 C2).",
+    "mitre_ttps": [
+      "T1055",
+      "T1620",
+      "T1071"
+    ],
+    "entropy": 1.585,
+    "latency_ms": 48069.3,
+    "correct": true
+  },
+  {
+    "scenario": "Defense Evasion",
+    "ttp_id": "T1562",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.85,
+    "reasoning": "bash executes systemctl, then overwrites security logs and connects to internal IP (T1021) \u2014 a potential APT kill-chain.",
+    "mitre_ttps": [
+      "T1562",
+      "T1070",
+      "T1021"
+    ],
+    "entropy": 1.5,
+    "latency_ms": 35577.4,
+    "correct": true
+  },
+  {
+    "scenario": "C2 over HTTP",
+    "ttp_id": "T1071",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.93,
+    "reasoning": "bash connects to unusual port :4443 (T1071/T1095) and update.sh executes from temp dir (T1059/T1105), indicating a C2 beacon and staged payload respectively.",
+    "mitre_ttps": [
+      "T1071",
+      "T1095",
+      "T1074",
+      "T1059",
+      "T1105"
+    ],
+    "entropy": 1.522,
+    "latency_ms": 40301.1,
+    "correct": true
+  },
+  {
+    "scenario": "Lateral Movement",
+    "ttp_id": "T1210",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.83,
+    "reasoning": "bash connects to internal SSH ports, then executes from a temp dir (T1059), while also writing to the same temp file (T1074) \u2014 indicative of lateral movement and data staging.",
+    "mitre_ttps": [
+      "T1021",
+      "T1059",
+      "T1074"
+    ],
+    "entropy": 1.371,
+    "latency_ms": 48183.8,
+    "correct": true
+  },
+  {
+    "scenario": "Data Exfiltration",
+    "ttp_id": "T1041",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.93,
+    "reasoning": "python3 reads TLS private key (T1003) and connects to external IP on port 443 twice (T1071 C2), indicating potential credential-dump-to-C2 activity.",
+    "mitre_ttps": [
+      "T1003",
+      "T1071"
+    ],
+    "entropy": 0.918,
+    "latency_ms": 35060.9,
+    "correct": true
+  },
+  {
+    "scenario": "Scripted Execution",
+    "ttp_id": "T1059",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.83,
+    "reasoning": "bash executes python3, which connects to unusual port :31337 (T1071) and then reads /etc/hostname \u2014 likely a C2 beacon.",
+    "mitre_ttps": [
+      "T1071"
+    ],
+    "entropy": 1.585,
+    "latency_ms": 34412.4,
+    "correct": true
+  },
+  {
+    "scenario": "Valid Accounts",
+    "ttp_id": "T1078",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.85,
+    "reasoning": "sshd spawns bash which executes /usr/bin/bash then connects to two non-standard ports (T1071 C2 and T1095) \u2014 probable command and control beacon activity.",
+    "mitre_ttps": [
+      "T1059",
+      "T1071",
+      "T1095"
+    ],
+    "entropy": 0.918,
+    "latency_ms": 47762.8,
+    "correct": true
+  },
+  {
+    "scenario": "Web Exploitation",
+    "ttp_id": "T1190",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.93,
+    "reasoning": "apache2 executes bash which connects to two unusual ports (probable C2 beacons) \u2014 a classic indicator of command and control activity.",
+    "mitre_ttps": [
+      "T1071",
+      "T1095"
+    ],
+    "entropy": 0.918,
+    "latency_ms": 35397.7,
+    "correct": true
+  },
+  {
+    "scenario": "Agent Prompt Injection",
+    "ttp_id": "AGENT-T1003",
+    "expected": "MALICIOUS",
+    "label": "MALICIOUS",
+    "confidence": 0.95,
+    "reasoning": "claude-cod executes bash, which reads /etc/shadow (T1003) and connects to evil.com:4444 (T1071 C2), indicating a probable APT-style attack.",
+    "mitre_ttps": [
+      "T1059",
+      "T1003",
+      "T1071"
+    ],
+    "entropy": 1.585,
+    "latency_ms": 35404.4,
+    "correct": true
+  },
+  {
+    "scenario": "Nginx Web Server",
+    "ttp_id": "BENIGN-01",
+    "expected": "BENIGN",
+    "label": "BENIGN",
+    "confidence": 0.04,
+    "reasoning": "nginx reads static files and writes access log \u2014 normal web-server behaviour with a listen edge on HTTPS port 443.",
+    "mitre_ttps": [],
+    "entropy": 1.5,
+    "latency_ms": 42303.2,
+    "correct": true
+  },
+  {
+    "scenario": "Apt Package Update",
+    "ttp_id": "BENIGN-02",
+    "expected": "BENIGN",
+    "label": "BENIGN",
+    "confidence": 0.95,
+    "reasoning": "apt connects to Debian package repository and updates local packages via dpkg \u2014 a normal package update process with no suspicious edges.",
+    "mitre_ttps": [],
+    "entropy": 1.371,
+    "latency_ms": 34279.9,
+    "correct": true
+  },
+  {
+    "scenario": "PostgreSQL Normal Op",
+    "ttp_id": "BENIGN-03",
+    "expected": "BENIGN",
+    "label": "BENIGN",
+    "confidence": 0.04,
+    "reasoning": "postgres reads and writes to its own database files \u2014 normal database-server behaviour with no suspicious edges.",
+    "mitre_ttps": [],
+    "entropy": 0.918,
+    "latency_ms": 31405.2,
+    "correct": true
+  }
+]

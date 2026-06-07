@@ -1,0 +1,30 @@
+# ── SENTINEL Demo Container ────────────────────────────────────────────────────
+# Runs the full Python pipeline (IPG encoder + mock LLM + CWAE enforcement)
+# against simulated attack scenarios. No eBPF / root required.
+# Works on macOS, Linux, Windows via Docker Desktop.
+#
+# Build:  docker build -f docker/Dockerfile.demo -t sentinel-demo .
+# Run:    docker run --rm -it sentinel-demo
+
+FROM python:3.11-slim
+
+LABEL maintainer="SENTINEL Research"
+LABEL description="SENTINEL intent-based anomaly detection — demo mode"
+
+WORKDIR /sentinel
+
+# System packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc \
+        && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies (no llama-cpp — uses mock classifier)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source
+COPY src/python/ ./src/python/
+
+# Run demo
+ENTRYPOINT ["python3", "src/python/demo_runner.py"]
+CMD ["--all-scenarios", "--color"]

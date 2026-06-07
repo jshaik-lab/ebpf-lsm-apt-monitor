@@ -1,0 +1,77 @@
+{
+  "measurement_date": "2026-05-02",
+  "platform": "macOS Darwin 25.4.0, Apple M-series ARM64",
+  "tokenizer": "tiktoken cl100k_base",
+  "contribution_1_ipg_token_reduction": {
+    "paper_claim": "73.2% reduction",
+    "measured": {
+      "vs_raw_strace_window_20": "64.1% (range 59\u201382%, n=6 real strace traces)",
+      "vs_raw_strace_full_trace": "86.7% (range 85\u201391%, n=6 real strace traces)",
+      "avg_ipg_tokens_window_20": 393.5,
+      "avg_ipg_tokens_full_trace": 664.0,
+      "simulation_scenarios": "negative reduction (IPG larger than narrative for short 4-20 event windows due to YAML header overhead)"
+    },
+    "recommendation": "Report 64.1% (window=20) or 86.7% (full trace). Remove 73.2% claim.",
+    "detail_file": "results/evaluations/ipg_token_reduction.json"
+  },
+  "contribution_2_dual_tier_llm_reduction": {
+    "paper_claim": "94.7% reduction in full-model invocations",
+    "measured": {
+      "mock_classifier": "0% (MockClassifier BENIGN confidence \u2264 0.08, below 0.90 threshold)",
+      "real_ollama": "NOT MEASURED \u2014 requires Ollama with llama3.2:1b + llama3.1:8b",
+      "benign_rate_in_simulation_corpus": "11.5%",
+      "theoretical_if_llm_correct": "~11.5% from simulation corpus; real production benign rate higher"
+    },
+    "recommendation": "Run 'make up' with Ollama and measure over real traces. Report measured value.",
+    "detail_file": "results/evaluations/dual_tier_reduction.json"
+  },
+  "contribution_4_ltl_false_positives": {
+    "paper_claim": "Zero false positives on benign corpus",
+    "measured": {
+      "benign_scenarios_tested": 3,
+      "ltl_violations_on_benign": 0,
+      "note": "3 synthetic scenarios only. No real benign workloads tested (nginx, sshd, postgres)."
+    },
+    "recommendation": "Capture real benign strace traces and run LTL monitor. Report FPR with N\u226550."
+  },
+  "contribution_5_cove_zero_hallucinations": {
+    "paper_claim": "Zero enforcement actions driven by hallucinated evidence",
+    "measured": {
+      "mock_hallucination_rate": "Always 0.0 by construction (MockClassifier returns evidence_refs=[])",
+      "real_ollama": "NOT MEASURED",
+      "note": "The claim is unfalsifiable with MockClassifier. Requires real LLM with real evidence_refs."
+    },
+    "recommendation": "Run with Ollama. Add evidence_refs population to OllamaClassifier output parsing."
+  },
+  "overhead_memory": {
+    "paper_claim": "<15 MB RSS overhead",
+    "measured": {
+      "base_python3_rss_mb": 14.8,
+      "sentinel_plus_deps_rss_mb": 60.6,
+      "sentinel_incremental_delta_mb": 45.8,
+      "dominant_deps": "networkx, pydantic, structlog, prometheus-client"
+    },
+    "recommendation": "Update claim to ~45 MB Python daemon RSS. <15 MB refers to native BPF agent only."
+  },
+  "overhead_cpu_non_llm": {
+    "paper_claim": "<3% CPU overhead",
+    "measured": {
+      "detector_throughput_events_per_s": 2929938,
+      "cpu_fraction_at_5k_events_per_s": "0.17%",
+      "status": "CONFIRMED for non-LLM pipeline",
+      "note": "LLM Ollama inference overhead not measured; depends on invocation rate and hardware."
+    }
+  },
+  "overhead_latency": {
+    "paper_claim": "<2.5s E2E latency",
+    "measured": {
+      "ipg_p50_ms": 0.029,
+      "ipg_p99_ms": 0.067,
+      "cwae_p50_ms": 0.199,
+      "cwae_p99_ms": 0.253,
+      "llm_mock_p50_ms": 0.009,
+      "llm_ollama_p50_s": "NOT MEASURED (expected ~3.6s on 8B model)",
+      "note": "E2E latency dominated by Ollama LLM. Requires real Ollama measurement."
+    }
+  }
+}

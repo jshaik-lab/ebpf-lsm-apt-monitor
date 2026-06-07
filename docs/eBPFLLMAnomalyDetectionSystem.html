@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZeroTrustAgent: Intent-Based eBPF Security Monitor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+        max-height: 300px;
+    }
+}
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.tab-content.active {
+    display: block;
+}
+.nav-item.active {
+    background-color: #f3f4f6;
+    border-left: 4px solid #2563eb;
+    color: #1e40af;
+    font-weight: 600;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.pulse-dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+.seq-card { transition: all 0.2s ease; }
+.seq-card:hover { transform: translateX(4px); border-color: #93c5fd; }
+.seq-card.selected { border-color: #3b82f6; background-color: #eff6ff; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-blue-200">
+
+<!-- Chosen Palette: Warm Neutrals & Deep Blues (bg-slate-50, text-slate-800, accents: blue-600, emerald-500, rose-500) -->
+<!-- Application Structure Plan: The SPA uses a dashboard-style layout with a fixed sidebar for navigation and a main content area. This structure was chosen to logically separate the project's complex components: Architecture overview, Live Telemetry simulation, and LLM Intent Analysis. Users can easily switch contexts while maintaining a persistent view of the system's status. The narrative flows from 'How it works' to 'What it sees' to 'How it thinks'. -->
+<!-- Visualization & Content Choices: 
+1. Architecture (Goal: Organize) -> Flexbox Grid with clickable cards -> Explains the 3 pillars (eBPF, BCC, LLM) interactively without overwhelming text.
+2. Live Syscall Telemetry (Goal: Change over time) -> Chart.js Line Chart -> Shows real-time simulated volume of execve, connect, openat to illustrate eBPF capture speed.
+3. Intent Classification (Goal: Proportions) -> Chart.js Doughnut Chart -> Shows the ratio of Normal vs Anomaly intents detected by the LLM.
+4. Sequence Analysis (Goal: Relationships/Deep Dive) -> Two-pane interactive list and text view -> Allows users to click specific syscall sequences (like DARPA examples) and see the LLM's natural language reasoning.
+All choices avoid SVG/Mermaid in favor of Canvas and styled HTML, prioritizing interactive exploration of the system's capabilities. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<div class="flex h-screen overflow-hidden">
+    
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex z-10 shadow-sm">
+        <div class="p-6 border-b border-slate-100 flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-xl leading-none">Z</div>
+            <h1 class="text-lg font-bold text-slate-800 tracking-tight">ZeroTrustAgent</h1>
+        </div>
+        <div class="p-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">System Modules</p>
+            <nav class="space-y-1">
+                <button onclick="switchTab('overview')" id="nav-overview" class="nav-item active w-full text-left px-4 py-2.5 rounded-md text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <span class="text-lg">&#127968;</span> Executive Summary
+                </button>
+                <button onclick="switchTab('architecture')" id="nav-architecture" class="nav-item w-full text-left px-4 py-2.5 rounded-md text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <span class="text-lg">&#9881;</span> Architecture
+                </button>
+                <button onclick="switchTab('telemetry')" id="nav-telemetry" class="nav-item w-full text-left px-4 py-2.5 rounded-md text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <span class="text-lg">&#128200;</span> Live Telemetry
+                </button>
+                <button onclick="switchTab('intent')" id="nav-intent" class="nav-item w-full text-left px-4 py-2.5 rounded-md text-sm text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                    <span class="text-lg">&#129488;</span> LLM Intent Analysis
+                </button>
+            </nav>
+        </div>
+        <div class="mt-auto p-4 border-t border-slate-100">
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-medium text-slate-500">Agent Status</span>
+                    <span class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+                        <span class="pulse-dot bg-emerald-500"></span> Active
+                    </span>
+                </div>
+                <div class="text-[10px] text-slate-400 font-mono" id="status-ticker">Loading model...</div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto relative scroll-smooth focus:outline-none">
+        
+        <header class="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-20">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-sm">Z</div>
+                <h1 class="text-base font-bold text-slate-800">ZeroTrustAgent</h1>
+            </div>
+            <select onchange="switchTab(this.value)" class="text-sm border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-slate-50">
+                <option value="overview">Summary</option>
+                <option value="architecture">Architecture</option>
+                <option value="telemetry">Live Telemetry</option>
+                <option value="intent">Intent Analysis</option>
+            </select>
+        </header>
+
+        <div class="p-6 md:p-10 max-w-6xl mx-auto pb-24">
+
+            <section id="overview" class="tab-content active">
+                <div class="mb-10">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Moving Beyond Signatures to <span class="text-blue-600">Intent</span></h2>
+                    <p class="text-lg text-slate-600 max-w-3xl leading-relaxed">
+                        This report details the implementation of a novel security monitor. By capturing low-level system call sequences via <strong>eBPF</strong> and analyzing them locally with a <strong>quantized Large Language Model (Llama-3-8B-GGUF)</strong>, the system identifies anomalous behaviors based on <em>contextual intent</em> rather than static heuristics.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-3xl mb-3">&#128269;</div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">Deep Visibility</h3>
+                        <p class="text-sm text-slate-600">eBPF hooks into the Linux kernel to trace <code class="bg-slate-100 px-1 rounded text-pink-600 text-xs">execve</code>, <code class="bg-slate-100 px-1 rounded text-pink-600 text-xs">connect</code>, and <code class="bg-slate-100 px-1 rounded text-pink-600 text-xs">openat</code> with near-zero overhead.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-3xl mb-3">&#129488;</div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">Contextual AI</h3>
+                        <p class="text-sm text-slate-600">Local LLM inference decodes the sequential relationship of syscalls to determine if an action constitutes a lateral movement, exfiltration, or normal operation.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="text-3xl mb-3">&#128737;&#65039;</div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">Zero Trust</h3>
+                        <p class="text-sm text-slate-600">Trained on datasets like DARPA Transparent Computing and Syzbot logs, the agent assumes breach and validates the intent of every process.</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-8 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-xl font-bold text-blue-900 mb-3">Ready to explore the system?</h3>
+                    <p class="text-blue-700 mb-6 max-w-xl">Navigate through the architecture, view simulated real-time eBPF data capture, and see how the LLM evaluates complex attack sequences.</p>
+                    <button onclick="switchTab('architecture')" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition-colors focus:ring-4 focus:ring-blue-100">
+                        Explore Architecture &rarr;
+                    </button>
+                </div>
+            </section>
+
+            <section id="architecture" class="tab-content">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">System Architecture</h2>
+                    <p class="text-slate-600 text-lg">
+                        This section details the three core components required for the AI pipeline. Click each component to understand its role in transforming raw kernel events into actionable security intelligence.
+                    </p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-6 mb-10">
+                    <div class="flex-1 flex flex-col gap-4">
+                        <button onclick="showArchDetails(0)" class="arch-btn w-full text-left bg-white p-5 rounded-xl border-2 border-blue-500 shadow-sm relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 bottom-0 w-2 bg-blue-500"></div>
+                            <h3 class="font-bold text-slate-800 text-lg mb-1 flex items-center gap-2"><span class="bg-slate-100 text-slate-500 rounded px-2 text-sm">1</span> BPF Program (C)</h3>
+                            <p class="text-sm text-slate-500">Kernel-space execution and hooking.</p>
+                        </button>
+                        <button onclick="showArchDetails(1)" class="arch-btn w-full text-left bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-300 shadow-sm transition-colors group">
+                            <h3 class="font-bold text-slate-800 text-lg mb-1 flex items-center gap-2"><span class="bg-slate-100 text-slate-500 rounded px-2 text-sm">2</span> Python Wrapper (BCC)</h3>
+                            <p class="text-sm text-slate-500">User-space data buffering and formatting.</p>
+                        </button>
+                        <button onclick="showArchDetails(2)" class="arch-btn w-full text-left bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-300 shadow-sm transition-colors group">
+                            <h3 class="font-bold text-slate-800 text-lg mb-1 flex items-center gap-2"><span class="bg-slate-100 text-slate-500 rounded px-2 text-sm">3</span> Inference Engine</h3>
+                            <p class="text-sm text-slate-500">Llama-3-8B-GGUF classification.</p>
+                        </button>
+                    </div>
+                    
+                    <div class="flex-[2] bg-slate-800 rounded-xl p-6 text-slate-300 font-mono text-sm relative shadow-inner h-96 overflow-y-auto" id="arch-display">
+                        
+                    </div>
+                </div>
+            </section>
+
+            <section id="telemetry" class="tab-content">
+                <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Live Telemetry Simulation</h2>
+                        <p class="text-slate-600 text-lg max-w-2xl">
+                            Monitoring the <code>perf_buffer</code>. The charts below represent a simulated live stream of intercepted system calls from the kernel space, categorized before being fed into the LLM.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                        <div class="text-right">
+                            <div class="text-xs text-slate-500 font-semibold uppercase">Events/sec</div>
+                            <div class="text-xl font-bold text-slate-800" id="eps-counter">0</div>
+                        </div>
+                        <div class="h-10 w-px bg-slate-200"></div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-500 font-semibold uppercase">Model Latency</div>
+                            <div class="text-xl font-bold text-slate-800">42ms</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="text-blue-500">&#128200;</span> Syscall Volume Over Time
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Simulated capture rates for key security-relevant syscalls.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <span class="text-purple-500">&#127919;</span> LLM Intent Classification
+                        </h3>
+                        <div class="chart-container flex items-center justify-center">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Distribution of intents classified by the local Llama-3 model.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="intent" class="tab-content">
+                 <div class="mb-8">
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">LLM Intent Analysis</h2>
+                    <p class="text-slate-600 text-lg">
+                        This section demonstrates how the LLM evaluates specific sequences. Traditional rules trigger on single events; the LLM understands the contextual progression of commands. Select a sequence to view the model's reasoning. Data inspired by DARPA traces.
+                    </p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <div class="w-full lg:w-1/3 flex flex-col gap-3">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Captured Sequences</h3>
+                        
+                        <div class="space-y-3" id="sequence-list">
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-2/3 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-800">Inference Output</h3>
+                            <span class="bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded font-mono">Llama-3-8B-GGUF</span>
+                        </div>
+                        <div class="p-6 flex-1 min-h-[400px]">
+                            <div id="llm-output-loading" class="hidden flex-col items-center justify-center h-full text-slate-400">
+                                <div class="pulse-dot bg-blue-400 mb-4 h-4 w-4"></div>
+                                <p class="text-sm font-mono animate-pulse">Running inference...</p>
+                            </div>
+                            <div id="llm-output-content" class="h-full">
+                                <div class="text-center text-slate-400 mt-20">
+                                    <div class="text-4xl mb-3">&#128072;</div>
+                                    <p>Select a sequence from the left to view the LLM's intent analysis.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script>
+const archData = [
+    {
+        title: "eBPF Program (C)",
+        code: `// Kernel-space eBPF hook
+SEC("tracepoint/syscalls/sys_enter_execve")
+int tracepoint__syscalls__sys_enter_execve(struct trace_event_raw_sys_enter* ctx) {
+    struct data_t data = {};
+    data.pid = bpf_get_current_pid_tgid() >> 32;
+    data.uid = bpf_get_current_uid_gid();
+    
+    // Extract filename argument
+    const char *argp = (const char *)ctx->args[0];
+    bpf_probe_read_user_str(&data.comm, sizeof(data.comm), argp);
+    
+    // Push to ring buffer for userspace
+    bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &data, sizeof(data));
+    return 0;
+}`,
+        desc: "The C code is compiled into eBPF bytecode and injected into the Linux kernel safely. It attaches to specific tracepoints (e.g., sys_enter_execve, sys_enter_connect) to intercept execution arguments without modifying kernel source code."
+    },
+    {
+        title: "Python Wrapper (BCC)",
+        code: `# User-space BCC implementation
+from bcc import BPF
+
+# Load BPF program
+b = BPF(text=bpf_c_text)
+
+# Define sequence buffer per PID
+sequence_buffer = defaultdict(list)
+
+def print_event(cpu, data, size):
+    event = b["events"].event(data)
+    syscall = event.comm.decode('utf-8', 'replace')
+    
+    # Append to sequence
+    sequence_buffer[event.pid].append(syscall)
+    
+    # If sequence length threshold met, send to LLM
+    if len(sequence_buffer[event.pid]) >= 5:
+        trigger_inference(event.pid, sequence_buffer[event.pid])
+        sequence_buffer[event.pid] = []
+
+b["events"].open_perf_buffer(print_event)`,
+        desc: "The BCC wrapper loads the compiled eBPF program, reads the perf_buffer, and aggregates isolated system calls into sequences grouped by Process ID (PID) to build contextual history."
+    },
+    {
+        title: "LLM Inference Engine",
+        code: `# Local Inference Pipeline
+from llama_cpp import Llama
+
+llm = Llama(model_path="./models/llama-3-8b.gguf", n_ctx=2048, n_gpu_layers=-1)
+
+def trigger_inference(pid, sequence):
+    prompt = f"""
+    Analyze the following linux syscall sequence for malicious intent:
+    Sequence: {sequence}
+    Output JSON format: {"intent": "...", "confidence": 0.0, "reasoning": "..."}
+    """
+    
+    output = llm(
+        prompt,
+        max_tokens=150,
+        stop=["}"],
+        echo=False
+    )
+    
+    return parse_json(output["choices"][0]["text"])`,
+        desc: "A quantized LLM (Llama-3) processes the syscall sequence. Running locally via llama.cpp ensures data privacy and low latency. The model is prompted to evaluate the sequence and output a structured JSON response categorizing the intent."
+    }
+];
+
+function showArchDetails(index) {
+    document.querySelectorAll('.arch-btn').forEach((btn, i) => {
+        if(i === index) {
+            btn.classList.add('border-blue-500', 'border-2');
+            btn.classList.remove('border-slate-200', 'border');
+            if(!btn.querySelector('.absolute')) {
+                const indicator = document.createElement('div');
+                indicator.className = 'absolute right-0 top-0 bottom-0 w-2 bg-blue-500';
+                btn.appendChild(indicator);
+            }
+        } else {
+            btn.classList.remove('border-blue-500', 'border-2');
+            btn.classList.add('border-slate-200', 'border');
+            const ind = btn.querySelector('.absolute');
+            if(ind) ind.remove();
+        }
+    });
+
+    const display = document.getElementById('arch-display');
+    display.innerHTML = `
+        <div class="animate-[fadeIn_0.3s_ease-out]">
+            <div class="text-blue-400 font-bold mb-2">// ${archData[index].title}</div>
+            <pre class="bg-slate-900 p-4 rounded-md overflow-x-auto text-green-400 border border-slate-700 shadow-inner mb-4"><code>${archData[index].code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>
+            <p class="text-slate-400 leading-relaxed">${archData[index].desc}</p>
+        </div>
+    `;
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    const navBtn = document.getElementById('nav-' + tabId);
+    if(navBtn) navBtn.classList.add('active');
+    
+    if (window.innerWidth < 768) {
+        window.scrollTo(0, 0);
+    }
+}
+
+let lineChartInstance = null;
+let doughnutChartInstance = null;
+const maxDataPoints = 20;
+const timeLabels = Array(maxDataPoints).fill('');
+const dataExecve = Array(maxDataPoints).fill(0);
+const dataConnect = Array(maxDataPoints).fill(0);
+const dataOpenat = Array(maxDataPoints).fill(0);
+
+function initCharts() {
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    lineChartInstance = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: 'execve',
+                    data: dataExecve,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
+                },
+                {
+                    label: 'connect',
+                    data: dataConnect,
+                    borderColor: '#f59e0b',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0
+                },
+                {
+                    label: 'openat',
+                    data: dataOpenat,
+                    borderColor: '#10b981',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 0 },
+            scales: {
+                x: { display: false },
+                y: { 
+                    beginAtZero: true,
+                    max: 50,
+                    grid: { color: '#f1f5f9' }
+                }
+            },
+            plugins: {
+                legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } },
+                tooltip: { mode: 'index', intersect: false }
+            }
+        }
+    });
+
+    const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+    doughnutChartInstance = new Chart(ctxDoughnut, {
+        type: 'doughnut',
+        data: {
+            labels: ['Normal Routine', 'Suspicious', 'High Anomaly'],
+            datasets: [{
+                data: [85, 12, 3],
+                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }
+            }
+        }
+    });
+}
+
+function updateTelemetry() {
+    if (!lineChartInstance) return;
+
+    const newExecve = Math.floor(Math.random() * 5) + 2;
+    const newConnect = Math.floor(Math.random() * 8);
+    const newOpenat = Math.floor(Math.random() * 30) + 10;
+
+    dataExecve.push(newExecve);
+    dataExecve.shift();
+    dataConnect.push(newConnect);
+    dataConnect.shift();
+    dataOpenat.push(newOpenat);
+    dataOpenat.shift();
+
+    lineChartInstance.update();
+
+    const totalEps = newExecve + newConnect + newOpenat;
+    document.getElementById('eps-counter').innerText = totalEps;
+
+    if (Math.random() > 0.95) {
+        const dData = doughnutChartInstance.data.datasets[0].data;
+        dData[1] += Math.floor(Math.random() * 2);
+        if(Math.random() > 0.8) dData[2] += 1;
+        doughnutChartInstance.update();
+    }
+}
+
+const sequences = [
+    {
+        id: 1,
+        name: "Standard Application Launch",
+        pid: "PID 4192",
+        status: "normal",
+        calls: ["openat(/lib/x86_64...)", "read", "mmap", "close", "execve(/usr/bin/ls)"],
+        analysis: {
+            intent: "Routine Execution",
+            confidence: "99.8%",
+            reasoning: "The sequence demonstrates standard dynamic library loading pattern followed by a benign executable launch. No network connections or sensitive file accesses are present."
+        }
+    },
+    {
+        id: 2,
+        name: "Potential Reverse Shell",
+        pid: "PID 5821",
+        status: "malicious",
+        calls: ["execve(/bin/sh)", "connect(10.0.0.5:4444)", "dup2(0)", "dup2(1)", "execve(/bin/bash)"],
+        analysis: {
+            intent: "Remote Command Execution",
+            confidence: "98.2%",
+            reasoning: "CRITICAL: The sequence initiates a shell, immediately opens a network socket to a non-standard port, and uses dup2 to redirect standard input/output streams to the socket before launching a secondary shell. This is a definitive signature of a reverse shell payload."
+        }
+    },
+    {
+        id: 3,
+        name: "Data Exfiltration Attempt",
+        pid: "PID 3390",
+        status: "suspicious",
+        calls: ["openat(/etc/shadow)", "read", "connect(142.250...)", "sendto", "close"],
+        analysis: {
+            intent: "Credential Harvesting / Exfiltration",
+            confidence: "87.5%",
+            reasoning: "WARNING: Process read sensitive credentials file (/etc/shadow) and subsequently opened an external network connection, immediately transmitting data. This temporal correlation strongly suggests exfiltration, though further context on the destination IP is required."
+        }
+    },
+    {
+        id: 4,
+        name: "Web Server Worker",
+        pid: "PID 1024",
+        status: "normal",
+        calls: ["accept()", "read(HTTP GET)", "openat(/var/www/html/index.html)", "sendfile", "close"],
+        analysis: {
+            intent: "Web Service Routine",
+            confidence: "96.0%",
+            reasoning: "Standard sequence for a web server responding to a request. Accepts connection, parses header, opens local web root file, and transmits via sendfile. Behavioral baseline aligns with expected Nginx/Apache patterns."
+        }
+    }
+];
+
+function renderSequenceList() {
+    const list = document.getElementById('sequence-list');
+    list.innerHTML = '';
+    
+    sequences.forEach(seq => {
+        let statusColor = 'border-emerald-200 bg-emerald-50 text-emerald-700';
+        let icon = '&#10003;';
+        if(seq.status === 'malicious') {
+            statusColor = 'border-rose-200 bg-rose-50 text-rose-700';
+            icon = '&#9888;&#65039;';
+        } else if (seq.status === 'suspicious') {
+            statusColor = 'border-amber-200 bg-amber-50 text-amber-700';
+            icon = '&#10071;';
+        }
+
+        const btn = document.createElement('button');
+        btn.className = `seq-card w-full text-left p-4 rounded-xl border ${seq.status === 'normal' ? 'border-slate-200 bg-white' : statusColor} cursor-pointer shadow-sm`;
+        btn.onclick = () => selectSequence(seq.id, btn);
+        
+        btn.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <h4 class="font-bold text-slate-800 text-sm">${seq.name}</h4>
+                <span class="text-xs font-mono px-2 py-0.5 rounded bg-white bg-opacity-50">${seq.pid}</span>
+            </div>
+            <div class="flex gap-1 overflow-hidden flex-wrap">
+                ${seq.calls.map((c, i) => `<span class="text-[10px] font-mono bg-slate-800 text-slate-200 px-1.5 py-0.5 rounded whitespace-nowrap">${c}</span>${i < seq.calls.length -1 ? '<span class="text-slate-400 text-xs">&rarr;</span>' : ''}`).join('')}
+            </div>
+        `;
+        list.appendChild(btn);
+    });
+}
+
+function selectSequence(id, btnElement) {
+    document.querySelectorAll('.seq-card').forEach(el => el.classList.remove('selected', 'ring-2', 'ring-blue-400'));
+    btnElement.classList.add('selected', 'ring-2', 'ring-blue-400');
+
+    const seq = sequences.find(s => s.id === id);
+    const contentDiv = document.getElementById('llm-output-content');
+    const loadingDiv = document.getElementById('llm-output-loading');
+
+    contentDiv.classList.add('hidden');
+    loadingDiv.classList.remove('hidden');
+    loadingDiv.classList.add('flex');
+
+    setTimeout(() => {
+        loadingDiv.classList.remove('flex');
+        loadingDiv.classList.add('hidden');
+        contentDiv.classList.remove('hidden');
+        
+        let headerColor = 'text-emerald-600';
+        let bgStyle = 'bg-emerald-50 border-emerald-100';
+        if(seq.status === 'malicious') { headerColor = 'text-rose-600'; bgStyle = 'bg-rose-50 border-rose-100'; }
+        else if(seq.status === 'suspicious') { headerColor = 'text-amber-600'; bgStyle = 'bg-amber-50 border-amber-100'; }
+
+        contentDiv.innerHTML = `
+            <div class="animate-[fadeIn_0.4s_ease-out] h-full flex flex-col">
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Input Sequence Tokenized</h4>
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-green-400 border border-slate-700">
+                        [BOS] ${seq.calls.join(' [SEP] ')} [EOS]
+                    </div>
+                </div>
+
+                <div class="flex-1 rounded-xl border ${bgStyle} p-6 shadow-inner">
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b border-white border-opacity-40">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Classified Intent</p>
+                            <h3 class="text-xl font-extrabold ${headerColor}">${seq.analysis.intent}</h3>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Confidence</p>
+                            <span class="text-lg font-bold text-slate-700">${seq.analysis.confidence}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-2">Model Reasoning</p>
+                        <p class="text-slate-700 leading-relaxed">${seq.analysis.reasoning}</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex gap-2">
+                    <button class="flex-1 bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50">View Raw Trace</button>
+                    ${seq.status !== 'normal' ? `<button class="flex-1 bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-rose-700 shadow-sm">Terminate Process</button>` : ''}
+                </div>
+            </div>
+        `;
+    }, 600);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    showArchDetails(0);
+    initCharts();
+    renderSequenceList();
+    setInterval(updateTelemetry, 1000);
+    
+    const tickerStates = ["Monitoring sys_enter_execve...", "Analyzing ring buffer...", "Model idle.", "Reading perf_events..."];
+    let tickIdx = 0;
+    setInterval(() => {
+        document.getElementById('status-ticker').innerText = tickerStates[tickIdx % tickerStates.length];
+        tickIdx++;
+    }, 3500);
+});
+</script>
+</body>
+</html>

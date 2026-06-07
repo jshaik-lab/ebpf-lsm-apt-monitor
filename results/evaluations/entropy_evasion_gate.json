@@ -1,0 +1,39 @@
+{
+  "description": "Order-blindness of the marginal Shannon entropy gate (theoretical-audit item #2). Identical event stream; the only difference is the gate.",
+  "theta_low_bits": 1.2,
+  "attack": {
+    "model": "connect() interleaved into a repetitive benign loop; syscall TYPE already seen, only the (write->connect) ORDER is new \u2014 pure permutation evasion.",
+    "legacy_marginal_gate": {
+      "escalated": false,
+      "trigger": null,
+      "marginal_entropy_at_decision": 0.8684,
+      "markov_entropy_at_decision": null,
+      "outcome": "EVADED (false negative)"
+    },
+    "markov_order_aware_gate": {
+      "escalated": true,
+      "trigger": "novel_transition",
+      "marginal_entropy_at_decision": 0.7252,
+      "markov_entropy_at_decision": 0.6934,
+      "outcome": "DETECTED"
+    }
+  },
+  "benign_control": {
+    "model": "same repetitive benign loop, no injection \u2014 must still be gate-skipped under the new gate (no added FP).",
+    "legacy_marginal_gate": {
+      "escalated": false,
+      "trigger": null,
+      "marginal_entropy_at_decision": 0.6686,
+      "markov_entropy_at_decision": null,
+      "outcome": "correctly skipped"
+    },
+    "markov_order_aware_gate": {
+      "escalated": false,
+      "trigger": null,
+      "marginal_entropy_at_decision": 0.6686,
+      "markov_entropy_at_decision": null,
+      "outcome": "correctly skipped"
+    }
+  },
+  "summary": "LEGACY gate: attack EVADED (false negative) (marginal H=0.8684 < 1.2). MARKOV gate: attack DETECTED via trigger='novel_transition'. Benign control still skipped under both gates."
+}

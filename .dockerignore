@@ -1,0 +1,14 @@
+docs/
+paper/
+.git/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.egg-info/
+.DS_Store
+*.pdf
+*.docx
+*.aux
+*.log
+*.bbl
+*.blg

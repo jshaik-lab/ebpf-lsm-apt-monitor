@@ -1,0 +1,1164 @@
+{
+  "dataset": "DARPA_TC_E3_CADETS",
+  "model": "llama3.1:8b via Ollama",
+  "platform": "MacBook Pro M5",
+  "parser": "two-pass CDM18 (v2 \u2014 resolves NetFlowObject ordering bug)",
+  "n_windows": 100,
+  "n_attack": 50,
+  "n_benign": 50,
+  "tp": 47,
+  "fp": 4,
+  "tn": 46,
+  "fn": 3,
+  "tpr": 0.94,
+  "fpr": 0.08,
+  "precision": 0.9216,
+  "f1": 0.9307,
+  "accuracy": 0.93,
+  "comparison": {
+    "WATSON_2020_F1": 0.82,
+    "UNICORN_2020_F1": 0.88,
+    "ProvDetector_2021_F1": 0.87,
+    "DEPIMPACT_2022_F1": 0.91
+  },
+  "results": [
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 23528.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1219",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13651.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 13809.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.95,
+      "correct": false,
+      "latency_ms": 15751.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 12110.7,
+      "gt_window": "c2_detected",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 13347.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 14447.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 59141,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 12898.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1068",
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 17630.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1068",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 14157.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 10615.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 13244.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11189.4,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 14318.4,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 14705.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "latency_ms": 14798.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1055"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 14606.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13585.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13380.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13670.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13149.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 12993.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 10463.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 10923.7,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "latency_ms": 13824.7,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11186.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "latency_ms": 15019.4,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11268.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 10904.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "latency_ms": 13521.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11210.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 10953.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "latency_ms": 15147.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11206.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11011.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 10161.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 9923.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13501.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "latency_ms": 12637.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071 C2"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11308.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 10286.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13549.7,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "latency_ms": 12689.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071 C2"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 15067.8,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1090"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13685.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 13269.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071",
+        "T1059"
+      ]
+    },
+    {
+      "pid": 59755,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 14563.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1003"
+      ]
+    },
+    {
+      "pid": 59755,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 12750.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59755,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 11795.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ]
+    },
+    {
+      "pid": 59755,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 15510.6,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ]
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12560.4,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10507.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.04,
+      "correct": true,
+      "latency_ms": 10395.2,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12571.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10534.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12203.2,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12203.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 9758.3,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12461.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 9196.4,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8822.1,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8765.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57533,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.95,
+      "correct": true,
+      "latency_ms": 12113.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10614.6,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 11529.0,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 11488.9,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1068"
+      ]
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 9041.5,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8615.3,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8596.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8630.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8646.6,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8605.1,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8621.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8640.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8635.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8594.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8570.3,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8597.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8590.1,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8626.6,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.6,
+      "correct": false,
+      "latency_ms": 11539.2,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ]
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12657.6,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8881.5,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 11093.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10016.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10611.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 14413.3,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12031.9,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12183.5,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 12232.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 9334.6,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 8655.2,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57539,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 14495.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1068"
+      ]
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 14313.7,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1068"
+      ]
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.04,
+      "correct": true,
+      "latency_ms": 9956.4,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 8474.0,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 11362.5,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10327.8,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.04,
+      "correct": true,
+      "latency_ms": 10566.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 10651.7,
+      "gt_window": "",
+      "mitre_ttps": []
+    }
+  ]
+}

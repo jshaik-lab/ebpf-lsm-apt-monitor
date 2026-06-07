@@ -1,0 +1,50 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# ── Results / logs (project-local output, not committed) ──────────────────────
+# Keep directory structure (.gitkeep), not the generated content
+results/logs/*.jsonl
+results/logs/memdump_*.txt
+results/logs/*.log
+
+# Evaluation JSON results ARE committed (they document paper results)
+# If you want to exclude them too, uncomment:
+# results/evaluations/*.json
+
+# ── Data / traces ─────────────────────────────────────────────────────────────
+# Real strace captures are large and reproducible via `make capture-traces`
+data/input/real_traces/*.log
+
+# ── eBPF compiled objects ─────────────────────────────────────────────────────
+src/bpf/*.bpf.o
+src/bpf/*.o
+
+# ── LaTeX build artifacts ─────────────────────────────────────────────────────
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/*.pdf
+
+# ── Docker / environment ──────────────────────────────────────────────────────
+.env
+.env.local
+*.env
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*

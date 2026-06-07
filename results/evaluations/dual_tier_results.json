@@ -1,0 +1,37 @@
+{
+  "model_draft": "llama3.2:1b",
+  "model_full": "llama3.1:8b",
+  "platform": "MacBook Pro M5, Ollama HTTP, no GPU",
+  "draft_conf_threshold": 0.9,
+  "fast_path": "BENIGN-only",
+  "n_scenarios": 14,
+  "draft_hits": 12,
+  "full_hits": 2,
+  "invocation_reduction_pct": 85.7,
+  "accuracy_dual_tier_original": 12,
+  "accuracy_8b_only": 14,
+  "errors_original_design": [
+    {
+      "scenario": "Defense Evasion (T1562)",
+      "draft_label": "BENIGN",
+      "correct": "MALICIOUS",
+      "type": "false_negative"
+    },
+    {
+      "scenario": "PostgreSQL Normal Op",
+      "draft_label": "MALICIOUS",
+      "correct": "BENIGN",
+      "type": "false_positive"
+    }
+  ],
+  "draft_latency_ms": {
+    "p50": 3624,
+    "min": 2720,
+    "max": 5516
+  },
+  "full_latency_ms": {
+    "min": 3300,
+    "max": 12300
+  },
+  "note": "BENIGN-only fast-path design eliminates false-positive enforcement; MALICIOUS from draft always escalates to 8B for confirmation"
+}

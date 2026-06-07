@@ -1,0 +1,43 @@
+# SENTINEL — Ollama LLM backend (simulation mode)
+# Use with: docker compose up (sentinel + ollama + prometheus + grafana)
+# First run pulls ~5-9 GB of models from Ollama registry.
+
+mode: simulation
+log_level: INFO
+log_format: json
+
+llm:
+  backend: ollama
+  ollama_url: http://ollama:11434
+  draft_model: llama3.2:1b
+  full_model: llama3.1:8b
+  draft_conf_threshold: 0.90
+  timeout_seconds: 60
+  max_retries: 3
+
+processing:
+  syscall_window_size: 20
+  max_concurrent_llm: 2    # lower for CPU-only Ollama in Docker
+  entropy:
+    window_size: 64
+    low_threshold: 1.2
+    high_threshold: 3.8
+
+enforcement:
+  dry_run: true
+  audit_log: results/logs/audit.jsonl
+  incident_log: results/logs/incidents.jsonl
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+
+metrics:
+  enabled: true
+  port: 9090
+
+simulation:
+  pause_seconds: 5.0      # slower to allow Ollama time to respond
+  attack_rate: 0.3
+  repeat: true
+  jitter_ms: 200

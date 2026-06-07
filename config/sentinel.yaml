@@ -1,0 +1,51 @@
+# SENTINEL default configuration — simulation mode with mock LLM
+# Starts immediately, no model downloads or root required.
+# Override with: SENTINEL__LLM__BACKEND=ollama python main.py
+# Or use config/sentinel.ollama.yaml for the full Ollama stack.
+
+mode: simulation
+log_level: INFO
+log_format: json
+
+llm:
+  backend: mock          # change to "ollama" for real LLM inference
+  ollama_url: http://localhost:11434
+  draft_model: llama3.2:1b
+  full_model: llama3.1:8b
+  draft_conf_threshold: 0.90
+  timeout_seconds: 30
+  max_retries: 3
+
+processing:
+  syscall_window_size: 20
+  max_concurrent_llm: 4
+  entropy:
+    window_size: 64
+    low_threshold: 1.2
+    high_threshold: 3.8
+
+enforcement:
+  dry_run: true
+  # In Docker: bind-mounted to results/logs/ on the host Mac/Linux filesystem.
+  # Local (non-Docker) runs: writes to results/logs/ relative to project root.
+  audit_log: results/logs/audit.jsonl
+  incident_log: results/logs/incidents.jsonl
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+  enabled: true
+
+metrics:
+  enabled: true
+  port: 9090
+
+bpf:
+  obj_path: src/bpf/sentinel.bpf.o
+  poll_interval_ms: 50
+
+simulation:
+  pause_seconds: 2.0
+  attack_rate: 0.3
+  repeat: true
+  jitter_ms: 100

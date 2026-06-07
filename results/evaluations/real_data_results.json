@@ -1,0 +1,288 @@
+{
+  "model": "llama3.1:8b",
+  "platform": "Docker ubuntu:22.04 (ARM64 Linux VM via Docker Desktop on macOS M5)",
+  "capture": "strace -f -tt -T (real kernel syscalls)",
+  "n_benign": 7,
+  "n_attack": 8,
+  "n_skipped": 0,
+  "tp": 8,
+  "fn": 0,
+  "tn": 5,
+  "fp": 2,
+  "tpr": 1.0,
+  "fpr": 0.2857,
+  "accuracy": 0.8667,
+  "bootstrap_ci_95": {
+    "tpr": [
+      1.0,
+      1.0
+    ],
+    "fpr": [
+      0.0,
+      0.667
+    ],
+    "accuracy": [
+      0.667,
+      1.0
+    ],
+    "n_resamples": 1000
+  },
+  "results": [
+    {
+      "scenario": "attack_T1003_T1071",
+      "ground_truth": "MALICIOUS",
+      "events": 60,
+      "nodes": 10,
+      "edges": 20,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash writes to temp dir (T1074), reads user database (T1003/T1087), then another process connects to unusual port (T1071/T1095) \u2014 a suspicious pattern but not conclusive.",
+      "mitre_ttps": [
+        "T1074",
+        "T1003",
+        "T1087",
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 30186.8,
+      "cot": "Step 1: multiple bash and cat processes interact with memory and files; nc connects to port 4444 (unusual high port). Step 2: the edge sequence is write to temp dir \u2192 read user database \u2192 clone \u2192 execve from /usr/bin/cat, then another process reads ld.so.cache and clones. Step 3: T1074 data staging via temp file; T1003/T1087 account enumeration via user database read; T1071/T1095 probable C2 beacon via connect to high port. Step 4: the combined pattern is suspicious but not conclusive."
+    },
+    {
+      "scenario": "attack_T1003_shadow",
+      "ground_truth": "MALICIOUS",
+      "events": 40,
+      "nodes": 6,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/passwd (T1003), then clones itself to execute cat with elevated privileges (T1059) \u2014 a suspicious combination of credential access and C2-like execution.",
+      "mitre_ttps": [
+        "T1003",
+        "T1059"
+      ],
+      "latency_ms": 30062.8,
+      "cot": "Step 1: multiple bash and cat processes interact with various resources; some sensitive file access detected. Step 2: edges show a complex interplay between memory mapping, file opening, and process cloning/executing. Step 3: T1003 (account enumeration) via openat(R) on /etc/passwd; T1059 (command and control) via execve from cat processes. Step 4: the combination of sensitive file access, process cloning, and C2-like execution patterns suggests a malicious intent."
+    },
+    {
+      "scenario": "attack_T1041_exfil",
+      "ground_truth": "MALICIOUS",
+      "events": 62,
+      "nodes": 10,
+      "edges": 21,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash writes to /tmp/data.txt (T1074), reads user database (T1003/T1087), then executes cat and nc with no clear purpose other than data exfiltration or C2 communication.",
+      "mitre_ttps": [
+        "T1074",
+        "T1003",
+        "T1040"
+      ],
+      "latency_ms": 34550.6,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; nc connects to port 443 (HTTPS). Step 2: the edge sequence is write to temp dir \u2192 read from user database \u2192 execve of cat and nc. Step 3: openat(W) on /tmp/data.txt matches T1074; openat(R) on /etc/passwd matches T1003/T1087; connect to :443 matches T1040. Step 4: the causal chain data staging \u2192 account enumeration \u2192 execution is a suspicious sequence."
+    },
+    {
+      "scenario": "attack_T1055_ptrace",
+      "ground_truth": "MALICIOUS",
+      "events": 87,
+      "nodes": 6,
+      "edges": 14,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads sensitive /etc/passwd and executes python3, which then maps memory, opens cache files, and uses ptrace to inject into another process \u2014 a suspicious sequence of events.",
+      "mitre_ttps": [
+        "T1003",
+        "T1055"
+      ],
+      "latency_ms": 32117.4,
+      "cot": "Step 1: multiple bash and python3 processes interact with various resources. Step 2: a causal chain is identified: bash reads /etc/passwd (sensitive), then executes python3, which in turn maps memory and opens cache files. Step 3: T1003 account enumeration via user database read; T1055 process injection via ptrace attach. Step 4: the combined pattern suggests an APT-like kill-chain."
+    },
+    {
+      "scenario": "attack_T1059_scripted",
+      "ground_truth": "MALICIOUS",
+      "events": 69,
+      "nodes": 6,
+      "edges": 12,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache and then executes python3, which in turn reads the same file and then accesses sensitive /etc/passwd (T1003/T1087) before creating a new process via clone.",
+      "mitre_ttps": [
+        "T1003",
+        "T1087"
+      ],
+      "latency_ms": 33541.3,
+      "cot": "Step 1: two bash and two python3 processes interact with various resources. Step 2: the edge sequence is mmap \u2192 execve (python3) \u2192 read /etc/ld.so.cache \u2192 mmap \u2192 read /etc/passwd (sensitive) \u2192 clone; another chain is mmap \u2192 openat(R) /etc/ld.so.cache \u2192 mmap. Step 3: T1003/T1087 account enumeration via user database read on /etc/passwd, and a potential C2 channel via clone."
+    },
+    {
+      "scenario": "attack_T1068_setuid",
+      "ground_truth": "MALICIOUS",
+      "events": 97,
+      "nodes": 10,
+      "edges": 20,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/passwd (T1003), then python3 executes with setuid (T1068) and finally id process is executed (T1059) \u2014 a complete credential-dump-to-C2 kill-chain.",
+      "mitre_ttps": [
+        "T1003",
+        "T1068",
+        "T1059"
+      ],
+      "latency_ms": 52754.6,
+      "cot": "Step 1: multiple bash and python3 processes interact with various resources; id process appears to be a victim of privilege escalation. Step 2: the edge sequence is openat(W) \u2192 read /etc/passwd (sensitive) \u2192 execve from /usr/bin/python3 \u2192 setuid call \u2192 execve from /usr/bin/id. Step 3: openat(R) on /etc/passwd matches T1003; setuid call matches T1068; execve from id matches T1059 staged payload. Step 4: the causal chain credential-access \u2192 privilege escalation \u2192 execution is a textbook APT kill-chain."
+    },
+    {
+      "scenario": "attack_T1078_valid_accts",
+      "ground_truth": "MALICIOUS",
+      "events": 67,
+      "nodes": 4,
+      "edges": 7,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "python3 reads ld.so.cache and then connects to port 4444 (T1071 C2) \u2014 a probable C2 beacon.",
+      "mitre_ttps": [
+        "T1016",
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 50847.7,
+      "cot": "Step 1: multiple python3 processes interact with various resources. Step 2: the edge sequence is mmap \u2192 read ld.so.cache \u2192 mmap \u2192 listen on all interfaces \u2192 connect to port 4444 (unusual, high port). Step 3: openat(R) on /etc/ld.so.cache matches T1016; listen on all interfaces matches T1071 C2; connect to :4444 matches T1095/HIGH. Step 4: the causal chain is suspicious due to unusual outbound connection."
+    },
+    {
+      "scenario": "attack_T1562_evasion",
+      "ground_truth": "MALICIOUS",
+      "events": 72,
+      "nodes": 6,
+      "edges": 14,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash reads sensitive user database and writes to security log \u2014 suspicious activity matching T1003 and T1562.",
+      "mitre_ttps": [
+        "T1003",
+        "T1562"
+      ],
+      "latency_ms": 43930.9,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a causal chain is identified: bash reads /etc/passwd (sensitive) \u2192 writes to syslog (log tampering). Step 3: T1003 (account enumeration) matches reading /etc/passwd; T1562 (impair defenses) matches writing to syslog. Step 4: the combined pattern suggests a malicious intent, but some edges are benign."
+    },
+    {
+      "scenario": "benign_cat_hostname",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "nodes": 3,
+      "edges": 4,
+      "label": "BENIGN",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "cat reads ld.so.cache (T1016), then mmaps it; another process also mmaps ld.so.cache \u2014 likely due to shared library loading.",
+      "mitre_ttps": [
+        "T1016"
+      ],
+      "latency_ms": 30944.8,
+      "cot": "Step 1: multiple cat processes interact with memory and files. Step 2: the edge sequence is mmap \u2192 read ld.so.cache \u2192 mmap (memory) \u2192 mmap (again), then another process reads ld.so.cache. Step 3: mmap on /etc/ld.so.cache matches T1016; openat(R) on ld.so.cache matches T1055. Step 4: the causal chain is suspicious, but cat's memory interactions are benign."
+    },
+    {
+      "scenario": "benign_cat_os_release",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "nodes": 3,
+      "edges": 4,
+      "label": "BENIGN",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "cat reads ld.so.cache (T1016), then mmaps it; another process also mmaps ld.so.cache \u2014 likely due to shared library loading.",
+      "mitre_ttps": [
+        "T1016"
+      ],
+      "latency_ms": 35506.8,
+      "cot": "Step 1: multiple cat processes interact with memory and files. Step 2: the edge sequence is mmap \u2192 read ld.so.cache \u2192 mmap (memory) \u2192 mmap (again), then another process reads ld.so.cache. Step 3: mmap on /etc/ld.so.cache matches T1016; openat(R) on ld.so.cache matches T1055. Step 4: the causal chain is suspicious, but cat's memory interactions are benign."
+    },
+    {
+      "scenario": "benign_find_libs",
+      "ground_truth": "BENIGN",
+      "events": 41,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "find reads /etc/ld.so.cache (T1016) and loads shared libs via mmap (T1055), which is normal behaviour for dynamic linking.",
+      "mitre_ttps": [
+        "T1016",
+        "T1055"
+      ],
+      "latency_ms": 12273.5,
+      "cot": "Step 1: multiple find processes interact with memory and files. Step 2: mmap edges precede read operations on /etc/ld.so.cache (dynamic linker cache). Step 3: openat(R) on ld.so.cache matches T1016; mmaps match T1055. Step 4: the causal chain is consistent with a process loading shared libraries."
+    },
+    {
+      "scenario": "benign_ls_usr",
+      "ground_truth": "BENIGN",
+      "events": 21,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "ls reads /etc/ld.so.cache (T1055) but only for reading library cache; openat(R) on ld.so.cache is benign as it's a system file.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 27537.4,
+      "cot": "Step 1: multiple ls processes interact with memory and files. Step 2: mmap \u2192 read ld.so.cache (library cache) \u2192 mmap; then openat(R) on /etc/ld.so.cache and /usr/bin. Step 3: mmap matches T1055, but only for reading library cache; openat(R) on ld.so.cache is benign as it's a system file. Step 4: the combined pattern suggests ls listing files in memory and on disk."
+    },
+    {
+      "scenario": "benign_python_json",
+      "ground_truth": "BENIGN",
+      "events": 75,
+      "nodes": 3,
+      "edges": 5,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "reasoning": "python3 maps /etc/ld.so.cache (T1055) and then opens a Python encoding module (T1059), indicating potential process injection and command execution.",
+      "mitre_ttps": [
+        "T1055",
+        "T1059"
+      ],
+      "latency_ms": 32913.2,
+      "cot": "Step 1: multiple python3 processes interact with memory and files. Step 2: mmap is used to map /etc/ld.so.cache into memory, then openat(R) reads a Python encoding module. Step 3: T1055: Process Injection (mmap of ld.so.cache), T1059: Command and Control (executing Python code). Step 4: the causal chain injects Python code into memory, which executes from a standard library path."
+    },
+    {
+      "scenario": "benign_python_math",
+      "ground_truth": "BENIGN",
+      "events": 52,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "python3 maps ld.so.cache (T1055) to inject shared library, but then opens a legitimate Python module from /usr/lib/python3.10/, indicating normal process startup.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 33175.1,
+      "cot": "Step 1: multiple python3 processes interact with memory and files. Step 2: mmap is used to map /etc/ld.so.cache into memory, then a Python module is opened (read-only) from the Python library directory. Step 3: T1055: Process Injection via Shared Library is attempted by mapping /etc/ld.so.cache, but it's benign as it's just loading shared libraries for the process. Step 4: the combined pattern shows normal Python process startup and execution."
+    },
+    {
+      "scenario": "benign_which_bash",
+      "ground_truth": "BENIGN",
+      "events": 10,
+      "nodes": 3,
+      "edges": 4,
+      "label": "MALICIOUS",
+      "confidence": 0.95,
+      "correct": false,
+      "reasoning": "which reads ld.so.cache and maps it into its own memory (T1218), indicating potential code injection or taint spooling.",
+      "mitre_ttps": [
+        "T1218"
+      ],
+      "latency_ms": 26778.5,
+      "cot": "Step 1: which process interacts with its own memory and file system. Step 2: the edge sequence is exec \u2192 map executable into memory \u2192 read ld.so.cache (library cache) \u2192 map library into memory. Step 3: this pattern matches T1218 - TAINT SPOOLING, as which maps libraries into its own address space."
+    }
+  ]
+}

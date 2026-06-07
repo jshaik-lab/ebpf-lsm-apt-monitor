@@ -1,0 +1,176 @@
+# SENTINEL — Full production stack for Mac M5 / ARM64
+#
+# Quick start (simulation + mock LLM, no downloads):
+#   docker compose --profile mock up
+#
+# Full stack with Ollama (downloads ~5-9 GB models on first run):
+#   docker compose up
+#
+# Live eBPF mode (privileged, Docker Desktop Linux VM):
+#   docker compose --profile ebpf up
+#
+# Services:
+#   sentinel    — main agent (port 8080: API, port 9090: metrics)
+#   ollama      — LLM server (port 11434)
+#   ollama-init — one-shot model puller
+#   prometheus  — metrics scraper (port 9091)
+#   grafana     — dashboard (port 3000, admin/sentinel)
+
+version: "3.9"
+
+x-sentinel-base: &sentinel-base
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile
+  image: sentinel:latest
+  volumes:
+    # ── Bind-mounted to host Mac/Linux so logs/results are directly visible ───
+    # Host path (relative to docker-compose.yml): ../results/
+    # Container path: /sentinel/results/
+    # After `make up`:  tail -f results/logs/audit.jsonl   on Mac host
+    #                   cat results/logs/incidents.jsonl
+    #                   ls results/evaluations/
+    - ../results:/sentinel/results
+    # Input trace data (strace .log files captured on host)
+    - ../data/input/real_traces:/sentinel/data/input/real_traces:ro
+    # Config (read-only)
+    - ../config:/sentinel/config:ro
+  environment:
+    SENTINEL__LLM__OLLAMA_URL: http://ollama:11434
+    PYTHONPATH: /sentinel/src/python
+    # Override any config value with SENTINEL__SECTION__KEY=value
+    # Examples:
+    #   SENTINEL__LLM__BACKEND=mock
+    #   SENTINEL__MODE=live
+    #   SENTINEL__ENFORCEMENT__DRY_RUN=false
+  restart: unless-stopped
+
+services:
+
+  # ── Simulation mode with Ollama ──────────────────────────────────────────────
+  sentinel:
+    <<: *sentinel-base
+    container_name: sentinel
+    profiles: [default, ""]
+    command: ["--config", "/sentinel/config/sentinel.ollama.yaml"]
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    depends_on:
+      ollama:
+        condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── Simulation mode with mock LLM (no Ollama, instant start) ────────────────
+  sentinel-mock:
+    <<: *sentinel-base
+    container_name: sentinel-mock
+    profiles: [mock]
+    command: ["--config", "/sentinel/config/sentinel.yaml"]
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+
+  # ── Live eBPF mode (privileged, Docker Desktop VM) ───────────────────────────
+  sentinel-ebpf:
+    <<: *sentinel-base
+    container_name: sentinel-ebpf
+    profiles: [ebpf]
+    command: ["--config", "/sentinel/config/sentinel.ebpf.yaml"]
+    privileged: true
+    pid: host
+    network_mode: host
+    volumes:
+      # Bind-mount logs and results to host (same as base)
+      - ../results:/sentinel/results
+      - ../data/input/real_traces:/sentinel/data/input/real_traces:ro
+      - ../config:/sentinel/config:ro
+      # eBPF-specific kernel access
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /sys/fs/bpf:/sys/fs/bpf
+      - /lib/modules:/lib/modules:ro
+      - /usr/src:/usr/src:ro
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+  # ── Ollama LLM server (ARM64-native) ────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    profiles: [default, "", ebpf]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 60s
+
+  # ── One-shot model puller (runs once, then exits) ────────────────────────────
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama-init
+    profiles: [default, "", ebpf]
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "ollama pull llama3.2:1b &&
+       ollama pull llama3.1:8b &&
+       echo 'Models ready.'"
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    restart: "no"
+
+  # ── Prometheus metrics ───────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    profiles: [default, "", mock, ebpf]
+    ports:
+      - "9091:9090"
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+    restart: unless-stopped
+
+  # ── Grafana dashboard ────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    profiles: [default, "", mock, ebpf]
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: sentinel
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/sentinel.json
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  ollama_models:      # Ollama model weights (large; keep across restarts)
+  prometheus_data:    # Prometheus TSDB (7-day retention)
+  grafana_data:       # Grafana dashboards/state
+  # sentinel_logs is now a bind-mount (../results/logs) — no named volume needed

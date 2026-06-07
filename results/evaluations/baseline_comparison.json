@@ -1,0 +1,421 @@
+{
+  "n_traces": 15,
+  "falco": {
+    "tp": 7,
+    "fn": 1,
+    "tn": 7,
+    "fp": 0,
+    "tpr": 0.875,
+    "fpr": 0.0,
+    "accuracy": 0.9333,
+    "avg_latency_ms": 0.059
+  },
+  "ngram_lr": {
+    "tp": 0,
+    "fn": 8,
+    "tn": 3,
+    "fp": 4,
+    "tpr": 0.0,
+    "fpr": 0.5714,
+    "accuracy": 0.2,
+    "avg_latency_ms": 0.083
+  },
+  "sentinel_mock": {
+    "tp": 8,
+    "fn": 0,
+    "tn": 7,
+    "fp": 0,
+    "tpr": 1.0,
+    "fpr": 0.0,
+    "accuracy": 1.0,
+    "avg_latency_ms": 0.019
+  },
+  "results": [
+    {
+      "scenario": "attack_T1003_T1071",
+      "ground_truth": "MALICIOUS",
+      "events": 60,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.069
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.7303,
+        "correct": false,
+        "latency_ms": 0.152
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.024,
+        "mitre_ttps": [
+          "T1003",
+          "T1059",
+          "T1071",
+          "T1105"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1003_shadow",
+      "ground_truth": "MALICIOUS",
+      "events": 40,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.9,
+        "correct": true,
+        "latency_ms": 0.044
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.6856,
+        "correct": false,
+        "latency_ms": 0.097
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.55,
+        "correct": true,
+        "latency_ms": 0.023,
+        "mitre_ttps": [
+          "T1003"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1041_exfil",
+      "ground_truth": "MALICIOUS",
+      "events": 62,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.056
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.8263,
+        "correct": false,
+        "latency_ms": 0.091
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.035,
+        "mitre_ttps": [
+          "T1003",
+          "T1059",
+          "T1105",
+          "T1041"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1055_ptrace",
+      "ground_truth": "MALICIOUS",
+      "events": 87,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.92,
+        "correct": true,
+        "latency_ms": 0.098
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9999,
+        "correct": false,
+        "latency_ms": 0.088
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.027,
+        "mitre_ttps": [
+          "T1003",
+          "T1055"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1059_scripted",
+      "ground_truth": "MALICIOUS",
+      "events": 69,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": false,
+        "latency_ms": 0.078
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9969,
+        "correct": false,
+        "latency_ms": 0.085
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.55,
+        "correct": true,
+        "latency_ms": 0.02,
+        "mitre_ttps": [
+          "T1003"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1068_setuid",
+      "ground_truth": "MALICIOUS",
+      "events": 97,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.88,
+        "correct": true,
+        "latency_ms": 0.094
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9999,
+        "correct": false,
+        "latency_ms": 0.091
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.031,
+        "mitre_ttps": [
+          "T1003",
+          "T1068"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1078_valid_accts",
+      "ground_truth": "MALICIOUS",
+      "events": 67,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.99,
+        "correct": true,
+        "latency_ms": 0.089
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9993,
+        "correct": false,
+        "latency_ms": 0.08
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.5,
+        "correct": true,
+        "latency_ms": 0.014,
+        "mitre_ttps": [
+          "T1071"
+        ]
+      }
+    },
+    {
+      "scenario": "attack_T1562_evasion",
+      "ground_truth": "MALICIOUS",
+      "events": 72,
+      "falco": {
+        "label": "MALICIOUS",
+        "confidence": 0.7,
+        "correct": true,
+        "latency_ms": 0.071
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9999,
+        "correct": false,
+        "latency_ms": 0.081
+      },
+      "sentinel_mock": {
+        "label": "MALICIOUS",
+        "confidence": 0.95,
+        "correct": true,
+        "latency_ms": 0.022,
+        "mitre_ttps": [
+          "T1003",
+          "T1562"
+        ]
+      }
+    },
+    {
+      "scenario": "benign_cat_hostname",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.018
+      },
+      "ngram_lr": {
+        "label": "MALICIOUS",
+        "confidence": 0.7781,
+        "correct": false,
+        "latency_ms": 0.068
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.012,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_cat_os_release",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.017
+      },
+      "ngram_lr": {
+        "label": "MALICIOUS",
+        "confidence": 0.7781,
+        "correct": false,
+        "latency_ms": 0.061
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.01,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_find_libs",
+      "ground_truth": "BENIGN",
+      "events": 41,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.043
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9936,
+        "correct": true,
+        "latency_ms": 0.073
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.012,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_ls_usr",
+      "ground_truth": "BENIGN",
+      "events": 21,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.027
+      },
+      "ngram_lr": {
+        "label": "MALICIOUS",
+        "confidence": 0.6717,
+        "correct": false,
+        "latency_ms": 0.067
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.013,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_python_json",
+      "ground_truth": "BENIGN",
+      "events": 75,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.097
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.08
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.014,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_python_math",
+      "ground_truth": "BENIGN",
+      "events": 52,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.065
+      },
+      "ngram_lr": {
+        "label": "BENIGN",
+        "confidence": 0.9945,
+        "correct": true,
+        "latency_ms": 0.074
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.012,
+        "mitre_ttps": []
+      }
+    },
+    {
+      "scenario": "benign_which_bash",
+      "ground_truth": "BENIGN",
+      "events": 10,
+      "falco": {
+        "label": "BENIGN",
+        "confidence": 1.0,
+        "correct": true,
+        "latency_ms": 0.017
+      },
+      "ngram_lr": {
+        "label": "MALICIOUS",
+        "confidence": 0.7703,
+        "correct": false,
+        "latency_ms": 0.063
+      },
+      "sentinel_mock": {
+        "label": "BENIGN",
+        "confidence": 0.08,
+        "correct": true,
+        "latency_ms": 0.011,
+        "mitre_ttps": []
+      }
+    }
+  ],
+  "note": "NGram-LR trained on 14 simulation scenarios, tested on 15 real traces. SENTINEL uses mock classifier (no Ollama). Replace with Ollama for paper."
+}

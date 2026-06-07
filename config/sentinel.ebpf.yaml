@@ -1,0 +1,41 @@
+# SENTINEL — live eBPF mode (requires privileged Docker or Linux host)
+# docker compose --profile ebpf up
+# Traces the Docker Desktop Linux VM kernel (or a real Linux host).
+
+mode: live
+log_level: INFO
+log_format: json
+
+llm:
+  backend: ollama
+  ollama_url: http://ollama:11434
+  draft_model: llama3.2:1b
+  full_model: llama3.1:8b
+  draft_conf_threshold: 0.90
+  timeout_seconds: 60
+  max_retries: 3
+
+processing:
+  syscall_window_size: 20
+  max_concurrent_llm: 4
+  entropy:
+    window_size: 64
+    low_threshold: 1.2
+    high_threshold: 3.8
+
+enforcement:
+  dry_run: true    # !! set false only on production Linux host !!
+  audit_log: results/logs/audit.jsonl
+  incident_log: results/logs/incidents.jsonl
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+
+metrics:
+  enabled: true
+  port: 9090
+
+bpf:
+  obj_path: /sentinel/src/bpf/sentinel.bpf.o
+  poll_interval_ms: 50

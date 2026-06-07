@@ -1,0 +1,133 @@
+{
+  "title": "SENTINEL — Zero-Trust Kernel Monitor",
+  "uid": "sentinel-main",
+  "schemaVersion": 38,
+  "refresh": "10s",
+  "time": {"from": "now-1h", "to": "now"},
+  "panels": [
+    {
+      "id": 1,
+      "title": "Events / second",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 0, "w": 8, "h": 6},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "rate(sentinel_events_total[1m])",
+        "legendFormat": "events/s"
+      }],
+      "fieldConfig": {"defaults": {"unit": "ops", "color": {"mode": "palette-classic"}}}
+    },
+    {
+      "id": 2,
+      "title": "Threats Detected / minute",
+      "type": "timeseries",
+      "gridPos": {"x": 8, "y": 0, "w": 8, "h": 6},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum by (ttp) (rate(sentinel_threats_detected_total[1m]))",
+        "legendFormat": "{{ttp}}"
+      }],
+      "fieldConfig": {"defaults": {"unit": "ops", "color": {"mode": "palette-classic"}}}
+    },
+    {
+      "id": 3,
+      "title": "Active PIDs",
+      "type": "stat",
+      "gridPos": {"x": 16, "y": 0, "w": 4, "h": 3},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sentinel_active_pids",
+        "legendFormat": "PIDs"
+      }],
+      "fieldConfig": {"defaults": {"unit": "short", "color": {"mode": "thresholds"},
+        "thresholds": {"steps": [{"value": 0, "color": "green"}, {"value": 50, "color": "yellow"}, {"value": 100, "color": "red"}]}}}
+    },
+    {
+      "id": 4,
+      "title": "LLM Invocation Reduction",
+      "type": "gauge",
+      "gridPos": {"x": 16, "y": 3, "w": 4, "h": 3},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sentinel_llm_invocation_reduction_ratio * 100",
+        "legendFormat": "Reduction %"
+      }],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100,
+        "color": {"mode": "thresholds"},
+        "thresholds": {"steps": [{"value": 0, "color": "red"}, {"value": 70, "color": "yellow"}, {"value": 90, "color": "green"}]}}}
+    },
+    {
+      "id": 5,
+      "title": "Enforcement Actions",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 6, "w": 12, "h": 7},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum by (action) (rate(sentinel_enforcement_total[1m]))",
+        "legendFormat": "{{action}}"
+      }],
+      "fieldConfig": {"defaults": {"unit": "ops", "color": {"mode": "palette-classic"}}}
+    },
+    {
+      "id": 6,
+      "title": "LLM Latency (p50 / p95 / p99)",
+      "type": "timeseries",
+      "gridPos": {"x": 12, "y": 6, "w": 12, "h": 7},
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "histogram_quantile(0.50, rate(sentinel_llm_latency_seconds_bucket[5m]))",
+          "legendFormat": "p50"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "histogram_quantile(0.95, rate(sentinel_llm_latency_seconds_bucket[5m]))",
+          "legendFormat": "p95"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "histogram_quantile(0.99, rate(sentinel_llm_latency_seconds_bucket[5m]))",
+          "legendFormat": "p99"
+        }
+      ],
+      "fieldConfig": {"defaults": {"unit": "s", "color": {"mode": "palette-classic"}}}
+    },
+    {
+      "id": 7,
+      "title": "LLM Tier Usage (Draft vs Full)",
+      "type": "piechart",
+      "gridPos": {"x": 0, "y": 13, "w": 8, "h": 7},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum by (tier) (increase(sentinel_llm_calls_total[1h]))",
+        "legendFormat": "{{tier}}"
+      }]
+    },
+    {
+      "id": 8,
+      "title": "Event Queue Depth",
+      "type": "timeseries",
+      "gridPos": {"x": 8, "y": 13, "w": 8, "h": 7},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sentinel_event_queue_depth",
+        "legendFormat": "queue depth"
+      }],
+      "fieldConfig": {"defaults": {"unit": "short",
+        "thresholds": {"steps": [{"value": 0, "color": "green"}, {"value": 5000, "color": "yellow"}, {"value": 20000, "color": "red"}]}}}
+    },
+    {
+      "id": 9,
+      "title": "Enforcement Latency p99",
+      "type": "stat",
+      "gridPos": {"x": 16, "y": 13, "w": 8, "h": 7},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "histogram_quantile(0.99, rate(sentinel_enforcement_latency_seconds_bucket[5m])) * 1e6",
+        "legendFormat": "p99 µs"
+      }],
+      "fieldConfig": {"defaults": {"unit": "µs", "color": {"mode": "thresholds"},
+        "thresholds": {"steps": [{"value": 0, "color": "green"}, {"value": 500, "color": "yellow"}, {"value": 2000, "color": "red"}]}}}
+    }
+  ]
+}

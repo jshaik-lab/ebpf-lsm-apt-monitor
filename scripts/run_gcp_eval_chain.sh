@@ -80,7 +80,7 @@ run "pcabp-real-nginx" \
 
 # ── Phase 1b: TOCTOU micro-benchmark (non-LLM) ───────────────────────────────
 run "toctou-race-benchmark" \
-  bash scripts/run_toctou_benchmark.sh 10000 "$OUT/toctou_race_gcp.json"
+  bash scripts/run_toctou_benchmark.sh 50000 "$OUT/toctou_race_gcp.json"
 
 # ── Phase 2: LLM evaluations ─────────────────────────────────────────────────
 run "eval-scenarios (14 MITRE)" \

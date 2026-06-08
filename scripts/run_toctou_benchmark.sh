@@ -12,7 +12,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-ITERATIONS="${1:-10000}"
+ITERATIONS="${1:-50000}"
 OUT="${2:-results/evaluations_gcp/toctou_race_gcp.json}"
 TOCTOU_DIR="$ROOT/scripts/toctou"
 BUILD="$TOCTOU_DIR/build"
@@ -53,7 +53,7 @@ merge_results() {
 run_userspace
 
 EBPF_OK=0
-if sudo -n bash "$TOCTOU_DIR/run_ebpf_layer.sh" "$ITERATIONS" "$TMP_EBPF" 2>/dev/null; then
+if sudo -n env PATH="$PATH" bash "$TOCTOU_DIR/run_ebpf_layer.sh" "$ITERATIONS" "$TMP_EBPF"; then
   EBPF_OK=1
 else
   echo "WARN: eBPF layer skipped (sudo, BTF, or CONFIG_BPF_LSM)" >&2

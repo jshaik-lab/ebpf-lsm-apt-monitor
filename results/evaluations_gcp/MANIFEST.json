@@ -1,6 +1,6 @@
 {
   "schema": "sentinel-results-manifest-v1",
-  "generated": "2026-06-08T17:02:56.507340+00:00",
+  "generated": "2026-06-08T19:21:50.026927+00:00",
   "entries": [
     {
       "file": ".gitkeep",
@@ -161,16 +161,10 @@
       "modified": "2026-06-08T17:02:56.346822+00:00"
     },
     {
-      "file": "gcp_chain.log",
-      "bytes": 824846,
-      "sha256": "473ea19222c9e9afdcb0a58a3f125e047993c7d717bf7980cd89b5c1daa6c542",
-      "modified": "2026-06-08T16:38:11.066195+00:00"
-    },
-    {
-      "file": "ipg_token_reduction_gcp.json",
-      "bytes": 40012,
-      "sha256": "a68ebd675ae0383f3c778e7f4efa4e95b7a1946ed24282c6647f8195091c2d1c",
-      "modified": "2026-06-08T15:46:57.959809+00:00",
+      "file": "entropy_sensitivity_gcp.json",
+      "bytes": 1953,
+      "sha256": "fa99655cec8b230ce710df68105a46c37cae998f2bce54c9e35b01eddbace7ab",
+      "modified": "2026-06-08T19:19:23.378911+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -185,18 +179,48 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T15:46:57Z",
+        "started_utc": "2026-06-08T19:19:23Z",
+        "ollama_fallback_to_mock_count": 0,
+        "analysis": "entropy_threshold_sensitivity"
+      }
+    },
+    {
+      "file": "gcp_chain.log",
+      "bytes": 488594,
+      "sha256": "d59381ef38585876296bc7ea4fe08bc0081f179c3261252a3a0042bb1215351c",
+      "modified": "2026-06-08T19:21:49.979185+00:00"
+    },
+    {
+      "file": "ipg_token_reduction_gcp.json",
+      "bytes": 3342,
+      "sha256": "8123b57b1e25f0ef58e07a51527630c31db670c96af585426ad0b632cefd5631",
+      "modified": "2026-06-08T19:18:40.777162+00:00",
+      "meta": {
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+        "system": "Linux",
+        "kernel": "6.17.0-1018-gcp",
+        "machine": "x86_64",
+        "hostname": "sentinel-gpu-vm",
+        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "ram_gb": 15.6,
+        "python": "3.12.3",
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
+        "git_sha": "unknown",
+        "started_utc": "2026-06-08T19:18:40Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
-        "recommended_claim": "74.0% at window=20; 92.7% at full trace"
+        "recommended_claim": "57.5% at window=20; 83.3% at full trace"
       }
     },
     {
       "file": "ltl_fpr_real_gcp.json",
-      "bytes": 8362,
-      "sha256": "05eb7443b80716fa6cfecb4709c8718e57e887961f20996484835821288979c4",
-      "modified": "2026-06-08T15:47:11.498278+00:00",
+      "bytes": 1795,
+      "sha256": "43c6bfd191d1f5140a42e5ead3ac97f89b4e9eed10ebd10a8319c8b79d1310c5",
+      "modified": "2026-06-08T19:18:41.116323+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -211,7 +235,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T15:47:11Z",
+        "started_utc": "2026-06-08T19:18:41Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -220,15 +244,15 @@
           0.0,
           0.0
         ],
-        "n_windows": 387,
-        "n_traces": 55
+        "n_windows": 13,
+        "n_traces": 7
       }
     },
     {
       "file": "overhead_gcp.json",
-      "bytes": 3052,
-      "sha256": "5e2c9cce999c98ed4a6926da2eb74c61139c569afaf47282250b18c22ee6667d",
-      "modified": "2026-06-08T15:46:38.590947+00:00",
+      "bytes": 3059,
+      "sha256": "3f4e55630a0f313e5bd594e6b16d071882228cc7eaa79c5eedcff87a784bd474",
+      "modified": "2026-06-08T19:18:38.669327+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -243,21 +267,21 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T15:46:38Z",
+        "started_utc": "2026-06-08T19:18:38Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
         "ipg_ms": {
-          "p50": 0.184,
-          "p99": 0.306
+          "p50": 0.195,
+          "p99": 0.328
         },
         "cwae_ms": {
-          "p50": 0.888,
-          "p99": 0.932
+          "p50": 1.023,
+          "p99": 1.349
         },
         "memory": {
-          "rss_before_mb": 48.1,
-          "rss_after_mb": 48.1,
+          "rss_before_mb": 48.6,
+          "rss_after_mb": 48.6,
           "delta_mb": 0.0,
           "meta": {
             "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
@@ -273,16 +297,16 @@
             "model_draft": "llama3.2:1b",
             "timeout_seconds": 300,
             "git_sha": "unknown",
-            "started_utc": "2026-06-08T15:46:38Z",
+            "started_utc": "2026-06-08T19:18:38Z",
             "ollama_fallback_to_mock_count": 0
           }
         },
         "detector_throughput": {
           "events": 1000,
-          "elapsed_s": 0.039,
-          "events_per_s": 25665,
-          "signals_emitted": 529,
-          "signal_rate": 0.529
+          "elapsed_s": 0.036,
+          "events_per_s": 27454,
+          "signals_emitted": 456,
+          "signal_rate": 0.456
         }
       }
     },
@@ -308,6 +332,34 @@
         "started_utc": "2026-06-08T15:48:00Z",
         "ollama_fallback_to_mock_count": 0,
         "bloom_path": "src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl"
+      }
+    },
+    {
+      "file": "real_data_fpr_breakdown_gcp.json",
+      "bytes": 25773,
+      "sha256": "d9961aa5364e824beddbf171f488a4b43631f7cbf00ab916d1c786ef44f0f8dd",
+      "modified": "2026-06-08T19:19:23.281766+00:00",
+      "meta": {
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+        "system": "Linux",
+        "kernel": "6.17.0-1018-gcp",
+        "machine": "x86_64",
+        "hostname": "sentinel-gpu-vm",
+        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "ram_gb": 15.6,
+        "python": "3.12.3",
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
+        "git_sha": "unknown",
+        "started_utc": "2026-06-08T19:19:23Z",
+        "ollama_fallback_to_mock_count": 0,
+        "analysis": "real_data_fpr_breakdown"
+      },
+      "headline": {
+        "fpr": 0.2909,
+        "n_traces": 105
       }
     },
     {
@@ -339,6 +391,29 @@
       }
     },
     {
+      "file": "red_team_results_gcp.json",
+      "bytes": 14646,
+      "sha256": "c75a2b30f1ac2f0fd966a258a6e6d235759de277b0d3bc906353774269a717c2",
+      "modified": "2026-06-08T19:21:49.850170+00:00",
+      "meta": {
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+        "system": "Linux",
+        "kernel": "6.17.0-1018-gcp",
+        "machine": "x86_64",
+        "hostname": "sentinel-gpu-vm",
+        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "ram_gb": 15.6,
+        "python": "3.12.3",
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
+        "git_sha": "unknown",
+        "started_utc": "2026-06-08T19:21:49Z",
+        "ollama_fallback_to_mock_count": 0
+      }
+    },
+    {
       "file": "scenario_results_gcp.json",
       "bytes": 7353,
       "sha256": "65bc92df1d5f91b80833df0fee11adc06fc652ab5798691af1a89df034ca201f",
@@ -360,10 +435,34 @@
         "started_utc": "2026-06-08T15:50:18Z",
         "ollama_fallback_to_mock_count": 0
       }
+    },
+    {
+      "file": "toctou_race_gcp.json",
+      "bytes": 1168,
+      "sha256": "799495abde0bc3c32d8230478ba13497be8719f45532ee3ba79703bd138dcbc8",
+      "modified": "2026-06-08T19:19:23.211364+00:00",
+      "meta": {
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+        "system": "Linux",
+        "kernel": "6.17.0-1018-gcp",
+        "machine": "x86_64",
+        "hostname": "sentinel-gpu-vm",
+        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "ram_gb": 15.6,
+        "python": "3.12.3",
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
+        "git_sha": "unknown",
+        "started_utc": "2026-06-08T19:19:23Z",
+        "ollama_fallback_to_mock_count": 0
+      }
     }
   ],
   "integrity_rules": [
     "Every entry tagged for paper citation must have meta.ollama_fallback_to_mock_count == 0",
+    "Every entry must have meta.system != 'Darwin' (GCP VM only)",
     "Every entry must have meta.backend == 'ollama' OR be a non-LLM measurement",
     "meta.machine must equal 'x86_64' for VPS-platform attestation",
     "git_sha should match a tagged submission commit"

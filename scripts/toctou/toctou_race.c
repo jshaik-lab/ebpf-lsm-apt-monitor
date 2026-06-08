@@ -17,23 +17,15 @@ static char g_link_path[512];
 static char g_safe_path[512];
 static char g_shadow_path[512];
 
-static void pin_cpu0(void)
-{
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(0, &cpuset);
-    sched_setaffinity(0, sizeof(cpuset), &cpuset);
-}
-
 static void *attacker_fn(void *arg)
 {
     (void)arg;
-    pin_cpu0();
     int toggle = 0;
     while (g_running) {
         toggle ^= 1;
         unlink(g_link_path);
         symlink(toggle ? g_shadow_path : g_safe_path, g_link_path);
+        sched_yield();
     }
     return NULL;
 }
@@ -55,7 +47,6 @@ int main(int argc, char **argv)
     snprintf(g_link_path, sizeof(g_link_path), "%s/race_link", workdir);
 
     prctl(PR_SET_NAME, "toctou_victim", 0, 0, 0);
-    pin_cpu0();
 
     pthread_t attacker;
     if (pthread_create(&attacker, NULL, attacker_fn, NULL) != 0) {

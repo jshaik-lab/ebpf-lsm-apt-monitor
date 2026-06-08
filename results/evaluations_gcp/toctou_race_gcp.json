@@ -1,0 +1,30 @@
+{
+  "benchmark": "toctou_symlink_race",
+  "method": "userspace_open_vs_readlink",
+  "iterations": 1000,
+  "workdir": "/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/build/work_2487",
+  "tracepoint_opens": 69,
+  "lsm_resolved_shadow": 34,
+  "tracepoint_saw_shadow_path": 0,
+  "tracepoint_would_miss_shadow": 34,
+  "lsm_shadow_resolution_rate": 0.492754,
+  "tracepoint_miss_rate": 0.492754,
+  "interpretation": "tp_path is the pre-resolution openat argument; resolved_path is readlink(/proc/self/fd/N) after open, analogous to lsm/file_open bpf_d_path. tp_would_miss_shadow counts opens where resolution hit shadow_target but tp_path did not.",
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T19:19:23Z",
+    "ollama_fallback_to_mock_count": 0
+  }
+}

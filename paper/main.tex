@@ -1299,29 +1299,28 @@ between \texttt{sys\_enter} and the LSM hook will be correctly observed by
 LSM and silently missed by tracepoints.
 
 \noindent\textbf{Measured symlink-race micro-benchmark.}
-We instrument a repeated \texttt{open("race\_link")} loop ($N{=}10{,}000$ open
-attempts; victim and attacker pinned to CPU~0) while a pthread adversary swaps
+We instrument a repeated \texttt{open("race\_link")} loop ($N{=}50{,}000$ open
+attempts by default) while a pthread adversary swaps
 \texttt{race\_link} between \texttt{safe.txt} and \texttt{shadow\_target}.
 For each successful \texttt{open}, we record the pre-resolution pathname
 (\texttt{sys\_enter\_openat} analogue) and the post-resolution identity via
 \texttt{readlink(/proc/self/fd/$N$)} (an \emph{approximation} of
 \texttt{lsm/file\_open} \texttt{bpf\_d\_path}, not bitwise identical---\S\ref{sec:limits} L8).
-The GCP artifact \texttt{toctou\_race\_gcp.json} reports
-\texttt{userspace\_proxy.tracepoint\_miss\_rate}: among successful opens where
-post-resolution hits \texttt{shadow\_target}, the fraction whose pre-resolution
-pathname still reads \texttt{race\_link}---i.e., races invisible to a
-tracepoint-only HIDS.
+On the GCP VM (\texttt{toctou\_race\_gcp.json}): 3{,}635 successful opens
+(7.3\% yield) with userspace \texttt{tracepoint\_miss\_rate}\,$=$\,49.9\% among
+those opens---i.e., half of shadow-resolving races would be invisible to a
+tracepoint-only HIDS logging \texttt{race\_link}.
 \textbf{This metric is not \sentinel{}'s detection rate}; it quantifies the
 telemetry-placement gap only.
 End-to-end detection of the same attack \emph{class} is validated separately by
 red-team EV-11 (Table~\ref{tab:redteam}): hard-trigger on \texttt{/etc/shadow}
 fires with ISOLATE-tier enforcement (\texttt{red\_team\_results\_gcp.json}).
-When root and \texttt{CONFIG\_BPF\_LSM} are available,
-\texttt{run\_toctou\_benchmark.sh} also attaches kernel
-\texttt{sys\_enter\_openat} vs.\ \texttt{lsm/file\_open} probes
-(\texttt{ebpf\_lsm} field in the same artifact).
-Low open yield ($\ll N$ successful opens) remains a reviewer-visible weakness;
-reviewers may request tighter pinning or larger~$N$.
+The harness optionally attaches kernel \texttt{sys\_enter\_openat} vs.\
+\texttt{lsm/file\_open} eBPF probes when \texttt{bpf} is in the active LSM
+stack (\texttt{ebpf\_lsm} field); on our GCP image \texttt{CONFIG\_BPF\_LSM=y}
+but \texttt{bpf} is not booted in \texttt{lsm=}, so kernel confirmation was
+unavailable and the userspace proxy is the reported primary measurement.
+Low open yield ($\ll N$) remains a reviewer-visible weakness.
 
 \subsection{AI Agent Prompt-Injection APT Chain Detection}
 
@@ -1719,10 +1718,11 @@ calibration corpus is synthetic-only and is excluded from this evaluation.
 \textbf{(L8) TOCTOU measurement scope.} The userspace open-vs-\texttt{readlink}
 layer is a deliberate proxy for the tracepoint/LSM pathname delta; it is not
 bitwise identical to production \texttt{lsm/file\_open} + \texttt{bpf\_d\_path}.
-The same harness optionally attaches kernel eBPF probes when run with root on
-GCP (\texttt{ebpf\_lsm} in \texttt{toctou\_race\_gcp.json}).  Neither layer
-proves live blocking---only that telemetry placement matters; pair with EV-11
-(Table~\ref{tab:redteam}) for end-to-end detection.
+The harness optionally attaches kernel eBPF probes when \texttt{bpf} appears in
+\texttt{/sys/kernel/security/lsm} (not true on our GCP Ubuntu image despite
+\texttt{CONFIG\_BPF\_LSM=y}).  Neither layer proves live blocking---only that
+telemetry placement matters; pair with EV-11 (Table~\ref{tab:redteam}) for
+end-to-end detection and enforcement.
 
 %% ═════════════════════════════════════════════════════════════════════════════
 \section{Security Analysis}\label{sec:analysis}

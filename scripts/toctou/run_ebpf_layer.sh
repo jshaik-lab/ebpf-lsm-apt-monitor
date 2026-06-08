@@ -25,9 +25,9 @@ esac
 command -v clang >/dev/null || { echo "clang missing" >&2; exit 1; }
 
 BPFTOOL=""
-for candidate in bpftool /usr/sbin/bpftool "$BUILD/bpftool"; do
-  if command -v "$candidate" >/dev/null 2>&1 && "$candidate" version >/dev/null 2>&1; then
-    if "$candidate" btf dump file /sys/kernel/btf/vmlinux format c 2>/dev/null | head -1 | grep -q struct; then
+for candidate in /usr/sbin/bpftool bpftool "$BUILD/bpftool"; do
+  if [[ -x "$candidate" ]] || command -v "$candidate" >/dev/null 2>&1; then
+    if "$candidate" version >/dev/null 2>&1; then
       BPFTOOL="$candidate"
       break
     fi

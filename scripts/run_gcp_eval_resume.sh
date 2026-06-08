@@ -40,7 +40,7 @@ run() {
 [[ -f "$OUT/ltl_fpr_real_gcp.json" ]]      || run "ltl-fpr-real" python3 src/python/evaluate_ltl_real.py --out "$OUT/ltl_fpr_real_gcp.json"
 [[ -f "$OUT/pcabp_real_nginx_gcp.json" ]]  || run "pcabp-real-nginx" env PCABP_OUT_PATH="$OUT/pcabp_real_nginx_gcp.json" PCABP_CSM_PATH="$ROOT/src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl" python3 scripts/pcabp_real_nginx.py
 [[ -f "$OUT/toctou_race_gcp.json" && "${TOCTOU_FORCE:-0}" != "1" ]] \
-  || run "toctou-race-benchmark" bash scripts/run_toctou_benchmark.sh 10000 "$OUT/toctou_race_gcp.json"
+  || run "toctou-race-benchmark" bash scripts/run_toctou_benchmark.sh 50000 "$OUT/toctou_race_gcp.json"
 [[ -f "$OUT/scenario_results_gcp.json" ]]  || { run "eval-scenarios" python3 src/python/measure_scenarios.py; meta results/evaluations/scenario_results.json "$OUT/scenario_results_gcp.json"; }
 [[ -f "$OUT/dual_tier_reduction_gcp.json" ]] || { run "dual-tier-reduction" python3 src/python/measure_dual_tier_reduction.py; meta results/evaluations/dual_tier_reduction.json "$OUT/dual_tier_reduction_gcp.json"; }
 [[ -f "$OUT/real_data_results_gcp.json" ]] || { run "eval-real" python3 src/python/evaluate_real_data.py; meta results/evaluations/real_data_results.json "$OUT/real_data_results_gcp.json"; }

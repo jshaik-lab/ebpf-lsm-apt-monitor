@@ -1,12 +1,5 @@
 /*
  * toctou_race_measured.c — Symlink-race benchmark (userspace proxy layer).
- *
- * Records per successful open(2):
- *   tp_path     — user pathname (sys_enter_openat analogue)
- *   resolved    — readlink(/proc/self/fd/N) (lsm/file_open bpf_d_path analogue)
- *
- * Build: gcc -O2 -pthread -o toctou_race_measured toctou_race_measured.c
- * Usage: toctou_race_measured <workdir> <attempts> [out.json]
  */
 #define _GNU_SOURCE
 #include <errno.h>
@@ -33,25 +26,15 @@ struct stats {
     unsigned long tp_would_miss_shadow;
 };
 
-static void pin_cpu0(void)
-{
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(0, &cpuset);
-    sched_setaffinity(0, sizeof(cpuset), &cpuset);
-}
-
 static void *attacker_fn(void *arg)
 {
     (void)arg;
-    pin_cpu0();
     int toggle = 0;
     while (g_running) {
         toggle ^= 1;
         unlink(g_link_path);
-        if (symlink(toggle ? g_shadow_path : g_safe_path, g_link_path) != 0) {
-            /* race_link may be mid-open; retry immediately */
-        }
+        symlink(toggle ? g_shadow_path : g_safe_path, g_link_path);
+        sched_yield();
     }
     return NULL;
 }
@@ -109,7 +92,6 @@ int main(int argc, char **argv)
     snprintf(g_link_path, sizeof(g_link_path), "%s/race_link", workdir);
 
     prctl(PR_SET_NAME, "toctou_victim", 0, 0, 0);
-    pin_cpu0();
 
     pthread_t attacker;
     if (pthread_create(&attacker, NULL, attacker_fn, NULL) != 0) {

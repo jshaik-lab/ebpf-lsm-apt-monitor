@@ -67,6 +67,12 @@ def main() -> None:
     if ebpf and ebpf.get("tracepoint_opens"):
         doc["headline"]["ebpf_tracepoint_miss_rate"] = ebpf.get("tracepoint_miss_rate")
         doc["headline"]["ebpf_opens"] = ebpf.get("tracepoint_opens")
+    try:
+        lsm_stack = Path("/sys/kernel/security/lsm").read_text().strip()
+        doc["kernel_lsm_stack"] = lsm_stack
+        doc["bpf_lsm_active"] = "bpf" in lsm_stack.split(",")
+    except OSError:
+        pass
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(doc, indent=2))

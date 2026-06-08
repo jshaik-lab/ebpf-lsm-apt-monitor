@@ -1,0 +1,218 @@
+
+▶ toctou-race-benchmark Mon Jun  8 19:31:17 UTC 2026
+▶ TOCTOU userspace proxy (50000 open attempts)...
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race_measured.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race_measured.c:129:15: warning: ignoring return value of ‘read’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  129 |         (void)read(fd, buf, sizeof(buf));
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race_measured.c: In function ‘attacker_fn’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race_measured.c:36:9: warning: ignoring return value of ‘symlink’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   36 |         symlink(toggle ? g_shadow_path : g_safe_path, g_link_path);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TOCTOU userspace proxy
+  open_attempts:                 50000
+  tracepoint_opens:              3077
+  tracepoint_would_miss_shadow:  1529
+  tracepoint_miss_rate:          0.4969
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race.c:61:19: warning: ignoring return value of ‘read’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   61 |             (void)read(fd, buf, sizeof(buf));
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race.c: In function ‘attacker_fn’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_race.c:27:9: warning: ignoring return value of ‘symlink’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   27 |         symlink(toggle ? g_shadow_path : g_safe_path, g_link_path);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘setup_workdir’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:40:9: warning: implicit declaration of function ‘mkdir’ [-Wimplicit-function-declaration]
+   40 |     if (mkdir(dir, 0700) != 0 && errno != EEXIST)
+      |         ^~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:47:11: warning: ignoring return value of ‘write’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   47 |     (void)write(sf, msg, strlen(msg));
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:54:11: warning: ignoring return value of ‘write’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   54 |     (void)write(sh, sec, strlen(sec));
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:36:37: warning: ‘/safe.txt’ directive output may be truncated writing 9 bytes into a region of size between 1 and 512 [-Wformat-truncation=]
+   36 |     snprintf(safe, sizeof(safe), "%s/safe.txt", dir);
+      |                                     ^~~~~~~~~
+In file included from /usr/include/stdio.h:980,
+                 from /usr/include/bpf/libbpf.h:14,
+                 from /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:8:
+In function ‘snprintf’,
+    inlined from ‘setup_workdir’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:36:5,
+    inlined from ‘main’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:149:9:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 10 and 521 bytes into a destination of size 512
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:37:41: warning: ‘/shadow_target’ directive output may be truncated writing 14 bytes into a region of size between 1 and 512 [-Wformat-truncation=]
+   37 |     snprintf(shadow, sizeof(shadow), "%s/shadow_target", dir);
+      |                                         ^~~~~~~~~~~~~~
+In function ‘snprintf’,
+    inlined from ‘setup_workdir’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:37:5,
+    inlined from ‘main’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:149:9:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 15 and 526 bytes into a destination of size 512
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:38:37: warning: ‘/race_link’ directive output may be truncated writing 10 bytes into a region of size between 1 and 512 [-Wformat-truncation=]
+   38 |     snprintf(link, sizeof(link), "%s/race_link", dir);
+      |                                     ^~~~~~~~~~
+In function ‘snprintf’,
+    inlined from ‘setup_workdir’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:38:5,
+    inlined from ‘main’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:149:9:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 11 and 522 bytes into a destination of size 512
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:106:40: warning: ‘/toctou_race’ directive output may be truncated writing 12 bytes into a region of size between 1 and 4096 [-Wformat-truncation=]
+  106 |             snprintf(race_bin, len, "%s/toctou_race", self);
+      |                                        ^~~~~~~~~~~~
+In function ‘snprintf’,
+    inlined from ‘resolve_race_binary’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:106:13,
+    inlined from ‘main’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:190:5:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 13 and 4108 bytes into a destination of size 4096
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c: In function ‘main’:
+/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:115:36: warning: ‘/toctou_race’ directive output may be truncated writing 12 bytes into a region of size between 1 and 4096 [-Wformat-truncation=]
+  115 |         snprintf(race_bin, len, "%s/toctou_race", race_bin);
+      |                                    ^~~~~~~~~~~~
+In function ‘snprintf’,
+    inlined from ‘resolve_race_binary’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:115:9,
+    inlined from ‘main’ at /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/toctou_loader.c:190:5:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 13 and 4108 bytes into a destination of size 4096
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+TOCTOU benchmark complete
+  tracepoint_opens:              50002
+  lsm_resolved_shadow:           0
+  tracepoint_would_miss_shadow:  0
+  tracepoint_miss_rate:          0.0000
+eBPF layer → /home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/build/toctou_ebpf.json
+merged → results/evaluations_gcp/toctou_race_gcp.json
+  userspace tracepoint_miss_rate=0.4969
+Results → results/evaluations_gcp/toctou_race_gcp.json (ebpf_layer=1)
+{
+  "benchmark": "toctou_symlink_race",
+  "iterations_requested": 50000,
+  "interpretation": "tracepoint_miss_rate is the fraction of successful opens where the pre-resolution pathname (race_link) would hide shadow_target from a sys_enter_openat-only HIDS; it is NOT SENTINEL's detection rate. End-to-end detection of the same attack class is validated separately by red-team scenario EV-11 (hard-trigger + LSM columns).",
+  "userspace_proxy": {
+    "method": "userspace_open_vs_readlink",
+    "open_attempts": 50000,
+    "tracepoint_opens": 3077,
+    "open_success_rate": 0.06154,
+    "lsm_resolved_shadow": 1529,
+    "tracepoint_saw_shadow_path": 0,
+    "tracepoint_would_miss_shadow": 1529,
+    "lsm_shadow_resolution_rate": 0.496913,
+    "tracepoint_miss_rate": 0.496913,
+    "workdir": "/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/build/work_5379",
+    "note": "Pre-resolution pathname vs post-open readlink; not identical to kernel bpf_d_path."
+  },
+  "ebpf_lsm": {
+    "method": "ebpf_sys_enter_openat_vs_lsm_file_open",
+    "open_attempts": 50000,
+    "tracepoint_opens": 50002,
+    "open_success_rate": 1.00004,
+    "lsm_resolved_shadow": 0,
+    "tracepoint_would_miss_shadow": 0,
+    "tracepoint_miss_rate": 0.0,
+    "lsm_shadow_resolution_rate": 0.0,
+    "note": "Kernel bpf_d_path at lsm/file_open vs sys_enter_openat pathname."
+  },
+  "ev11_end_to_end": {
+    "detected": true,
+    "layers": {
+      "hard_trigger": true,
+      "lsm_post_resolution": true
+    }
+  },
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T19:31:22Z",
+    "ollama_fallback_to_mock_count": 0,
+    "benchmark": "toctou_symlink_race"
+  },
+  "headline": {
+    "userspace_tracepoint_miss_rate": 0.496913,
+    "userspace_opens": 3077,
+    "ebpf_tracepoint_miss_rate": 0.0,
+    "ebpf_opens": 50002
+  }
+}
+▶ generate-manifest Mon Jun  8 19:31:22 UTC 2026
+wrote /home/sentinel/Paper1_ZeroTrustAgent/results/evaluations_gcp/MANIFEST.json  (15918 bytes, 20 entries)
+
+Summary of integrity flags:
+  ✅ .gitkeep: clean
+  ✅ calibration_results_gcp.json: clean
+  ⚠ darpa_ablation_gcp.json: NO META BLOCK
+  ✅ darpa_tc_behavioral_v4_gcp.json: clean
+  ✅ darpa_tc_behavioral_v5_gcp.json: clean
+  ✅ darpa_tc_v8_ti_aided_gcp.json: clean
+  ✅ dual_tier_reduction_gcp.json: backend=unknown (non-LLM eval?)
+  ✅ dual_tier_rerun.log: clean
+  ✅ entropy_sensitivity_gcp.json: clean
+  ✅ gcp_chain.log: clean
+  ✅ gcp_resume.log: clean
+  ✅ ipg_token_reduction_gcp.json: clean
+  ✅ ltl_fpr_real_gcp.json: clean
+  ✅ overhead_gcp.json: clean
+  ✅ pcabp_real_nginx_gcp.json: backend=unknown (non-LLM eval?)
+  ✅ real_data_fpr_breakdown_gcp.json: clean
+  ✅ real_data_results_gcp.json: clean
+  ✅ red_team_results_gcp.json: clean
+  ✅ scenario_results_gcp.json: clean
+  ✅ toctou_race_gcp.json: clean
+=== RESUME COMPLETE Mon Jun  8 19:31:22 UTC 2026 ===
+-rw-rw-r-- 1 sentinel sentinel  16K Jun  8 19:31 results/evaluations_gcp/MANIFEST.json
+-rw-rw-r-- 1 sentinel sentinel 3.4K Jun  8 16:11 results/evaluations_gcp/calibration_results_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  32K Jun  8 16:38 results/evaluations_gcp/darpa_ablation_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  33K Jun  8 16:24 results/evaluations_gcp/darpa_tc_behavioral_v4_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  31K Jun  8 16:13 results/evaluations_gcp/darpa_tc_behavioral_v5_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  30K Jun  8 16:26 results/evaluations_gcp/darpa_tc_v8_ti_aided_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 5.6K Jun  8 17:02 results/evaluations_gcp/dual_tier_reduction_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 2.0K Jun  8 19:19 results/evaluations_gcp/entropy_sensitivity_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 3.3K Jun  8 19:18 results/evaluations_gcp/ipg_token_reduction_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 1.8K Jun  8 19:18 results/evaluations_gcp/ltl_fpr_real_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 3.0K Jun  8 19:18 results/evaluations_gcp/overhead_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 2.2K Jun  8 15:48 results/evaluations_gcp/pcabp_real_nginx_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  26K Jun  8 19:19 results/evaluations_gcp/real_data_fpr_breakdown_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 102K Jun  8 16:11 results/evaluations_gcp/real_data_results_gcp.json
+-rw-rw-r-- 1 sentinel sentinel  15K Jun  8 19:21 results/evaluations_gcp/red_team_results_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 7.2K Jun  8 15:50 results/evaluations_gcp/scenario_results_gcp.json
+-rw-rw-r-- 1 sentinel sentinel 2.2K Jun  8 19:31 results/evaluations_gcp/toctou_race_gcp.json

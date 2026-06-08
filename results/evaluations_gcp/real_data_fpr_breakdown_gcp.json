@@ -1,0 +1,1233 @@
+{
+  "source": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+  "n_traces": 105,
+  "n_benign": 55,
+  "n_attack": 50,
+  "fp": 16,
+  "fn": 15,
+  "fpr": 0.2909,
+  "fp_by_workload_type": {
+    "cat": 1,
+    "extended_server": 13,
+    "find": 1,
+    "which": 1
+  },
+  "fp_by_scenario": {
+    "benign_cat_os_release": 1,
+    "benign_ext_010": 1,
+    "benign_ext_016": 1,
+    "benign_ext_017": 1,
+    "benign_ext_023": 1,
+    "benign_ext_024": 1,
+    "benign_ext_031": 1,
+    "benign_ext_034": 1,
+    "benign_ext_036": 1,
+    "benign_ext_039": 1,
+    "benign_ext_042": 1,
+    "benign_ext_043": 1,
+    "benign_ext_045": 1,
+    "benign_ext_047": 1,
+    "benign_find_libs": 1,
+    "benign_which_bash": 1
+  },
+  "fn_by_attack_family": {
+    "T1078": 1,
+    "attack_ext_002": 1,
+    "attack_ext_007": 1,
+    "attack_ext_008": 1,
+    "attack_ext_009": 1,
+    "attack_ext_011": 1,
+    "attack_ext_016": 1,
+    "attack_ext_018": 1,
+    "attack_ext_019": 1,
+    "attack_ext_021": 1,
+    "attack_ext_023": 1,
+    "attack_ext_028": 1,
+    "attack_ext_030": 1,
+    "attack_ext_035": 1,
+    "attack_ext_042": 1
+  },
+  "per_scenario": {
+    "attack_T1003_T1071": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1003_shadow": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1041_exfil": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1055_ptrace": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1059_scripted": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1068_setuid": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1078_valid_accts": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_T1562_evasion": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_001": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_002": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_003": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_004": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_005": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_006": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_007": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_008": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_009": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_010": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_011": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_012": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_013": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_014": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_015": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_016": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_017": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_018": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_019": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_020": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_021": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_022": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_023": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_024": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_025": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_026": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_027": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_028": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_029": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_030": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_031": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_032": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_033": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_034": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_035": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_036": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_037": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_038": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_039": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_040": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_041": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "tp": 1,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "attack_ext_042": {
+      "ground_truth": "MALICIOUS",
+      "n": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "tp": 0,
+      "fpr": null,
+      "mean_confidence_fp": null
+    },
+    "benign_cat_hostname": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_cat_os_release": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.85
+    },
+    "benign_ext_001": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_002": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_003": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_004": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_005": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_006": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_007": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_008": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_009": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_010": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.85
+    },
+    "benign_ext_011": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_012": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_013": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_014": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_015": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_016": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_017": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_018": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_019": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_020": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_021": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_022": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_023": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_024": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_025": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_026": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_027": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_028": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_029": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_030": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_031": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_032": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_033": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_034": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_035": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_036": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_037": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_038": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_039": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_040": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_041": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_042": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_043": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.93
+    },
+    "benign_ext_044": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_045": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_046": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_047": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_ext_048": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_find_libs": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ls_usr": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_python_json": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_python_math": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_which_bash": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.85
+    }
+  },
+  "failure_mode_analysis": [
+    {
+      "scenario": "benign_cat_os_release",
+      "workload": "cat",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "cat reads /etc/ld.so.cache and maps it into memory via mmap \u2014 a classic technique for directory traversal (T1055.001)."
+      ],
+      "sample_confidence": [
+        0.85
+      ]
+    },
+    {
+      "scenario": "benign_ext_010",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "locale processes masquerade as bash by executing /usr/bin/locale and reading from /etc/ld.so.cache and /usr/lib/locale (T1036 Masquerading), with unusual_comm signal confirming non-standard process name."
+      ],
+      "sample_confidence": [
+        0.85
+      ]
+    },
+    {
+      "scenario": "benign_ext_016",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash reads sensitive /proc/filesystems (T1089) and engages in complex memory mapping operations \u2014 indicative of potential malicious activity."
+      ],
+      "sample_confidence": [
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_017",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash executes /usr/bin/file with execve, which injects into file processes that mmap various system files (T1055) and access locale data (T1021)."
+      ],
+      "sample_confidence": [
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_023",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash and cat processes engage in complex memory mapping and file access patterns, including T1055 (file discovery) and possible data exfiltration via mmap syscalls."
+      ],
+      "sample_confidence": [
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_024",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash reads sensitive files like /proc/filesystems and /usr/lib/locale/C.utf8/LC_IDENTIFICATION (T1003), while also creating memory mappings on ld.so.cache (T1016) \u2014 a complex pattern that warrants further investigation."
+      ],
+      "sample_confidence": [
+        0.63
+      ]
+    },
+    {
+      "scenario": "benign_ext_031",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash reads sensitive /proc/filesystems (T1089) and executes /usr/bin/timedatectl (T1055), which may be a lateral movement vector or privilege escalation attempt."
+      ],
+      "sample_confidence": [
+        0.63
+      ]
+    },
+    {
+      "scenario": "benign_ext_034",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash processes interact with system files like /dev/null and /etc/ld.so.cache (T1059), but also read from other system files like /usr/lib/locale/C.utf8/LC_IDENTIFICATION; the unusual_comm signal is present."
+      ],
+      "sample_confidence": [
+        0.63
+      ]
+    },
+    {
+      "scenario": "benign_ext_036",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "setuid call from ping process (T1068) and complex memory mapping pattern with mmap calls between different nodes indicate potential privilege escalation and malicious activity."
+      ],
+      "sample_confidence": [
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_039",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "execve from /usr/bin/python3 (T1055) and multiple large-dt_max-ms mmap syscalls suggest potential process injection or memory corruption \u2014 however, the context is unclear without further investigation."
+      ],
+      "sample_confidence": [
+        0.63
+      ]
+    }
+  ],
+  "interpretation": "False positives cluster on high-entropy benign workloads (python3, find) where IPG graphs resemble staged attack patterns (temp writes, ld.so.cache mmap). Low-confidence MALICIOUS labels (conf\u22480.42) dominate FPs.",
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T19:19:23Z",
+    "ollama_fallback_to_mock_count": 0,
+    "analysis": "real_data_fpr_breakdown"
+  }
+}

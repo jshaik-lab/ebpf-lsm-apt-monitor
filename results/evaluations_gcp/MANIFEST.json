@@ -1,18 +1,18 @@
 {
   "schema": "sentinel-results-manifest-v1",
-  "generated": "2026-06-08T19:21:50.026927+00:00",
+  "generated": "2026-06-08T21:21:37.261143+00:00",
   "entries": [
     {
       "file": ".gitkeep",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "modified": "2026-06-08T15:46:29.458515+00:00"
+      "modified": "2026-06-08T20:33:50.381068+00:00"
     },
     {
       "file": "calibration_results_gcp.json",
-      "bytes": 3431,
-      "sha256": "d20c6c26fddb40964ff4d5793c243d67827fd49ec20a9ca610006acd4ef88d3e",
-      "modified": "2026-06-08T16:11:18.532670+00:00",
+      "bytes": 3305,
+      "sha256": "ac8b3218ffcce5619b9cba96c4540e25a19de87cdf6ed5af4ac6cb375ac0043a",
+      "modified": "2026-06-08T20:54:23.954879+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -27,22 +27,22 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T16:11:18Z",
+        "started_utc": "2026-06-08T20:54:23Z",
         "ollama_fallback_to_mock_count": 0
       }
     },
     {
       "file": "darpa_ablation_gcp.json",
-      "bytes": 32499,
-      "sha256": "3352d5cd842f3a4d471e886e032231220c0aafbc424788d6925436e3657cb3bc",
-      "modified": "2026-06-08T16:38:10.914184+00:00",
+      "bytes": 32657,
+      "sha256": "e1aa4e0168429f1b58f28948ee798c597ad75d90986bc98bb5cd95bde6e56c13",
+      "modified": "2026-06-08T21:21:37.103236+00:00",
       "meta": "MISSING"
     },
     {
       "file": "darpa_tc_behavioral_v4_gcp.json",
       "bytes": 33038,
-      "sha256": "19d4567faf9ab89da10fcc9ff7f5993abcf359552b6ad95332a874d8978b16e6",
-      "modified": "2026-06-08T16:24:47.206469+00:00",
+      "sha256": "ddd7dc3332addbe1fd9c8abbe72e55c49ae81d300847d4568af617f09c55918e",
+      "modified": "2026-06-08T21:08:00.922410+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -57,7 +57,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T16:24:47Z",
+        "started_utc": "2026-06-08T21:08:00Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -72,8 +72,8 @@
     {
       "file": "darpa_tc_behavioral_v5_gcp.json",
       "bytes": 30932,
-      "sha256": "df9d7adbd5e5d36c54e9047c0f63f37fe9e5230a4abece1983118ae99e3b4cc6",
-      "modified": "2026-06-08T16:13:22.905137+00:00",
+      "sha256": "3ce19524029079cacd1fa6d684d267124174a9acfb86a97a2456db46ccb57623",
+      "modified": "2026-06-08T20:56:31.000441+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -88,7 +88,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T16:13:22Z",
+        "started_utc": "2026-06-08T20:56:30Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -103,8 +103,8 @@
     {
       "file": "darpa_tc_v8_ti_aided_gcp.json",
       "bytes": 30528,
-      "sha256": "0828a25236b5e7d88eca4fbcb5f750222c9ddc7c94dd951ec7deb641bf5d50b3",
-      "modified": "2026-06-08T16:26:47.163230+00:00",
+      "sha256": "9b6d0964734eb90b19597052a5b77fc25f7f4605010a875f2089d53c2f303831",
+      "modified": "2026-06-08T21:10:06.639185+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -119,7 +119,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T16:26:47Z",
+        "started_utc": "2026-06-08T21:10:06Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -133,38 +133,9 @@
     },
     {
       "file": "dual_tier_reduction_gcp.json",
-      "bytes": 5686,
-      "sha256": "a27b8ab9bcdc1494051ea9679e9210d48928f0c773abf4ce82c1644e58acaa52",
-      "modified": "2026-06-08T17:02:56.463437+00:00",
-      "meta": {
-        "platform": "Linux 6.17.0-1018-gcp (sentinel-gpu-vm)",
-        "system": "Linux",
-        "kernel": "6.17.0-1018-gcp",
-        "machine": "x86_64",
-        "hostname": "sentinel-gpu-vm",
-        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
-        "ram_gb": 15.6,
-        "python": "3.12.3",
-        "backend": "unknown",
-        "model_full": "unknown",
-        "model_draft": "unknown",
-        "timeout_seconds": 0,
-        "git_sha": "unknown",
-        "started_utc": "2026-06-08T17:02:56Z",
-        "ollama_fallback_to_mock_count": 0
-      }
-    },
-    {
-      "file": "dual_tier_rerun.log",
-      "bytes": 4799,
-      "sha256": "ca1f1fecc093f434ef9d47bb7ed372c7d9ce087ec2a51e43dd2e5914234d7797",
-      "modified": "2026-06-08T17:02:56.346822+00:00"
-    },
-    {
-      "file": "entropy_sensitivity_gcp.json",
-      "bytes": 1953,
-      "sha256": "fa99655cec8b230ce710df68105a46c37cae998f2bce54c9e35b01eddbace7ab",
-      "modified": "2026-06-08T19:19:23.378911+00:00",
+      "bytes": 5707,
+      "sha256": "e4fb837524e5db487514ad9b35a5af85522d1faa1070c75b50b6a94ca4e412ff",
+      "modified": "2026-06-08T20:40:10.059257+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -179,22 +150,45 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:19:23Z",
+        "started_utc": "2026-06-08T20:40:10Z",
+        "ollama_fallback_to_mock_count": 0
+      }
+    },
+    {
+      "file": "entropy_sensitivity_gcp.json",
+      "bytes": 1939,
+      "sha256": "5d7db15e7947a21db420f13fef0ba2b501c69a1a27b6b11d5a6d87a530cb9822",
+      "modified": "2026-06-08T20:52:31.536613+00:00",
+      "meta": {
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+        "system": "Linux",
+        "kernel": "6.17.0-1018-gcp",
+        "machine": "x86_64",
+        "hostname": "sentinel-gpu-vm",
+        "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "ram_gb": 15.6,
+        "python": "3.12.3",
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
+        "git_sha": "unknown",
+        "started_utc": "2026-06-08T20:52:31Z",
         "ollama_fallback_to_mock_count": 0,
         "analysis": "entropy_threshold_sensitivity"
       }
     },
     {
       "file": "gcp_chain.log",
-      "bytes": 488594,
-      "sha256": "d59381ef38585876296bc7ea4fe08bc0081f179c3261252a3a0042bb1215351c",
-      "modified": "2026-06-08T19:21:49.979185+00:00"
+      "bytes": 681080,
+      "sha256": "968a842f6185d48196b84e0626d5f393efce7721bb8afa790bed9f254858085f",
+      "modified": "2026-06-08T21:21:37.218518+00:00"
     },
     {
       "file": "ipg_token_reduction_gcp.json",
       "bytes": 3342,
-      "sha256": "8123b57b1e25f0ef58e07a51527630c31db670c96af585426ad0b632cefd5631",
-      "modified": "2026-06-08T19:18:40.777162+00:00",
+      "sha256": "e0a297b41d27875ce69bc11026906b64bfb5ebc1e782e33c6cccd45364a7831c",
+      "modified": "2026-06-08T20:33:56.670168+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -209,7 +203,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:18:40Z",
+        "started_utc": "2026-06-08T20:33:56Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -218,9 +212,9 @@
     },
     {
       "file": "ltl_fpr_real_gcp.json",
-      "bytes": 1795,
-      "sha256": "43c6bfd191d1f5140a42e5ead3ac97f89b4e9eed10ebd10a8319c8b79d1310c5",
-      "modified": "2026-06-08T19:18:41.116323+00:00",
+      "bytes": 8362,
+      "sha256": "a1448200d660eac8ff322fa28d34258a95ae0705af44ec0452644985ec89cd3a",
+      "modified": "2026-06-08T20:34:42.618435+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -235,7 +229,7 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:18:41Z",
+        "started_utc": "2026-06-08T20:34:42Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
@@ -244,15 +238,15 @@
           0.0,
           0.0
         ],
-        "n_windows": 13,
-        "n_traces": 7
+        "n_windows": 399,
+        "n_traces": 55
       }
     },
     {
       "file": "overhead_gcp.json",
-      "bytes": 3059,
-      "sha256": "3f4e55630a0f313e5bd594e6b16d071882228cc7eaa79c5eedcff87a784bd474",
-      "modified": "2026-06-08T19:18:38.669327+00:00",
+      "bytes": 3058,
+      "sha256": "61648fc9f27a2fed5eb9d3e9ef1629c0f3012962665f8466ec6b39e1f26d531c",
+      "modified": "2026-06-08T20:33:56.009634+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -267,21 +261,21 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:18:38Z",
+        "started_utc": "2026-06-08T20:33:56Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
         "ipg_ms": {
-          "p50": 0.195,
-          "p99": 0.328
+          "p50": 0.189,
+          "p99": 0.421
         },
         "cwae_ms": {
-          "p50": 1.023,
-          "p99": 1.349
+          "p50": 0.913,
+          "p99": 1.177
         },
         "memory": {
-          "rss_before_mb": 48.6,
-          "rss_after_mb": 48.6,
+          "rss_before_mb": 47.8,
+          "rss_after_mb": 47.8,
           "delta_mb": 0.0,
           "meta": {
             "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
@@ -297,14 +291,14 @@
             "model_draft": "llama3.2:1b",
             "timeout_seconds": 300,
             "git_sha": "unknown",
-            "started_utc": "2026-06-08T19:18:38Z",
+            "started_utc": "2026-06-08T20:33:55Z",
             "ollama_fallback_to_mock_count": 0
           }
         },
         "detector_throughput": {
           "events": 1000,
-          "elapsed_s": 0.036,
-          "events_per_s": 27454,
+          "elapsed_s": 0.052,
+          "events_per_s": 19380,
           "signals_emitted": 456,
           "signal_rate": 0.456
         }
@@ -312,11 +306,11 @@
     },
     {
       "file": "pcabp_real_nginx_gcp.json",
-      "bytes": 2236,
-      "sha256": "b4346a4cbdd5eed3a550c3262a2f3d650c95431279655c5ed3c6428cfeb38331",
-      "modified": "2026-06-08T15:48:00.620261+00:00",
+      "bytes": 2254,
+      "sha256": "8734be6c6c5bf6baf2fd07510ac49f8ea1b448281cf67419a1a2bb06717031f5",
+      "modified": "2026-06-08T20:34:45.433766+00:00",
       "meta": {
-        "platform": "Linux 6.17.0-1018-gcp (sentinel-gpu-vm)",
+        "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
         "kernel": "6.17.0-1018-gcp",
         "machine": "x86_64",
@@ -324,21 +318,21 @@
         "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
         "ram_gb": 15.6,
         "python": "3.12.3",
-        "backend": "unknown",
-        "model_full": "unknown",
-        "model_draft": "unknown",
-        "timeout_seconds": 0,
+        "backend": "ollama",
+        "model_full": "llama3.1:8b",
+        "model_draft": "llama3.2:1b",
+        "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T15:48:00Z",
+        "started_utc": "2026-06-08T20:34:45Z",
         "ollama_fallback_to_mock_count": 0,
         "bloom_path": "src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl"
       }
     },
     {
       "file": "real_data_fpr_breakdown_gcp.json",
-      "bytes": 25773,
-      "sha256": "d9961aa5364e824beddbf171f488a4b43631f7cbf00ab916d1c786ef44f0f8dd",
-      "modified": "2026-06-08T19:19:23.281766+00:00",
+      "bytes": 25481,
+      "sha256": "b75dea4abc3cc5680ff131d88860e3fa0dd0f51c471c3caf0728352b94580032",
+      "modified": "2026-06-08T20:52:31.202050+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -353,20 +347,20 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:19:23Z",
+        "started_utc": "2026-06-08T20:52:31Z",
         "ollama_fallback_to_mock_count": 0,
         "analysis": "real_data_fpr_breakdown"
       },
       "headline": {
-        "fpr": 0.2909,
+        "fpr": 0.2545,
         "n_traces": 105
       }
     },
     {
       "file": "real_data_results_gcp.json",
-      "bytes": 104354,
-      "sha256": "01420c1f95ac3fc75fe43bf0213bea33be40f7f30e47c819ee621a600fdffebc",
-      "modified": "2026-06-08T16:11:18.425021+00:00",
+      "bytes": 106588,
+      "sha256": "59b7d633c9e97b48e49b4721cf449e48737187d00b9056d1a3cedd3f4564df85",
+      "modified": "2026-06-08T20:52:31.139740+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -381,20 +375,20 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T16:11:18Z",
+        "started_utc": "2026-06-08T20:52:31Z",
         "ollama_fallback_to_mock_count": 0
       },
       "headline": {
-        "tpr": 0.7143,
-        "fpr": 0.2909,
-        "accuracy": 0.7115
+        "tpr": 0.76,
+        "fpr": 0.2545,
+        "accuracy": 0.7524
       }
     },
     {
       "file": "red_team_results_gcp.json",
-      "bytes": 14646,
-      "sha256": "c75a2b30f1ac2f0fd966a258a6e6d235759de277b0d3bc906353774269a717c2",
-      "modified": "2026-06-08T19:21:49.850170+00:00",
+      "bytes": 14685,
+      "sha256": "c67f83f94ded73d3db197a489114d8e328235f7e6ca3c68de6f1a5553cf4e418",
+      "modified": "2026-06-08T20:54:23.732531+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -409,15 +403,15 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:21:49Z",
+        "started_utc": "2026-06-08T20:54:23Z",
         "ollama_fallback_to_mock_count": 0
       }
     },
     {
       "file": "scenario_results_gcp.json",
       "bytes": 7353,
-      "sha256": "65bc92df1d5f91b80833df0fee11adc06fc652ab5798691af1a89df034ca201f",
-      "modified": "2026-06-08T15:50:18.042546+00:00",
+      "sha256": "4517aeb389d8a7fe5eab5e859d9e6a91f7ec82384d0a62e7e6c8145005dbee10",
+      "modified": "2026-06-08T20:36:37.834545+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -432,15 +426,15 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T15:50:18Z",
+        "started_utc": "2026-06-08T20:36:37Z",
         "ollama_fallback_to_mock_count": 0
       }
     },
     {
       "file": "toctou_race_gcp.json",
-      "bytes": 1168,
-      "sha256": "799495abde0bc3c32d8230478ba13497be8719f45532ee3ba79703bd138dcbc8",
-      "modified": "2026-06-08T19:19:23.211364+00:00",
+      "bytes": 2204,
+      "sha256": "6788ae4f891412d68feb937c34f6bb68731d212ed4b4ff6d76ee39a575ffefba",
+      "modified": "2026-06-08T20:34:49.688997+00:00",
       "meta": {
         "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
         "system": "Linux",
@@ -455,8 +449,9 @@
         "model_draft": "llama3.2:1b",
         "timeout_seconds": 300,
         "git_sha": "unknown",
-        "started_utc": "2026-06-08T19:19:23Z",
-        "ollama_fallback_to_mock_count": 0
+        "started_utc": "2026-06-08T20:34:49Z",
+        "ollama_fallback_to_mock_count": 0,
+        "benchmark": "toctou_symlink_race"
       }
     }
   ],

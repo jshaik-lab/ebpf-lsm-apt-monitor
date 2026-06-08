@@ -1,54 +1,54 @@
 {
   "ipg_ms": {
     "n": 1000,
-    "mean": 0.206,
-    "p50": 0.184,
-    "p95": 0.281,
-    "p99": 0.306,
-    "min": 0.176,
-    "max": 14.479,
-    "stdev": 0.453
+    "mean": 0.223,
+    "p50": 0.189,
+    "p95": 0.305,
+    "p99": 0.421,
+    "min": 0.175,
+    "max": 16.831,
+    "stdev": 0.528
   },
   "mock_classifier_ms": {
     "n": 1000,
-    "mean": 0.013,
+    "mean": 0.016,
     "p50": 0.013,
-    "p95": 0.013,
-    "p99": 0.021,
-    "min": 0.013,
-    "max": 0.063,
-    "stdev": 0.002
+    "p95": 0.024,
+    "p99": 0.033,
+    "min": 0.012,
+    "max": 0.053,
+    "stdev": 0.005
   },
   "dual_tier_draft_ms": {
     "n": 1000,
-    "mean": 0.026,
+    "mean": 0.028,
     "p50": 0.026,
-    "p95": 0.03,
-    "p99": 0.035,
+    "p95": 0.045,
+    "p99": 0.05,
     "min": 0.025,
-    "max": 0.071,
-    "stdev": 0.003
+    "max": 0.109,
+    "stdev": 0.007
   },
   "cwae_ms": {
     "n": 1000,
-    "mean": 0.887,
-    "p50": 0.888,
-    "p95": 0.92,
-    "p99": 0.932,
-    "min": 0.641,
-    "max": 1.996,
-    "stdev": 0.051
+    "mean": 0.923,
+    "p50": 0.913,
+    "p95": 1.004,
+    "p99": 1.177,
+    "min": 0.83,
+    "max": 2.156,
+    "stdev": 0.067
   },
   "detector_throughput": {
     "events": 1000,
-    "elapsed_s": 0.039,
-    "events_per_s": 25665,
-    "signals_emitted": 529,
-    "signal_rate": 0.529
+    "elapsed_s": 0.052,
+    "events_per_s": 19380,
+    "signals_emitted": 456,
+    "signal_rate": 0.456
   },
   "memory": {
-    "rss_before_mb": 48.1,
-    "rss_after_mb": 48.1,
+    "rss_before_mb": 47.8,
+    "rss_after_mb": 47.8,
     "delta_mb": 0.0,
     "meta": {
       "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
@@ -64,47 +64,47 @@
       "model_draft": "llama3.2:1b",
       "timeout_seconds": 300,
       "git_sha": "unknown",
-      "started_utc": "2026-06-08T15:46:38Z",
+      "started_utc": "2026-06-08T20:33:55Z",
       "ollama_fallback_to_mock_count": 0
     }
   },
   "e2e_pipeline": {
     "events": 100,
-    "push_ms": 1.02,
-    "total_ms": 51.65,
-    "audited": 13,
+    "push_ms": 4.93,
+    "total_ms": 55.85,
+    "audited": 30,
     "pipeline_stats": {
       "detector": {
         "events": 100,
-        "signals": 8,
-        "skipped": 92,
+        "signals": 20,
+        "skipped": 80,
         "pids_evicted": 0,
         "active_pids": 18
       },
       "analyzer": {
-        "analyzed": 8,
-        "llm_invocations": 8,
+        "analyzed": 20,
+        "llm_invocations": 20,
         "pids_evicted": 0,
         "llm_tier": {
           "draft_hits": 0,
-          "full_hits": 5,
+          "full_hits": 9,
           "reduction_%": 0.0,
           "fast_path": "fixed",
           "accept_threshold": 0.9
         }
       },
       "auditor": {
-        "audited": 8,
-        "enforced": 5,
+        "audited": 20,
+        "enforced": 10,
         "hallucination_downgrades": 0,
-        "clean_evidence": 8,
+        "clean_evidence": 20,
         "ltl_violations": 0,
         "cove_retractions": 0,
         "egte_caps": 0
       },
       "classifier": {
         "draft_hits": 0,
-        "full_hits": 5,
+        "full_hits": 9,
         "reduction_%": 0.0,
         "fast_path": "fixed",
         "accept_threshold": 0.9
@@ -129,7 +129,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T15:46:38Z",
+    "started_utc": "2026-06-08T20:33:56Z",
     "ollama_fallback_to_mock_count": 0
   }
 }

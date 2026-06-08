@@ -13,7 +13,7 @@
         "T1059"
       ],
       "entropy": 1.522,
-      "latency_ms": 43125.6,
+      "latency_ms": 15225.5,
       "correct": true
     },
     {
@@ -30,7 +30,7 @@
         "T1562"
       ],
       "entropy": 2.322,
-      "latency_ms": 6501.4,
+      "latency_ms": 6503.7,
       "correct": true
     },
     {
@@ -46,7 +46,7 @@
         "T1071"
       ],
       "entropy": 1.585,
-      "latency_ms": 7610.9,
+      "latency_ms": 7667.8,
       "correct": true
     },
     {
@@ -64,7 +64,7 @@
         "T1210"
       ],
       "entropy": 1.5,
-      "latency_ms": 7806.2,
+      "latency_ms": 7819.8,
       "correct": true
     },
     {
@@ -80,7 +80,7 @@
         "T1105"
       ],
       "entropy": 1.522,
-      "latency_ms": 8353.3,
+      "latency_ms": 8404.5,
       "correct": true
     },
     {
@@ -96,7 +96,7 @@
         "T1074"
       ],
       "entropy": 1.371,
-      "latency_ms": 7172.6,
+      "latency_ms": 7190.2,
       "correct": true
     },
     {
@@ -111,7 +111,7 @@
         "T1071"
       ],
       "entropy": 0.918,
-      "latency_ms": 7051.2,
+      "latency_ms": 7063.8,
       "correct": true
     },
     {
@@ -125,7 +125,7 @@
         "T1071"
       ],
       "entropy": 1.585,
-      "latency_ms": 5878.6,
+      "latency_ms": 5895.1,
       "correct": true
     },
     {
@@ -141,7 +141,7 @@
         "T1095"
       ],
       "entropy": 0.918,
-      "latency_ms": 7724.2,
+      "latency_ms": 7737.4,
       "correct": true
     },
     {
@@ -157,7 +157,7 @@
         "T1095"
       ],
       "entropy": 0.918,
-      "latency_ms": 7367.3,
+      "latency_ms": 7357.5,
       "correct": true
     },
     {
@@ -173,7 +173,7 @@
         "T1071"
       ],
       "entropy": 1.585,
-      "latency_ms": 7412.8,
+      "latency_ms": 7415.3,
       "correct": true
     },
     {
@@ -185,7 +185,7 @@
       "reasoning": "nginx reads and writes to its own files, but listens on an unusual external-facing address (0.0.0.0:443) \u2014 a potential supplemental suspicion signal.",
       "mitre_ttps": [],
       "entropy": 1.5,
-      "latency_ms": 6048.4,
+      "latency_ms": 6074.0,
       "correct": true
     },
     {
@@ -200,7 +200,7 @@
         "T1218"
       ],
       "entropy": 1.371,
-      "latency_ms": 8291.6,
+      "latency_ms": 8287.1,
       "correct": true
     },
     {
@@ -212,7 +212,7 @@
       "reasoning": "postgres reads only from its own data directory and writes to WAL segment \u2014 normal database behaviour with no suspicious edges.",
       "mitre_ttps": [],
       "entropy": 0.918,
-      "latency_ms": 4866.6,
+      "latency_ms": 4852.9,
       "correct": true
     }
   ],
@@ -230,7 +230,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T15:50:18Z",
+    "started_utc": "2026-06-08T20:36:37Z",
     "ollama_fallback_to_mock_count": 0
   }
 }

@@ -15,7 +15,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T16:13:22Z",
+    "started_utc": "2026-06-08T20:56:30Z",
     "ollama_fallback_to_mock_count": 0
   },
   "parser": "two-pass CDM18 (v2 \u2014 resolves NetFlowObject ordering bug)",
@@ -879,7 +879,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": false,
-      "latency_ms": 7484.4,
+      "latency_ms": 7501.8,
       "gt_window": "",
       "mitre_ttps": [
         "T1019"

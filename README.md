@@ -35,16 +35,16 @@ ebpf-lsm-apt-monitor/
 
 | # | Contribution | Location in paper |
 |---|---|---|
-| 1 | **Intent Provenance Graph (IPG)** — 74.0% token reduction @ n=20 (GCP) | Section IV-B, Alg. 1 |
+| 1 | **Intent Provenance Graph (IPG)** — 57.5% token reduction @ n=20 (GCP) | Section IV-B, Alg. 1 |
 | 2 | **Dual-Tier Inference Pipeline** — 35.7% invocation reduction (GCP Ollama) | Section IV-C, Alg. 2 |
 | 3 | **Hybrid Graph-First Fusion** — DARPA behavioral F1=0.603 (hybrid) / 0.915 TI-aided | Section V-D |
 | 4 | **Confidence-Weighted Adaptive Enforcement (CWAE)** | Section IV-D, Alg. 3 |
-| 5 | **LTL Symbolic Guardian + PCABP** — 0 FPR on 387 benign windows | Sections IV-E, IV-H |
+| 5 | **LTL Symbolic Guardian + PCABP** — 0 FPR on 399 benign windows | Sections IV-E, IV-H |
 
 **Key results (GCP, `results/evaluations_gcp/`, 2026-06-08)**:
 - DARPA TC E3 behavioral hybrid F1=0.603; TI-aided F1=0.915 (with circularity caveat)
-- 105 native strace traces: TPR=0.714, FPR=0.291, Acc=0.712
-- IPG compression 74.0% @ window=20, 92.7% full trace
+- 105 native strace traces: TPR=0.760, FPR=0.255, Acc=0.752
+- IPG compression 57.5% @ window=20, 83.3% full trace
 - Non-LLM pipeline: IPG p50=0.184 ms, 25,665 events/s
 - 14/14 MITRE simulation scenarios (8B-only path)
 

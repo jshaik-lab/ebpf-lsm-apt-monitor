@@ -15,7 +15,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T16:24:47Z",
+    "started_utc": "2026-06-08T21:08:00Z",
     "ollama_fallback_to_mock_count": 0
   },
   "parser": "two-pass CDM18 (v2 \u2014 resolves NetFlowObject ordering bug)",
@@ -47,7 +47,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6686.3,
+      "latency_ms": 6719.5,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -62,7 +62,7 @@
       "pred": "BENIGN",
       "confidence": 0.42,
       "correct": false,
-      "latency_ms": 6067.0,
+      "latency_ms": 6088.9,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -77,7 +77,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 5624.8,
+      "latency_ms": 5658.6,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -92,7 +92,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5698.5,
+      "latency_ms": 5709.0,
       "gt_window": "c2_detected",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -105,7 +105,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5701.5,
+      "latency_ms": 5671.5,
       "gt_window": "c2_detected",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -118,7 +118,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 7864.6,
+      "latency_ms": 7841.7,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1003",
@@ -134,7 +134,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5372.3,
+      "latency_ms": 5358.7,
       "gt_window": "c2_detected",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -147,7 +147,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 8076.0,
+      "latency_ms": 8046.5,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1068",
@@ -163,7 +163,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6341.9,
+      "latency_ms": 6378.0,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1068",
@@ -179,7 +179,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.42,
       "correct": true,
-      "latency_ms": 6995.0,
+      "latency_ms": 7072.6,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1210",
@@ -195,7 +195,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 6634.5,
+      "latency_ms": 6717.4,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1190",
@@ -211,7 +211,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6830.0,
+      "latency_ms": 6888.2,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1055",
@@ -227,7 +227,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 5920.7,
+      "latency_ms": 5985.2,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -242,7 +242,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 7399.9,
+      "latency_ms": 7427.3,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1055",
@@ -258,7 +258,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.83,
       "correct": true,
-      "latency_ms": 6927.1,
+      "latency_ms": 6934.7,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1059",
@@ -274,7 +274,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.63,
       "correct": true,
-      "latency_ms": 6321.5,
+      "latency_ms": 6344.1,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1055",
@@ -290,7 +290,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 7434.0,
+      "latency_ms": 7465.2,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1059",
@@ -306,7 +306,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 8166.4,
+      "latency_ms": 8227.0,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1036",
@@ -322,7 +322,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6081.3,
+      "latency_ms": 6108.4,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -337,7 +337,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 5971.2,
+      "latency_ms": 6010.9,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -352,7 +352,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.63,
       "correct": true,
-      "latency_ms": 7227.3,
+      "latency_ms": 7278.7,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1059",
@@ -368,7 +368,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.42,
       "correct": true,
-      "latency_ms": 6553.3,
+      "latency_ms": 6582.9,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -383,7 +383,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.42,
       "correct": true,
-      "latency_ms": 6288.8,
+      "latency_ms": 6349.5,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -398,7 +398,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 5965.1,
+      "latency_ms": 5985.0,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -413,7 +413,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.62,
       "correct": true,
-      "latency_ms": 5982.0,
+      "latency_ms": 6004.7,
       "gt_window": "c2_detected",
       "mitre_ttps": [
         "T1071"
@@ -428,7 +428,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4882.0,
+      "latency_ms": 4884.9,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1029"
@@ -443,7 +443,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5196.3,
+      "latency_ms": 5249.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -456,7 +456,7 @@
       "pred": "BENIGN",
       "confidence": 0.02,
       "correct": false,
-      "latency_ms": 5184.5,
+      "latency_ms": 5201.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -469,7 +469,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5723.6,
+      "latency_ms": 5766.3,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -482,7 +482,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5891.8,
+      "latency_ms": 5943.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -495,7 +495,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4458.1,
+      "latency_ms": 4509.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -508,7 +508,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4246.9,
+      "latency_ms": 4293.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -521,7 +521,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": false,
-      "latency_ms": 5041.6,
+      "latency_ms": 5069.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -534,7 +534,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6928.9,
+      "latency_ms": 6955.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1003"
@@ -549,7 +549,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4849.3,
+      "latency_ms": 4856.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -562,7 +562,7 @@
       "pred": "BENIGN",
       "confidence": 0.02,
       "correct": false,
-      "latency_ms": 7463.4,
+      "latency_ms": 7501.6,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1019",
@@ -578,7 +578,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4844.1,
+      "latency_ms": 4892.3,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -591,7 +591,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5853.0,
+      "latency_ms": 5890.5,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1016"
@@ -606,7 +606,7 @@
       "pred": "BENIGN",
       "confidence": 0.02,
       "correct": false,
-      "latency_ms": 5181.0,
+      "latency_ms": 5226.4,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -619,7 +619,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": false,
-      "latency_ms": 7200.8,
+      "latency_ms": 7256.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1003",
@@ -635,7 +635,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5936.7,
+      "latency_ms": 5995.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -648,7 +648,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4472.2,
+      "latency_ms": 4492.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -661,7 +661,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4441.6,
+      "latency_ms": 4469.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -674,7 +674,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": true,
-      "latency_ms": 6479.5,
+      "latency_ms": 6480.4,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1055"
@@ -689,7 +689,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": false,
-      "latency_ms": 6879.1,
+      "latency_ms": 6896.7,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -702,7 +702,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4850.7,
+      "latency_ms": 4861.8,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -715,7 +715,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 5860.4,
+      "latency_ms": 5882.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1016"
@@ -730,7 +730,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": false,
-      "latency_ms": 5463.5,
+      "latency_ms": 5499.1,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1029"
@@ -745,7 +745,7 @@
       "pred": "BENIGN",
       "confidence": 0.02,
       "correct": false,
-      "latency_ms": 6587.1,
+      "latency_ms": 6679.9,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1019",
@@ -761,7 +761,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": false,
-      "latency_ms": 4886.4,
+      "latency_ms": 4970.5,
       "gt_window": "20180406_1100_nginx_backdoor",
       "mitre_ttps": [
         "T1029"
@@ -776,7 +776,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5655.1,
+      "latency_ms": 5754.4,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -789,7 +789,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4501.9,
+      "latency_ms": 4560.1,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -802,7 +802,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": true,
-      "latency_ms": 5377.2,
+      "latency_ms": 5405.7,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -815,7 +815,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5654.0,
+      "latency_ms": 5700.2,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -828,7 +828,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4570.6,
+      "latency_ms": 4577.1,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -841,7 +841,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5148.8,
+      "latency_ms": 5159.8,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -854,7 +854,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5236.3,
+      "latency_ms": 5270.4,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -867,7 +867,7 @@
       "pred": "BENIGN",
       "confidence": 0.42,
       "correct": true,
-      "latency_ms": 5376.5,
+      "latency_ms": 5417.2,
       "gt_window": "",
       "mitre_ttps": [
         "T1027"
@@ -882,7 +882,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 6213.1,
+      "latency_ms": 6227.2,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -895,7 +895,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4367.7,
+      "latency_ms": 4409.6,
       "gt_window": "",
       "mitre_ttps": [
         "T1003"
@@ -910,7 +910,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4355.9,
+      "latency_ms": 4393.8,
       "gt_window": "",
       "mitre_ttps": [
         "T1003"
@@ -925,7 +925,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4366.1,
+      "latency_ms": 4400.8,
       "gt_window": "",
       "mitre_ttps": [
         "T1003"
@@ -940,7 +940,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": true,
-      "latency_ms": 5864.3,
+      "latency_ms": 5923.4,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -953,7 +953,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": true,
-      "latency_ms": 4947.7,
+      "latency_ms": 4973.5,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -966,7 +966,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": false,
-      "latency_ms": 7110.6,
+      "latency_ms": 7171.9,
       "gt_window": "",
       "mitre_ttps": [
         "T1019"
@@ -981,7 +981,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": false,
-      "latency_ms": 6957.7,
+      "latency_ms": 6995.5,
       "gt_window": "",
       "mitre_ttps": [
         "T1010",
@@ -997,7 +997,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5040.4,
+      "latency_ms": 5080.7,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1012,7 +1012,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5002.1,
+      "latency_ms": 5062.1,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1027,7 +1027,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4999.4,
+      "latency_ms": 5051.1,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1042,7 +1042,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5010.4,
+      "latency_ms": 5050.2,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1057,7 +1057,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4991.9,
+      "latency_ms": 5045.3,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1072,7 +1072,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4984.3,
+      "latency_ms": 5045.5,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1087,7 +1087,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4996.1,
+      "latency_ms": 5020.1,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1102,7 +1102,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4989.9,
+      "latency_ms": 5004.4,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1117,7 +1117,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4989.7,
+      "latency_ms": 4995.0,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1132,7 +1132,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4994.6,
+      "latency_ms": 5019.6,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1147,7 +1147,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4994.1,
+      "latency_ms": 5018.9,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1162,7 +1162,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4999.6,
+      "latency_ms": 5032.1,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1177,7 +1177,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5002.6,
+      "latency_ms": 5022.1,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1192,7 +1192,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4987.5,
+      "latency_ms": 5016.3,
       "gt_window": "",
       "mitre_ttps": [
         "T1055"
@@ -1207,7 +1207,7 @@
       "pred": "BENIGN",
       "confidence": 0.02,
       "correct": true,
-      "latency_ms": 6921.4,
+      "latency_ms": 6950.7,
       "gt_window": "",
       "mitre_ttps": [
         "T1003",
@@ -1223,7 +1223,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5904.1,
+      "latency_ms": 5935.3,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1236,7 +1236,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4739.1,
+      "latency_ms": 4794.6,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1249,7 +1249,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 6330.4,
+      "latency_ms": 6381.4,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1262,7 +1262,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5002.5,
+      "latency_ms": 5039.9,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1275,7 +1275,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5096.1,
+      "latency_ms": 5135.7,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1288,7 +1288,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": true,
-      "latency_ms": 8155.3,
+      "latency_ms": 8211.5,
       "gt_window": "",
       "mitre_ttps": [
         "T1003",
@@ -1304,7 +1304,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5100.3,
+      "latency_ms": 5138.4,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1317,7 +1317,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5564.5,
+      "latency_ms": 5591.1,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1330,7 +1330,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5027.8,
+      "latency_ms": 5054.5,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1343,7 +1343,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4680.2,
+      "latency_ms": 4699.8,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1356,7 +1356,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4484.1,
+      "latency_ms": 4544.9,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1369,7 +1369,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": false,
-      "latency_ms": 6116.2,
+      "latency_ms": 6170.7,
       "gt_window": "",
       "mitre_ttps": [
         "T1068"
@@ -1384,7 +1384,7 @@
       "pred": "MALICIOUS",
       "confidence": 0.85,
       "correct": false,
-      "latency_ms": 8047.1,
+      "latency_ms": 8110.9,
       "gt_window": "",
       "mitre_ttps": [
         "T1068",
@@ -1401,7 +1401,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4981.2,
+      "latency_ms": 5007.5,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1414,7 +1414,7 @@
       "pred": "BENIGN",
       "confidence": 0.01,
       "correct": true,
-      "latency_ms": 4948.3,
+      "latency_ms": 4977.7,
       "gt_window": "",
       "mitre_ttps": [
         "T1019"
@@ -1429,7 +1429,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4801.7,
+      "latency_ms": 4813.2,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1442,7 +1442,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4998.5,
+      "latency_ms": 5012.7,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1455,7 +1455,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 5115.0,
+      "latency_ms": 5141.8,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",
@@ -1468,7 +1468,7 @@
       "pred": "BENIGN",
       "confidence": 0.99,
       "correct": true,
-      "latency_ms": 4939.8,
+      "latency_ms": 4974.7,
       "gt_window": "",
       "mitre_ttps": [],
       "detector_mode": "llm_only",

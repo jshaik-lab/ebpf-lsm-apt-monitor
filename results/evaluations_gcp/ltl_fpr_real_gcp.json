@@ -4,8 +4,8 @@
   "only_benign": true,
   "window_size": 20,
   "n_traces": 55,
-  "n_windows": 387,
-  "n_events": 7204,
+  "n_windows": 399,
+  "n_events": 7438,
   "n_false_positive": 0,
   "fpr": 0.0,
   "fpr_ci_95": [
@@ -16,15 +16,15 @@
   "per_file": [
     {
       "trace": "benign_cat_hostname.log",
-      "events": 11,
-      "windows": 1,
+      "events": 87,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_cat_os_release.log",
-      "events": 11,
-      "windows": 1,
+      "events": 89,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
@@ -37,7 +37,7 @@
     },
     {
       "trace": "benign_ext_002.log",
-      "events": 107,
+      "events": 118,
       "windows": 6,
       "violations": 0,
       "axioms_hit": []
@@ -72,8 +72,8 @@
     },
     {
       "trace": "benign_ext_007.log",
-      "events": 109,
-      "windows": 6,
+      "events": 75,
+      "windows": 4,
       "violations": 0,
       "axioms_hit": []
     },
@@ -121,21 +121,21 @@
     },
     {
       "trace": "benign_ext_014.log",
-      "events": 97,
+      "events": 92,
       "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_015.log",
-      "events": 110,
-      "windows": 6,
+      "events": 95,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_016.log",
-      "events": 110,
+      "events": 121,
       "windows": 6,
       "violations": 0,
       "axioms_hit": []
@@ -163,21 +163,21 @@
     },
     {
       "trace": "benign_ext_020.log",
-      "events": 108,
+      "events": 107,
       "windows": 6,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_021.log",
-      "events": 149,
+      "events": 160,
       "windows": 8,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_022.log",
-      "events": 88,
+      "events": 89,
       "windows": 5,
       "violations": 0,
       "axioms_hit": []
@@ -191,43 +191,43 @@
     },
     {
       "trace": "benign_ext_024.log",
-      "events": 103,
+      "events": 108,
       "windows": 6,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_025.log",
-      "events": 718,
-      "windows": 36,
+      "events": 625,
+      "windows": 32,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_026.log",
-      "events": 687,
-      "windows": 35,
+      "events": 611,
+      "windows": 31,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_027.log",
-      "events": 171,
-      "windows": 9,
+      "events": 143,
+      "windows": 8,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_028.log",
-      "events": 192,
+      "events": 183,
       "windows": 10,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_029.log",
-      "events": 209,
-      "windows": 11,
+      "events": 237,
+      "windows": 12,
       "violations": 0,
       "axioms_hit": []
     },
@@ -247,8 +247,8 @@
     },
     {
       "trace": "benign_ext_032.log",
-      "events": 219,
-      "windows": 11,
+      "events": 197,
+      "windows": 10,
       "violations": 0,
       "axioms_hit": []
     },
@@ -261,15 +261,15 @@
     },
     {
       "trace": "benign_ext_034.log",
-      "events": 110,
+      "events": 103,
       "windows": 6,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_035.log",
-      "events": 104,
-      "windows": 6,
+      "events": 82,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
@@ -282,49 +282,49 @@
     },
     {
       "trace": "benign_ext_037.log",
-      "events": 175,
+      "events": 162,
       "windows": 9,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_038.log",
-      "events": 377,
+      "events": 374,
       "windows": 19,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_039.log",
-      "events": 112,
-      "windows": 6,
+      "events": 98,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_040.log",
-      "events": 128,
-      "windows": 7,
+      "events": 114,
+      "windows": 6,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_041.log",
-      "events": 126,
-      "windows": 7,
+      "events": 117,
+      "windows": 6,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_042.log",
-      "events": 190,
+      "events": 187,
       "windows": 10,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ext_043.log",
-      "events": 171,
+      "events": 169,
       "windows": 9,
       "violations": 0,
       "axioms_hit": []
@@ -345,8 +345,8 @@
     },
     {
       "trace": "benign_ext_046.log",
-      "events": 81,
-      "windows": 4,
+      "events": 85,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
@@ -366,36 +366,36 @@
     },
     {
       "trace": "benign_find_libs.log",
-      "events": 41,
-      "windows": 2,
+      "events": 198,
+      "windows": 10,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_ls_usr.log",
-      "events": 21,
-      "windows": 1,
+      "events": 101,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_python_json.log",
-      "events": 75,
-      "windows": 4,
+      "events": 123,
+      "windows": 7,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_python_math.log",
-      "events": 52,
-      "windows": 3,
+      "events": 98,
+      "windows": 5,
       "violations": 0,
       "axioms_hit": []
     },
     {
       "trace": "benign_which_bash.log",
-      "events": 10,
-      "windows": 1,
+      "events": 58,
+      "windows": 3,
       "violations": 0,
       "axioms_hit": []
     }
@@ -414,7 +414,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T15:47:11Z",
+    "started_utc": "2026-06-08T20:34:42Z",
     "ollama_fallback_to_mock_count": 0
   }
 }

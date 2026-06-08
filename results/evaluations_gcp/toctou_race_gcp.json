@@ -1,15 +1,32 @@
 {
   "benchmark": "toctou_symlink_race",
-  "method": "userspace_open_vs_readlink",
-  "iterations": 1000,
-  "workdir": "/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/build/work_2487",
-  "tracepoint_opens": 69,
-  "lsm_resolved_shadow": 34,
-  "tracepoint_saw_shadow_path": 0,
-  "tracepoint_would_miss_shadow": 34,
-  "lsm_shadow_resolution_rate": 0.492754,
-  "tracepoint_miss_rate": 0.492754,
-  "interpretation": "tp_path is the pre-resolution openat argument; resolved_path is readlink(/proc/self/fd/N) after open, analogous to lsm/file_open bpf_d_path. tp_would_miss_shadow counts opens where resolution hit shadow_target but tp_path did not.",
+  "iterations_requested": 50000,
+  "interpretation": "tracepoint_miss_rate is the fraction of successful opens where the pre-resolution pathname (race_link) would hide shadow_target from a sys_enter_openat-only HIDS; it is NOT SENTINEL's detection rate. End-to-end detection of the same attack class is validated separately by red-team scenario EV-11 (hard-trigger + LSM columns).",
+  "userspace_proxy": {
+    "method": "userspace_open_vs_readlink",
+    "open_attempts": 50000,
+    "tracepoint_opens": 3614,
+    "open_success_rate": 0.07228,
+    "lsm_resolved_shadow": 1803,
+    "tracepoint_saw_shadow_path": 0,
+    "tracepoint_would_miss_shadow": 1803,
+    "lsm_shadow_resolution_rate": 0.498893,
+    "tracepoint_miss_rate": 0.498893,
+    "workdir": "/home/sentinel/Paper1_ZeroTrustAgent/scripts/toctou/build/work_9104",
+    "note": "Pre-resolution pathname vs post-open readlink; not identical to kernel bpf_d_path."
+  },
+  "ebpf_lsm": {
+    "method": "ebpf_sys_enter_openat_vs_lsm_file_open",
+    "open_attempts": 50000,
+    "tracepoint_opens": 50002,
+    "open_success_rate": 1.00004,
+    "lsm_resolved_shadow": 0,
+    "tracepoint_would_miss_shadow": 0,
+    "tracepoint_miss_rate": 0.0,
+    "lsm_shadow_resolution_rate": 0.0,
+    "note": "Kernel bpf_d_path at lsm/file_open vs sys_enter_openat pathname."
+  },
+  "ev11_end_to_end": null,
   "meta": {
     "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
     "system": "Linux",
@@ -24,7 +41,16 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T19:19:23Z",
-    "ollama_fallback_to_mock_count": 0
-  }
+    "started_utc": "2026-06-08T20:34:49Z",
+    "ollama_fallback_to_mock_count": 0,
+    "benchmark": "toctou_symlink_race"
+  },
+  "headline": {
+    "userspace_tracepoint_miss_rate": 0.498893,
+    "userspace_opens": 3614,
+    "ebpf_tracepoint_miss_rate": 0.0,
+    "ebpf_opens": 50002
+  },
+  "kernel_lsm_stack": "lockdown,capability,landlock,yama,apparmor,ima,evm",
+  "bpf_lsm_active": false
 }

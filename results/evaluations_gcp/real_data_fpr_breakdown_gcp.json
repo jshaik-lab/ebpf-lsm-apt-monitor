@@ -3,47 +3,41 @@
   "n_traces": 105,
   "n_benign": 55,
   "n_attack": 50,
-  "fp": 16,
-  "fn": 15,
-  "fpr": 0.2909,
+  "fp": 14,
+  "fn": 12,
+  "fpr": 0.2545,
   "fp_by_workload_type": {
-    "cat": 1,
-    "extended_server": 13,
+    "extended_server": 12,
     "find": 1,
-    "which": 1
+    "python": 1
   },
   "fp_by_scenario": {
-    "benign_cat_os_release": 1,
+    "benign_ext_001": 1,
+    "benign_ext_005": 1,
+    "benign_ext_009": 1,
     "benign_ext_010": 1,
-    "benign_ext_016": 1,
-    "benign_ext_017": 1,
-    "benign_ext_023": 1,
+    "benign_ext_015": 1,
     "benign_ext_024": 1,
-    "benign_ext_031": 1,
-    "benign_ext_034": 1,
+    "benign_ext_025": 1,
+    "benign_ext_027": 1,
     "benign_ext_036": 1,
-    "benign_ext_039": 1,
-    "benign_ext_042": 1,
+    "benign_ext_040": 1,
+    "benign_ext_041": 1,
     "benign_ext_043": 1,
-    "benign_ext_045": 1,
-    "benign_ext_047": 1,
     "benign_find_libs": 1,
-    "benign_which_bash": 1
+    "benign_python_math": 1
   },
   "fn_by_attack_family": {
-    "T1078": 1,
-    "attack_ext_002": 1,
-    "attack_ext_007": 1,
-    "attack_ext_008": 1,
-    "attack_ext_009": 1,
+    "T1003": 1,
+    "T1562": 1,
+    "attack_ext_004": 1,
     "attack_ext_011": 1,
-    "attack_ext_016": 1,
+    "attack_ext_014": 1,
+    "attack_ext_015": 1,
     "attack_ext_018": 1,
-    "attack_ext_019": 1,
     "attack_ext_021": 1,
-    "attack_ext_023": 1,
+    "attack_ext_025": 1,
     "attack_ext_028": 1,
-    "attack_ext_030": 1,
     "attack_ext_035": 1,
     "attack_ext_042": 1
   },
@@ -62,9 +56,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -112,9 +106,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -122,9 +116,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -142,9 +136,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -162,9 +156,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -192,9 +186,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -202,9 +196,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -212,9 +206,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -262,9 +256,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -272,9 +266,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -282,9 +276,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -312,9 +306,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -352,9 +346,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -372,9 +366,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "tn": 0,
-      "tp": 1,
+      "tp": 0,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -422,9 +416,9 @@
       "ground_truth": "MALICIOUS",
       "n": 1,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "tn": 0,
-      "tp": 0,
+      "tp": 1,
       "fpr": null,
       "mean_confidence_fp": null
     },
@@ -561,22 +555,22 @@
     "benign_cat_os_release": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
-      "fn": 0,
-      "tn": 0,
-      "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.85
-    },
-    "benign_ext_001": {
-      "ground_truth": "BENIGN",
-      "n": 1,
       "fp": 0,
       "fn": 0,
       "tn": 1,
       "tp": 0,
       "fpr": 0.0,
       "mean_confidence_fp": null
+    },
+    "benign_ext_001": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
     },
     "benign_ext_002": {
       "ground_truth": "BENIGN",
@@ -611,12 +605,12 @@
     "benign_ext_005": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 0,
+      "fp": 1,
       "fn": 0,
-      "tn": 1,
+      "tn": 0,
       "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
     },
     "benign_ext_006": {
       "ground_truth": "BENIGN",
@@ -651,12 +645,12 @@
     "benign_ext_009": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 0,
+      "fp": 1,
       "fn": 0,
-      "tn": 1,
+      "tn": 0,
       "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
     },
     "benign_ext_010": {
       "ground_truth": "BENIGN",
@@ -666,7 +660,7 @@
       "tn": 0,
       "tp": 0,
       "fpr": 1.0,
-      "mean_confidence_fp": 0.85
+      "mean_confidence_fp": 0.63
     },
     "benign_ext_011": {
       "ground_truth": "BENIGN",
@@ -711,6 +705,16 @@
     "benign_ext_015": {
       "ground_truth": "BENIGN",
       "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_016": {
+      "ground_truth": "BENIGN",
+      "n": 1,
       "fp": 0,
       "fn": 0,
       "tn": 1,
@@ -718,25 +722,15 @@
       "fpr": 0.0,
       "mean_confidence_fp": null
     },
-    "benign_ext_016": {
-      "ground_truth": "BENIGN",
-      "n": 1,
-      "fp": 1,
-      "fn": 0,
-      "tn": 0,
-      "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.83
-    },
     "benign_ext_017": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_018": {
       "ground_truth": "BENIGN",
@@ -791,12 +785,12 @@
     "benign_ext_023": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_024": {
       "ground_truth": "BENIGN",
@@ -806,17 +800,17 @@
       "tn": 0,
       "tp": 0,
       "fpr": 1.0,
-      "mean_confidence_fp": 0.63
+      "mean_confidence_fp": 0.83
     },
     "benign_ext_025": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 0,
+      "fp": 1,
       "fn": 0,
-      "tn": 1,
+      "tn": 0,
       "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
     },
     "benign_ext_026": {
       "ground_truth": "BENIGN",
@@ -831,12 +825,12 @@
     "benign_ext_027": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 0,
+      "fp": 1,
       "fn": 0,
-      "tn": 1,
+      "tn": 0,
       "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.63
     },
     "benign_ext_028": {
       "ground_truth": "BENIGN",
@@ -871,12 +865,12 @@
     "benign_ext_031": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.63
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_032": {
       "ground_truth": "BENIGN",
@@ -901,12 +895,12 @@
     "benign_ext_034": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.63
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_035": {
       "ground_truth": "BENIGN",
@@ -926,7 +920,7 @@
       "tn": 0,
       "tp": 0,
       "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "mean_confidence_fp": 0.85
     },
     "benign_ext_037": {
       "ground_truth": "BENIGN",
@@ -951,6 +945,16 @@
     "benign_ext_039": {
       "ground_truth": "BENIGN",
       "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
+    },
+    "benign_ext_040": {
+      "ground_truth": "BENIGN",
+      "n": 1,
       "fp": 1,
       "fn": 0,
       "tn": 0,
@@ -958,27 +962,7 @@
       "fpr": 1.0,
       "mean_confidence_fp": 0.63
     },
-    "benign_ext_040": {
-      "ground_truth": "BENIGN",
-      "n": 1,
-      "fp": 0,
-      "fn": 0,
-      "tn": 1,
-      "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
-    },
     "benign_ext_041": {
-      "ground_truth": "BENIGN",
-      "n": 1,
-      "fp": 0,
-      "fn": 0,
-      "tn": 1,
-      "tp": 0,
-      "fpr": 0.0,
-      "mean_confidence_fp": null
-    },
-    "benign_ext_042": {
       "ground_truth": "BENIGN",
       "n": 1,
       "fp": 1,
@@ -986,7 +970,17 @@
       "tn": 0,
       "tp": 0,
       "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "mean_confidence_fp": 0.63
+    },
+    "benign_ext_042": {
+      "ground_truth": "BENIGN",
+      "n": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "tp": 0,
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_043": {
       "ground_truth": "BENIGN",
@@ -996,7 +990,7 @@
       "tn": 0,
       "tp": 0,
       "fpr": 1.0,
-      "mean_confidence_fp": 0.93
+      "mean_confidence_fp": 0.83
     },
     "benign_ext_044": {
       "ground_truth": "BENIGN",
@@ -1011,12 +1005,12 @@
     "benign_ext_045": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_046": {
       "ground_truth": "BENIGN",
@@ -1031,12 +1025,12 @@
     "benign_ext_047": {
       "ground_truth": "BENIGN",
       "n": 1,
-      "fp": 1,
+      "fp": 0,
       "fn": 0,
-      "tn": 0,
+      "tn": 1,
       "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.83
+      "fpr": 0.0,
+      "mean_confidence_fp": null
     },
     "benign_ext_048": {
       "ground_truth": "BENIGN",
@@ -1081,34 +1075,56 @@
     "benign_python_math": {
       "ground_truth": "BENIGN",
       "n": 1,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "tp": 0,
+      "fpr": 1.0,
+      "mean_confidence_fp": 0.83
+    },
+    "benign_which_bash": {
+      "ground_truth": "BENIGN",
+      "n": 1,
       "fp": 0,
       "fn": 0,
       "tn": 1,
       "tp": 0,
       "fpr": 0.0,
       "mean_confidence_fp": null
-    },
-    "benign_which_bash": {
-      "ground_truth": "BENIGN",
-      "n": 1,
-      "fp": 1,
-      "fn": 0,
-      "tn": 0,
-      "tp": 0,
-      "fpr": 1.0,
-      "mean_confidence_fp": 0.85
     }
   },
   "failure_mode_analysis": [
     {
-      "scenario": "benign_cat_os_release",
-      "workload": "cat",
+      "scenario": "benign_ext_001",
+      "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "cat reads /etc/ld.so.cache and maps it into memory via mmap \u2014 a classic technique for directory traversal (T1055.001)."
+        "bash mmaps /etc/ld.so.cache (T1036), then reads locale data; this sequence suggests a malicious actor injecting code and probing system settings."
       ],
       "sample_confidence": [
-        0.85
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_005",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "unusual_comm=true and multiple bash processes accessing system libraries and configuration files suggests possible T1036 (Masquerading) to evade detection."
+      ],
+      "sample_confidence": [
+        0.63
+      ]
+    },
+    {
+      "scenario": "benign_ext_009",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash repeatedly executes uptime with different memory mappings \u2014 unusual_comm=true and repeated execve from non-standard process name (uptime) suggests potential T1036."
+      ],
+      "sample_confidence": [
+        0.63
       ]
     },
     {
@@ -1116,43 +1132,21 @@
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "locale processes masquerade as bash by executing /usr/bin/locale and reading from /etc/ld.so.cache and /usr/lib/locale (T1036 Masquerading), with unusual_comm signal confirming non-standard process name."
+        "multiple bash processes interacting with locale files in a loop \u2014 while not directly malicious, it's an unusual pattern that warrants further investigation (T1036)."
       ],
       "sample_confidence": [
-        0.85
+        0.63
       ]
     },
     {
-      "scenario": "benign_ext_016",
+      "scenario": "benign_ext_015",
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "bash reads sensitive /proc/filesystems (T1089) and engages in complex memory mapping operations \u2014 indicative of potential malicious activity."
+        "multiple cut processes interact with memory regions and files in a suspicious pattern; clone syscalls suggest possible process injection (T1055)."
       ],
       "sample_confidence": [
-        0.83
-      ]
-    },
-    {
-      "scenario": "benign_ext_017",
-      "workload": "extended_server",
-      "fp_count": 1,
-      "sample_reasoning": [
-        "bash executes /usr/bin/file with execve, which injects into file processes that mmap various system files (T1055) and access locale data (T1021)."
-      ],
-      "sample_confidence": [
-        0.83
-      ]
-    },
-    {
-      "scenario": "benign_ext_023",
-      "workload": "extended_server",
-      "fp_count": 1,
-      "sample_reasoning": [
-        "bash and cat processes engage in complex memory mapping and file access patterns, including T1055 (file discovery) and possible data exfiltration via mmap syscalls."
-      ],
-      "sample_confidence": [
-        0.83
+        0.63
       ]
     },
     {
@@ -1160,29 +1154,29 @@
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "bash reads sensitive files like /proc/filesystems and /usr/lib/locale/C.utf8/LC_IDENTIFICATION (T1003), while also creating memory mappings on ld.so.cache (T1016) \u2014 a complex pattern that warrants further investigation."
+        "bash reads sensitive /proc/filesystems and maps various system libraries \u2014 indicative of T1010 Native API and T1021 Remote Services."
+      ],
+      "sample_confidence": [
+        0.83
+      ]
+    },
+    {
+      "scenario": "benign_ext_025",
+      "workload": "extended_server",
+      "fp_count": 1,
+      "sample_reasoning": [
+        "bash instances use clone and mmap to inject into each other \u2014 a possible T1055 process injection attempt, but no sensitive file access or execve from temp dirs."
       ],
       "sample_confidence": [
         0.63
       ]
     },
     {
-      "scenario": "benign_ext_031",
+      "scenario": "benign_ext_027",
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "bash reads sensitive /proc/filesystems (T1089) and executes /usr/bin/timedatectl (T1055), which may be a lateral movement vector or privilege escalation attempt."
-      ],
-      "sample_confidence": [
-        0.63
-      ]
-    },
-    {
-      "scenario": "benign_ext_034",
-      "workload": "extended_server",
-      "fp_count": 1,
-      "sample_reasoning": [
-        "bash processes interact with system files like /dev/null and /etc/ld.so.cache (T1059), but also read from other system files like /usr/lib/locale/C.utf8/LC_IDENTIFICATION; the unusual_comm signal is present."
+        "bash processes exhibit unusual names (unusual_comm) and engage in complex memory mapping and file access patterns, including T1055 process injection-like behavior."
       ],
       "sample_confidence": [
         0.63
@@ -1193,18 +1187,18 @@
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "setuid call from ping process (T1068) and complex memory mapping pattern with mmap calls between different nodes indicate potential privilege escalation and malicious activity."
+        "setuid call on ping process (T1068) and unusual bash processes suggest a possible Lateral Movement or Privilege Escalation attack."
       ],
       "sample_confidence": [
-        0.83
+        0.85
       ]
     },
     {
-      "scenario": "benign_ext_039",
+      "scenario": "benign_ext_040",
       "workload": "extended_server",
       "fp_count": 1,
       "sample_reasoning": [
-        "execve from /usr/bin/python3 (T1055) and multiple large-dt_max-ms mmap syscalls suggest potential process injection or memory corruption \u2014 however, the context is unclear without further investigation."
+        "execve from /home/sentinel/Paper1_ZeroTrustAgent/.venv/bin/python3 (T1055) is suspicious; however, the context of mmap and openat(R) syscalls on ld.so.cache suggests an attempt to load shared libraries, which could be legitimate."
       ],
       "sample_confidence": [
         0.63
@@ -1226,7 +1220,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T19:19:23Z",
+    "started_utc": "2026-06-08T20:52:31Z",
     "ollama_fallback_to_mock_count": 0,
     "analysis": "real_data_fpr_breakdown"
   }

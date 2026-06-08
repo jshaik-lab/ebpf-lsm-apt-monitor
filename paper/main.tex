@@ -1161,9 +1161,9 @@ ungated LLM run ($\mathrm{FPR}{=}0.255$) shows
 the extended benign corpus (\texttt{benign\_ext\_*} workloads:
 \texttt{systemctl}/\texttt{openssl}/multi-process pipelines) whose IPG graphs
 include temp-file writes and \texttt{ld.so.cache} \texttt{mmap} patterns that
-the LLM maps to staged kill-chains at low confidence ($\approx$0.42).  The
-remaining FPs are singletons (\texttt{benign\_cat\_os\_release},
-\texttt{benign\_find\_libs}, \texttt{benign\_which\_bash}).  This failure mode
+the LLM maps to staged kill-chains at moderate confidence (0.63--0.85).  The
+remaining FPs are two singletons (\texttt{benign\_find\_libs},
+\texttt{benign\_python\_math}).  This failure mode
 motivates graph-first routing (\S\ref{sec:eval_darpa}) and hard-trigger/LTL
 floors rather than LLM-only classification on high-entropy server workloads.
 

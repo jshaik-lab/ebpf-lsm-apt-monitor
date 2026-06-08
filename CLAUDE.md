@@ -14,7 +14,7 @@ Seven novel contributions define the paper's claims — do not change these mech
 
 1. **Intent Provenance Graph (IPG)** — `sentinel/ipg.py`, Algorithm 1, Section IV-B.
    Converts a sliding window of `KernelEvent`s into a compact YAML-serialized directed multigraph. Parallel edges with the same syscall label are merged into a bounded summary `(count, min_dt_ms, max_dt_ms, first_idx)` — NOT min-Δt-only (audit fix #5: min-only let a fast benign instance mask a slow malicious one of the same src→dst→syscall). `n:`/`dt_max_ms:` emitted only for merged edges. Semantic hints attached to sensitive resources.
-   **Measured (GCP, 105 strace traces, tiktoken cl100k_base)**: 74.0% token reduction at window=20 (avg 1122→292 tokens); 92.7% at full trace (avg 12185→885 tokens). See `results/evaluations_gcp/ipg_token_reduction_gcp.json`.
+   **Measured (GCP, 5 strace files / 15 total, tiktoken cl100k_base)**: 57.5% token reduction at window=20 (avg 1105→470 tokens); 83.3% at full trace (avg 4707→785 tokens). See `results/evaluations_gcp/ipg_token_reduction_gcp.json`.
 
 2. **Dual-Tier Inference Pipeline** — `sentinel/llm/base.py`, Algorithm 2, Section IV-C.
    Draft (llama3.2:1b) → if BENIGN at conf ≥ 0.90, skip full model. MALICIOUS from draft always escalates to llama3.1:8b.
@@ -27,7 +27,7 @@ Seven novel contributions define the paper's claims — do not change these mech
 
 4. **LTL Symbolic Guardian** — `sentinel/ltl.py`, Section IV-E.
    Five formal safety axioms (AX-1 through AX-5). Tier-1: O(1) RuntimeMonitor (AX-1, AX-3, AX-4, AX-5); Tier-2: BüchiMonitor (AX-2 shadow→exfil kill-chain).
-   **Measured (GCP)**: 0 false positives on 387 benign sliding windows (55 traces). See `results/evaluations_gcp/ltl_fpr_real_gcp.json`.
+   **Measured (GCP)**: 0 false positives on 399 benign sliding windows (55 traces). See `results/evaluations_gcp/ltl_fpr_real_gcp.json`.
 
 5. **Chain of Verification (CoVe)** — `sentinel/cove.py`, Section IV-F.
    4-step Draft→Verify→Ground→Synthesize. Each LLM claim linked to a real eBPF `event_id` UUID. `hallucination_eval.py` tests blocking, but "zero hallucinations" claim requires Ollama measurement — MockClassifier always returns `evidence_refs=[]`.
@@ -52,7 +52,7 @@ Seven novel contributions define the paper's claims — do not change these mech
 **Overhead** (`overhead_gcp.json`): IPG p50=0.184ms, p99=0.306ms; CWAE p50=0.888ms; detector 25,665 events/s.
 
 **Real-data** (105 native strace traces, llama3.1:8b, `real_data_results_gcp.json`):
-TPR=0.714, FPR=0.291, accuracy=0.712 [95% CI: 0.625–0.798], n=104 evaluated.
+TPR=0.760, FPR=0.255, accuracy=0.752 [95% CI: 0.667–0.829], n=105 evaluated, 0 skipped.
 
 **DARPA TC E3 CADETS (100 windows, 50 attack / 50 benign)**:
 
@@ -382,7 +382,7 @@ Constants that must stay in sync between `sentinel.c` and Python:
 - ✅ Full eval chain + MANIFEST.json; 0 mock fallbacks on LLM evals
 - ✅ DARPA hybrid v5 F1=0.603; LLM-only v4 F1=0.597; TI-aided v8 F1=0.915
 - ✅ Ablation: graph-only F1=0.611; hybrid 1/100 LLM invocations
-- ✅ Real strace n=104: TPR=0.714, FPR=0.291; LTL 0/387 FP
+- ✅ Real strace n=105: TPR=0.760, FPR=0.255; LTL 0/399 FP
 - ✅ IPG 74.0% @ n=20; dual-tier 35.7%; PCABP real nginx F1=1.0 (663 x86 sites)
 - ✅ `paper/main.tex` synced to GCP JSONs; docs updated (RUNME, REPRO, diagrams)
 

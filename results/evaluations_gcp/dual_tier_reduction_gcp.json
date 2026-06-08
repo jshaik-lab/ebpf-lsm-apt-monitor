@@ -14,13 +14,13 @@
       "scenario": "Credential Dumping",
       "expected": "MALICIOUS",
       "dual_label": "MALICIOUS",
-      "dual_conf": 0.98,
+      "dual_conf": 0.99,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 26839.4,
+      "dual_latency_ms": 19909.0,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
-      "b8_conf": 0.98,
-      "b8_latency_ms": 8133.0,
+      "b8_conf": 0.99,
+      "b8_latency_ms": 7834.8,
       "b8_correct": true
     },
     {
@@ -29,11 +29,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.93,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 9034.4,
+      "dual_latency_ms": 10575.6,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
-      "b8_conf": 0.95,
-      "b8_latency_ms": 8549.5,
+      "b8_conf": 0.93,
+      "b8_latency_ms": 7901.8,
       "b8_correct": true
     },
     {
@@ -42,24 +42,24 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.98,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 10247.2,
+      "dual_latency_ms": 10429.1,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.98,
-      "b8_latency_ms": 7554.7,
+      "b8_latency_ms": 7616.5,
       "b8_correct": true
     },
     {
       "scenario": "Defense Evasion",
       "expected": "MALICIOUS",
       "dual_label": "MALICIOUS",
-      "dual_conf": 0.85,
+      "dual_conf": 0.93,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 10286.2,
+      "dual_latency_ms": 9354.3,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
-      "b8_conf": 0.85,
-      "b8_latency_ms": 7556.1,
+      "b8_conf": 0.83,
+      "b8_latency_ms": 7895.6,
       "b8_correct": true
     },
     {
@@ -68,11 +68,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.93,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 10704.4,
+      "dual_latency_ms": 10765.2,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.83,
-      "b8_latency_ms": 9003.8,
+      "b8_latency_ms": 9025.2,
       "b8_correct": true
     },
     {
@@ -81,11 +81,11 @@
       "dual_label": "BENIGN",
       "dual_conf": 0.99,
       "dual_tier_used": "llama3.2:1b",
-      "dual_latency_ms": 2225.0,
+      "dual_latency_ms": 2242.4,
       "dual_correct": false,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.85,
-      "b8_latency_ms": 7210.6,
+      "b8_latency_ms": 7242.9,
       "b8_correct": true
     },
     {
@@ -94,11 +94,11 @@
       "dual_label": "BENIGN",
       "dual_conf": 0.98,
       "dual_tier_used": "llama3.2:1b",
-      "dual_latency_ms": 2027.3,
+      "dual_latency_ms": 2042.9,
       "dual_correct": false,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.95,
-      "b8_latency_ms": 7042.1,
+      "b8_latency_ms": 7090.1,
       "b8_correct": true
     },
     {
@@ -107,11 +107,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.85,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 8432.2,
+      "dual_latency_ms": 8459.5,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.83,
-      "b8_latency_ms": 6043.5,
+      "b8_latency_ms": 6056.1,
       "b8_correct": true
     },
     {
@@ -120,11 +120,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.85,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 9971.4,
+      "dual_latency_ms": 10028.3,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.85,
-      "b8_latency_ms": 7307.6,
+      "b8_latency_ms": 7333.2,
       "b8_correct": true
     },
     {
@@ -133,11 +133,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.85,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 9686.3,
+      "dual_latency_ms": 9798.5,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.93,
-      "b8_latency_ms": 7802.7,
+      "b8_latency_ms": 7837.5,
       "b8_correct": true
     },
     {
@@ -146,11 +146,11 @@
       "dual_label": "MALICIOUS",
       "dual_conf": 0.93,
       "dual_tier_used": "llama3.1:8b",
-      "dual_latency_ms": 9742.2,
+      "dual_latency_ms": 9775.0,
       "dual_correct": true,
       "b8_label": "MALICIOUS",
       "b8_conf": 0.85,
-      "b8_latency_ms": 7069.4,
+      "b8_latency_ms": 7099.2,
       "b8_correct": true
     },
     {
@@ -159,11 +159,11 @@
       "dual_label": "BENIGN",
       "dual_conf": 0.99,
       "dual_tier_used": "llama3.2:1b",
-      "dual_latency_ms": 1918.9,
+      "dual_latency_ms": 1948.1,
       "dual_correct": true,
       "b8_label": "BENIGN",
       "b8_conf": 0.42,
-      "b8_latency_ms": 6037.8,
+      "b8_latency_ms": 6080.8,
       "b8_correct": true
     },
     {
@@ -172,11 +172,11 @@
       "dual_label": "BENIGN",
       "dual_conf": 0.99,
       "dual_tier_used": "llama3.2:1b",
-      "dual_latency_ms": 1995.5,
+      "dual_latency_ms": 2064.2,
       "dual_correct": true,
       "b8_label": "BENIGN",
       "b8_conf": 0.93,
-      "b8_latency_ms": 8280.7,
+      "b8_latency_ms": 8333.0,
       "b8_correct": true
     },
     {
@@ -185,16 +185,16 @@
       "dual_label": "BENIGN",
       "dual_conf": 0.98,
       "dual_tier_used": "llama3.2:1b",
-      "dual_latency_ms": 1911.9,
+      "dual_latency_ms": 1958.5,
       "dual_correct": true,
       "b8_label": "BENIGN",
       "b8_conf": 0.04,
-      "b8_latency_ms": 4841.2,
+      "b8_latency_ms": 4880.2,
       "b8_correct": true
     }
   ],
   "meta": {
-    "platform": "Linux 6.17.0-1018-gcp (sentinel-gpu-vm)",
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
     "system": "Linux",
     "kernel": "6.17.0-1018-gcp",
     "machine": "x86_64",
@@ -202,12 +202,12 @@
     "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
     "ram_gb": 15.6,
     "python": "3.12.3",
-    "backend": "unknown",
-    "model_full": "unknown",
-    "model_draft": "unknown",
-    "timeout_seconds": 0,
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T17:02:56Z",
+    "started_utc": "2026-06-08T20:40:10Z",
     "ollama_fallback_to_mock_count": 0
   }
 }

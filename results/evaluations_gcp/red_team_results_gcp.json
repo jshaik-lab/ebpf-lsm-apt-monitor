@@ -22,7 +22,7 @@
     "model_draft": "llama3.2:1b",
     "timeout_seconds": 300,
     "git_sha": "unknown",
-    "started_utc": "2026-06-08T19:21:49Z",
+    "started_utc": "2026-06-08T20:54:23Z",
     "ollama_fallback_to_mock_count": 0
   },
   "ltl_guardian": "SymbolicGuardian (RuntimeMonitor + BuchiMonitor)",
@@ -57,7 +57,7 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.85,
-          "latency_ms": 39752.714,
+          "latency_ms": 4759.517,
           "mitre_ttps": [
             "T1003",
             "T1087"
@@ -87,10 +87,10 @@
           "gate": "HARD-TRIGGER (/etc/shadow)",
           "llm_invoked": true,
           "detected": true,
-          "tier": "ISOLATE",
+          "tier": "KILL",
           "label": "MALICIOUS",
-          "confidence": 0.93,
-          "latency_ms": 4703.822,
+          "confidence": 0.63,
+          "latency_ms": 6211.764,
           "mitre_ttps": [
             "T1003"
           ]
@@ -119,13 +119,13 @@
           "gate": "HARD-TRIGGER (/etc/shadow)",
           "llm_invoked": true,
           "detected": true,
-          "tier": "ISOLATE",
+          "tier": "QUARANTINE",
           "label": "MALICIOUS",
-          "confidence": 0.85,
-          "latency_ms": 6910.01,
+          "confidence": 0.83,
+          "latency_ms": 5681.818,
           "mitre_ttps": [
             "T1016",
-            "T1049",
+            "T1574",
             "T1003"
           ]
         }
@@ -156,7 +156,7 @@
           "tier": "QUARANTINE",
           "label": "MALICIOUS",
           "confidence": 0.83,
-          "latency_ms": 7126.625,
+          "latency_ms": 7633.394,
           "mitre_ttps": [
             "T1003",
             "T1552"
@@ -172,7 +172,7 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.85,
-          "latency_ms": 5897.304,
+          "latency_ms": 5902.318,
           "mitre_ttps": [
             "T1071",
             "T1074"
@@ -207,7 +207,7 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.95,
-          "latency_ms": 6180.454,
+          "latency_ms": 6375.159,
           "mitre_ttps": [
             "T1003",
             "T1071"
@@ -237,10 +237,10 @@
           "gate": "HARD-TRIGGER (/etc/shadow)",
           "llm_invoked": true,
           "detected": true,
-          "tier": "ISOLATE",
+          "tier": "QUARANTINE",
           "label": "MALICIOUS",
-          "confidence": 0.93,
-          "latency_ms": 5388.109,
+          "confidence": 0.83,
+          "latency_ms": 5686.088,
           "mitre_ttps": [
             "T1003"
           ]
@@ -276,7 +276,7 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.98,
-          "latency_ms": 8504.331,
+          "latency_ms": 8624.967,
           "mitre_ttps": [
             "T1003",
             "T1071",
@@ -312,7 +312,7 @@
           "tier": "QUARANTINE",
           "label": "MALICIOUS",
           "confidence": 0.83,
-          "latency_ms": 6608.174,
+          "latency_ms": 6555.151,
           "mitre_ttps": [
             "T1074",
             "T1071"
@@ -342,10 +342,10 @@
           "gate": "ENTROPY-PASS (H=1.922 >= 1.2)",
           "llm_invoked": true,
           "detected": true,
-          "tier": "QUARANTINE",
+          "tier": "ISOLATE",
           "label": "MALICIOUS",
-          "confidence": 0.83,
-          "latency_ms": 6514.319,
+          "confidence": 0.93,
+          "latency_ms": 6335.86,
           "mitre_ttps": [
             "T1071",
             "T1095"
@@ -364,8 +364,8 @@
         "ltl_tier1": 2,
         "ltl_tier2": 1,
         "ltl_axioms": [
-          "AX-2",
-          "AX-4"
+          "AX-4",
+          "AX-2"
         ],
         "pcabp_score": 0.0,
         "pcabp_detected": false
@@ -380,8 +380,8 @@
           "detected": true,
           "tier": "ISOLATE",
           "label": "MALICIOUS",
-          "confidence": 0.93,
-          "latency_ms": 6687.448,
+          "confidence": 0.85,
+          "latency_ms": 6736.8,
           "mitre_ttps": [
             "T1003",
             "T1071"
@@ -397,9 +397,9 @@
           "tier": "LOG_ONLY",
           "label": "BENIGN",
           "confidence": 0.42,
-          "latency_ms": 5262.646,
+          "latency_ms": 4857.843,
           "mitre_ttps": [
-            "T1074"
+            "T1036"
           ]
         }
       ]
@@ -415,8 +415,8 @@
         "ltl_tier1": 3,
         "ltl_tier2": 0,
         "ltl_axioms": [
-          "AX-5",
-          "AX-4"
+          "AX-4",
+          "AX-5"
         ],
         "pcabp_score": 0.0,
         "pcabp_detected": false
@@ -431,13 +431,15 @@
           "detected": true,
           "tier": "ISOLATE",
           "label": "MALICIOUS",
-          "confidence": 0.93,
-          "latency_ms": 10352.084,
+          "confidence": 0.95,
+          "latency_ms": 10799.226,
           "mitre_ttps": [
             "T1055",
+            "T1620",
             "T1074",
             "T1068",
             "T1059",
+            "T1105",
             "T1071"
           ]
         }
@@ -470,7 +472,7 @@
           "tier": "QUARANTINE",
           "label": "MALICIOUS",
           "confidence": 0.83,
-          "latency_ms": 9577.584,
+          "latency_ms": 9560.989,
           "mitre_ttps": [
             "T1071",
             "T1059",
@@ -534,12 +536,12 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.85,
-          "latency_ms": 8783.001,
+          "latency_ms": 8330.628,
           "mitre_ttps": [
             "T1059",
+            "T1082",
             "T1074",
-            "T1071",
-            "T1095"
+            "T1071"
           ]
         }
       ]
@@ -571,7 +573,7 @@
           "tier": "ISOLATE",
           "label": "MALICIOUS",
           "confidence": 0.85,
-          "latency_ms": 7414.635,
+          "latency_ms": 7387.711,
           "mitre_ttps": [
             "T1021",
             "T1071",

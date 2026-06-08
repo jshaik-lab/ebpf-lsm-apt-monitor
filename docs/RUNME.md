@@ -81,6 +81,50 @@ rsync -avz --exclude .venv --exclude results --exclude .git \
   ./ sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/
 ```
 
+### One-command automated pipeline (Mac → GCP → Mac)
+
+After local code changes, run the full paper eval loop from your Mac (starts VM if stopped, rsyncs code, runs eval, pulls JSON/logs, stops VM):
+
+```bash
+# Resume missing eval steps only (~faster if prior artifacts exist on VM)
+make gcp-pipeline
+# or: bash scripts/gcp_orchestrate.sh --resume
+
+# Full clean chain (6–10 h with DARPA on VM)
+make gcp-pipeline-full
+# or: bash scripts/gcp_orchestrate.sh --full
+
+# Wipe remote stale JSON then full rerun
+make gcp-pipeline-fresh
+
+# Background (safe for long runs)
+nohup bash scripts/gcp_orchestrate.sh --full \
+  > results/evaluations_gcp/orchestrate.log 2>&1 &
+tail -f results/evaluations_gcp/orchestrate.log
+```
+
+Options:
+
+| Flag | Effect |
+|------|--------|
+| `--resume` | Skip completed steps on VM (default) |
+| `--full` | Run `run_gcp_eval_chain.sh` from scratch |
+| `--fresh` | Remote `cleanup_stale_results.sh` then full chain |
+| `--no-stop` | Leave VM running after success |
+| `--sync-only` | Pull results only (VM must be up) |
+| `--deploy-only` | Start + rsync + bootstrap, no eval |
+
+Config: `scripts/gcp_env.sh` (override via `~/.config/sentinel/gcp.env`):
+
+```bash
+export GCP_PROJECT=project-ce92648b-727e-446c-9d7
+export GCP_ZONE=us-east1-c
+export GCP_INSTANCE=sentinel-gpu-vm
+export GCP_SSH_KEY=$HOME/.ssh/id_ed25519_sentinel
+```
+
+Progress is logged to `results/evaluations_gcp/orchestrate.log` and mirrored from remote `gcp_chain.log`.
+
 ---
 
 ## GCP fresh-run procedure
@@ -151,12 +195,12 @@ sudo shutdown -h now   # on VM
 | File | Paper section | Notes |
 |------|---------------|-------|
 | `overhead_gcp.json` | V overhead | IPG/CWAE latency |
-| `ipg_token_reduction_gcp.json` | V-A | **74.0%** @ window=20; **92.7%** full trace |
+| `ipg_token_reduction_gcp.json` | V-A | **57.5%** @ window=20; **83.3%** full trace |
 | `ltl_fpr_real_gcp.json` | V-E | 0 FPR on benign traces |
 | `pcabp_real_nginx_gcp.json` | IV-H | Controlled-class caveat |
 | `scenario_results_gcp.json` | V scenarios | 14/14 mechanism demo |
 | `dual_tier_reduction_gcp.json` | V-B | **35.7%** reduction; dual 12/14 vs 8B 14/14 |
-| `real_data_results_gcp.json` | V real traces | TPR=0.714, FPR=0.291, Acc=0.712, CI [0.625, 0.798] |
+| `real_data_results_gcp.json` | V real traces | TPR=0.714; FPR=0.273 @ θ=1.2 (ungated 0.291) |
 | `calibration_results_gcp.json` | V calibration | ECE |
 | `darpa_tc_behavioral_v5_gcp.json` | V-D | **Primary** hybrid: F1=**0.603**, TPR=0.44, FPR=0.02 |
 | `darpa_tc_behavioral_v4_gcp.json` | V-D | LLM-only baseline: F1=**0.597**, TPR=0.46, FPR=0.08 |
@@ -202,19 +246,19 @@ python3 scripts/add_meta_to_json.py \
 - [x] DARPA behavioral F1=0.603 (v5 hybrid) / 0.597 (v4 LLM-only) in `paper/main.tex`
 - [x] Ablation table from `darpa_ablation_gcp.json` (graph-only F1=0.611, hybrid 1/100 LLM calls)
 - [x] TI-aided F1=0.915 with circularity paragraph
-- [ ] Rebuild PDF: `bash scripts/build_paper.sh` (or `cd paper && pdflatex …`); verify ≤14 pages
+- [ ] Rebuild PDF: `make paper-build` (runs `validate-paper-claims` first); verify ≤14 pages
 - [ ] Run `@ieee-publication-validator` skill before submission
 
 ### Measured headline metrics (GCP, 2026-06-08)
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| IPG token reduction @ n=20 | 74.0% | `ipg_token_reduction_gcp.json` |
-| IPG token reduction full trace | 92.7% | `ipg_token_reduction_gcp.json` |
+| IPG token reduction @ n=20 | 57.5% | `ipg_token_reduction_gcp.json` |
+| IPG token reduction full trace | 83.3% | `ipg_token_reduction_gcp.json` |
 | Dual-tier invocation reduction | 35.7% (5/14 draft hits) | `dual_tier_reduction_gcp.json` |
 | LTL FPR (benign real traces) | 0.0 (0/387 windows) | `ltl_fpr_real_gcp.json` |
 | PCABP real nginx | F1=1.0 (controlled classes) | `pcabp_real_nginx_gcp.json` |
-| Real strace eval | TPR=0.714, FPR=0.291 | `real_data_results_gcp.json` |
+| Real strace eval | TPR=0.714, FPR=0.273 (θ=1.2) | `entropy_sensitivity_gcp.json` |
 | DARPA behavioral hybrid (v5) | F1=0.603, TPR=0.44, FPR=0.02 | `darpa_tc_behavioral_v5_gcp.json` |
 | DARPA TI-aided (v8) | F1=0.915, TPR=0.86, FPR=0.02 | `darpa_tc_v8_ti_aided_gcp.json` |
 | Non-LLM IPG p50 / CWAE p50 | 0.184 ms / 0.888 ms | `overhead_gcp.json` |

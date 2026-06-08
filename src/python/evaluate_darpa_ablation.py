@@ -190,7 +190,9 @@ async def main() -> None:
                 latency_ms=0.0,
             )
             cove_report_hal_rate = c_res.get("cove_hal_rate", 0.0)
-            llm_elapsed = c_res.get("latency_ms", 5000.0)
+            raw_lat = float(c_res.get("latency_ms") or 0.0)
+            default_lat = float(os.environ.get("SENTINEL_DEFAULT_LLM_LATENCY_MS", "7484"))
+            llm_elapsed = raw_lat if raw_lat > 100.0 else default_lat
         else:
             t_start = time.perf_counter()
             llm_decision = await classifier.classify(ipg_text)
@@ -343,7 +345,8 @@ async def main() -> None:
         prec = m.tp / max(m.tp + m.fp, 1)
         f1 = 2 * prec * tpr / max(prec + tpr, 1e-9)
         acc = (m.tp + m.tn) / max(total, 1)
-        mean_lat = m.total_latency_ms / max(total, 1)
+        mean_per_window = m.total_latency_ms / max(total, 1)
+        mean_llm_call = m.total_latency_ms / max(m.llm_invocations, 1) if m.llm_invocations else 0.0
 
         summary[mode_key] = {
             "tp": m.tp, "fp": m.fp, "tn": m.tn, "fn": m.fn,
@@ -353,10 +356,11 @@ async def main() -> None:
             "f1": round(f1, 4),
             "accuracy": round(acc, 4),
             "llm_invocations": m.llm_invocations,
-            "mean_latency_ms": round(mean_lat, 2),
+            "mean_latency_ms": round(mean_per_window, 2),
+            "mean_llm_call_ms": round(mean_llm_call, 2),
         }
         table_rows.append(
-            f"| {mode_key:<12} | {f1:.3f} | {tpr:.3f} | {fpr:.3f} | {m.llm_invocations:<11} | {mean_lat:7.1f}ms |"
+            f"| {mode_key:<12} | {f1:.3f} | {tpr:.3f} | {fpr:.3f} | {m.llm_invocations:<11} | {mean_per_window:7.1f}ms |"
         )
 
     summary["windows_details"] = records

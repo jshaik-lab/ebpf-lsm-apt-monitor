@@ -30,18 +30,18 @@ Every number below is from the **2026-06-08 GCP run** and is reflected in `paper
 
 | Paper claim | GCP value | JSON file |
 |-------------|-----------|-----------|
-| IPG token reduction @ n=20 | **74.0%** (1122→292 tok avg) | `ipg_token_reduction_gcp.json` |
-| IPG token reduction full trace | **92.7%** (12185→885 tok avg) | `ipg_token_reduction_gcp.json` |
+| IPG token reduction @ n=20 | **57.5%** (1105→470 tok avg, 5 attack traces) | `ipg_token_reduction_gcp.json` |
+| IPG token reduction full trace | **83.3%** (4707→785 tok avg) | `ipg_token_reduction_gcp.json` |
 | Dual-tier invocation reduction | **35.7%** (5/14 draft hits) | `dual_tier_reduction_gcp.json` |
 | Dual-tier accuracy | 12/14 dual vs **14/14** 8B-only | `dual_tier_reduction_gcp.json` |
 | MITRE scenarios (8B-only) | **14/14** correct | `scenario_results_gcp.json` |
-| Real strace TPR / FPR / Acc | **0.714 / 0.291 / 0.712** | `real_data_results_gcp.json` |
+| Real strace TPR / FPR / Acc | **0.714 / 0.273 / 0.721** (θ=1.2 gate; ungated FPR=0.291) | `entropy_sensitivity_gcp.json` |
 | Real strace accuracy 95% CI | **[0.625, 0.798]**, n=104 | `real_data_results_gcp.json` |
 | Calibration ECE | **0.205**, n=104 | `calibration_results_gcp.json` |
-| LTL FPR (benign) | **0.0** (0/387 windows, 55 traces) | `ltl_fpr_real_gcp.json` |
+| LTL FPR (benign) | **0.0** (0/13 windows, 7 traces on eval host) | `ltl_fpr_real_gcp.json` |
 | PCABP real nginx | F1=**1.0** (controlled classes), 663 x86 sites | `pcabp_real_nginx_gcp.json` |
-| IPG build p50 / CWAE p50 | **0.184 ms / 0.888 ms** | `overhead_gcp.json` |
-| Detector throughput | **25,665 events/s** | `overhead_gcp.json` |
+| IPG build p50 / CWAE p50 | **0.195 ms / 1.023 ms** | `overhead_gcp.json` |
+| Detector throughput | **27,454 events/s** | `overhead_gcp.json` |
 | RSS (benchmark snapshot) | 48.1 MB (delta 0 in dry-run bench) | `overhead_gcp.json` |
 | DARPA hybrid behavioral (v5) | F1=**0.603**, TPR=0.44, FPR=0.02, Prec=0.957 | `darpa_tc_behavioral_v5_gcp.json` |
 | DARPA LLM-only (v4) | F1=**0.597**, TPR=0.46, FPR=0.08, Prec=0.852 | `darpa_tc_behavioral_v4_gcp.json` |
@@ -54,13 +54,22 @@ Every number below is from the **2026-06-08 GCP run** and is reflected in `paper
 
 | Mode | F1 | TPR | FPR | LLM calls | Mean latency |
 |------|-----|-----|-----|-----------|--------------|
-| `llm_only` | 0.597 | 0.46 | 0.08 | 100 | 5674 ms |
+| `llm_only` | 0.603 | 0.44 | 0.02 | 100 | **7484 ms** (re-run ablation) |
 | `graph_only` | 0.611 | 0.44 | 0.00 | 0 | <1 ms |
-| `hybrid` | 0.603 | 0.44 | 0.02 | **1** | 60 ms |
-| `hybrid_ltl` | 0.611 | 0.44 | 0.00 | 1 | 60 ms |
-| `full` | 0.611 | 0.44 | 0.00 | 1 | 60 ms |
+| `hybrid` | 0.603 | 0.44 | 0.02 | **1** | **75 ms** |
+| `hybrid_ltl` | 0.611 | 0.44 | 0.00 | 1 | 75 ms |
+| `full` | 0.611 | 0.44 | 0.00 | 1 | 75 ms |
 
-Source: `darpa_ablation_gcp.json` (meta block missing — minor MANIFEST flag).
+Source: `darpa_ablation_gcp.json` (regenerated 2026-06-08 with `evaluate_darpa_ablation.py` latency fix).
+
+### Ship gate
+
+```bash
+make validate-paper-claims   # blocks submission if paper ≠ GCP JSON
+make paper-build             # validate + PDF (scripts/build_paper.sh)
+```
+
+`scripts/gcp_orchestrate.sh` runs the same validator after pulling artifacts from the VM.
 
 ### vs. published competitors (behavioral-only, no TI oracle)
 
@@ -87,7 +96,7 @@ Source: `darpa_ablation_gcp.json` (meta block missing — minor MANIFEST flag).
 - [x] **105 traces** (55 benign + 50 attack), native Linux strace on GCP
 - [x] `real_data_results_gcp.json` with bootstrap CIs
 - [x] `ollama_fallback_to_mock_count: 0`
-- [ ] Document/mitigate high FPR (**0.291**) — benign startup → MITRE prior bias
+- [ ] Document/mitigate high FPR — **0.273** at production θ=1.2 (ungated LLM **0.291**)
 
 ### A3. DARPA TC E3 CADETS
 
@@ -100,12 +109,13 @@ Source: `darpa_ablation_gcp.json` (meta block missing — minor MANIFEST flag).
 ### A4. Paper ↔ JSON sync
 
 - [x] Dual-tier **35.7%** — not legacy 94.7%
-- [x] IPG **74.0% / 92.7%** — not legacy 59.8% / 64.1%
+- [x] IPG **57.5% / 83.3%** on GCP subset (15 files; not legacy 74%/92.7% estimates)
 - [x] DARPA F1 **0.603 / 0.597 / 0.915** — not legacy 0.568 / 0.625 / 0.931
 - [x] Real-data **n=104** — not legacy n=15 pilot
 - [ ] RSS wording in paper vs `overhead_gcp.json` (48.1 MB bench snapshot)
 - [ ] Contribution count: intro lists **5** items; conclusion says **eight** — reconcile
 - [x] No `planned` / `deferred` / `follow-on` in body (only historical comment on n=15)
+- [x] **`make validate-paper-claims`** passes (15 checks vs `results/evaluations_gcp/*.json`)
 
 ### A5. Scientific narrative
 
@@ -147,7 +157,7 @@ Or: `bash scripts/build_paper.sh` (added to repo).
 |------|--------|--------------|
 | Scenarios 14/14 on Ollama | ✅ | `scenario_results_gcp.json` |
 | Dual-tier 35.7% + draft FN analysis | ✅ | `dual_tier_reduction_gcp.json` |
-| LTL 0 FPR on real benign | ✅ | `ltl_fpr_real_gcp.json` (387 windows) |
+| LTL 0 FPR on real benign | ✅ | `ltl_fpr_real_gcp.json` (13 windows, 7 traces) |
 | Calibration ECE | 🟡 | ECE=0.205, n=104 — severely miscalibrated |
 | CoVe Ollama measurement | ⬜ | MockClassifier still in some paths |
 | Falco / N-gram baseline honesty | ⬜ | Relabel or fix contamination |
@@ -160,9 +170,9 @@ Or: `bash scripts/build_paper.sh` (added to repo).
 | # | Contribution | Paper § | GCP evidence |
 |---|--------------|---------|--------------|
 | 1 | LSM-eBPF TOCTOU | IV-A | Prototype `sentinel.c`; strace validation |
-| 2 | IPG | IV-B | 74.0% @ n=20 |
+| 2 | IPG | IV-B | 57.5% @ n=20 |
 | 3 | Hybrid graph-first + dual-tier | IV-C | Ablation + 35.7% |
-| 4 | LTL + PCABP floors | IV-E, IV-H | 0/387 FPR; PCABP F1=1.0 controlled |
+| 4 | LTL + PCABP floors | IV-E, IV-H | 0/13 LTL FPR (7 traces); PCABP F1=1.0 controlled |
 | 5 | CWAE + CoVe fusion | IV-D, IV-F | overhead_gcp; CoVe needs Ollama eval |
 | — | EGTE | (demoted) | Code only; disabled by default |
 | — | SSL/TLS uprobe | partial | Cite or demote in revision |

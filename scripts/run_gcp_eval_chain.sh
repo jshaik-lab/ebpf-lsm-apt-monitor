@@ -70,6 +70,9 @@ run "ipg-token-reduction" \
   python3 src/python/measure_ipg_token_reduction.py
 meta results/evaluations/ipg_token_reduction.json "$OUT/ipg_token_reduction_gcp.json"
 
+run "capture-real-traces" \
+  bash src/python/capture_real_traces.sh
+
 run "ltl-fpr-real" \
   python3 src/python/evaluate_ltl_real.py --out "$OUT/ltl_fpr_real_gcp.json"
 
@@ -90,9 +93,6 @@ meta results/evaluations/scenario_results.json "$OUT/scenario_results_gcp.json"
 run "dual-tier-reduction" \
   python3 src/python/measure_dual_tier_reduction.py
 meta results/evaluations/dual_tier_reduction.json "$OUT/dual_tier_reduction_gcp.json"
-
-run "capture-real-traces" \
-  bash src/python/capture_real_traces.sh
 
 run "eval-real (≥50 benign + ≥50 attack)" \
   python3 src/python/evaluate_real_data.py

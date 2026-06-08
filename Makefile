@@ -22,7 +22,9 @@ DATA_DIR         := data/input/real_traces
         eval-baselines eval-red-team eval-red-team-full eval-calibration eval-tracee \
         eval-ipg-tokens eval-darpa-tc eval-darpa-ablation eval-dual-tier \
         eval-adfa-ld eval-synthetic-multi-host \
-        eval-gcp-chain eval-all benchmark-overhead benchmark-sysbench \
+        eval-gcp-chain gcp-pipeline gcp-pipeline-full gcp-pipeline-fresh gcp-sync-from \
+        validate-paper-claims paper-build \
+        eval-all benchmark-overhead benchmark-sysbench \
         dirs clean
 
 # ── Default target ─────────────────────────────────────────────────────────────
@@ -73,6 +75,11 @@ help:
 	@echo "  eval-all        Run all evaluations except eval-real (no Ollama needed)"
 	@echo "  benchmark-overhead  CPU/memory/latency overhead measurements"
 	@echo "  benchmark-sysbench  Sysbench CPU overhead (<3% paper claim; needs sysbench)"
+	@echo ""
+	@echo "  Paper submission:"
+	@echo "  validate-paper-claims  Gate: paper/main.tex vs results/evaluations_gcp/*.json"
+	@echo "  paper-build            validate-paper-claims + scripts/build_paper.sh"
+	@echo "  gcp-pipeline           Start VM, eval, pull JSON, validate, stop VM"
 	@echo ""
 	@echo "  Other:"
 	@echo "  dirs            Create results/ and data/ directory structure"
@@ -298,6 +305,25 @@ eval-darpa-ablation: dirs
 eval-dual-tier: dirs
 	@echo "Dual-tier invocation reduction → $(EVAL_DIR)/dual_tier_reduction.json"
 	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/measure_dual_tier_reduction.py
+
+# ── GCP Mac orchestration ─────────────────────────────────────────────────────
+gcp-pipeline:
+	@bash scripts/gcp_orchestrate.sh --resume
+
+gcp-pipeline-full:
+	@bash scripts/gcp_orchestrate.sh --full
+
+gcp-pipeline-fresh:
+	@bash scripts/gcp_orchestrate.sh --fresh
+
+gcp-sync-from:
+	@bash scripts/gcp_orchestrate.sh --sync-only --no-stop
+
+validate-paper-claims:
+	@python3 scripts/validate_paper_claims.py
+
+paper-build: validate-paper-claims
+	@bash scripts/build_paper.sh
 
 eval-gcp-chain: dirs
 	@echo "Full GCP paper eval chain → $(EVAL_GCP_DIR)/"

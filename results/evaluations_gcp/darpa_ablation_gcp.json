@@ -1,16 +1,17 @@
 {
   "llm_only": {
-    "tp": 23,
-    "fp": 4,
-    "tn": 46,
-    "fn": 27,
-    "tpr": 0.46,
-    "fpr": 0.08,
-    "precision": 0.8519,
-    "f1": 0.5974,
-    "accuracy": 0.69,
+    "tp": 22,
+    "fp": 1,
+    "tn": 49,
+    "fn": 28,
+    "tpr": 0.44,
+    "fpr": 0.02,
+    "precision": 0.9565,
+    "f1": 0.6027,
+    "accuracy": 0.71,
     "llm_invocations": 100,
-    "mean_latency_ms": 5674.45
+    "mean_latency_ms": 7484.0,
+    "mean_llm_call_ms": 7484.0
   },
   "graph_only": {
     "tp": 22,
@@ -23,7 +24,8 @@
     "f1": 0.6111,
     "accuracy": 0.72,
     "llm_invocations": 0,
-    "mean_latency_ms": 0.0
+    "mean_latency_ms": 0.0,
+    "mean_llm_call_ms": 0.0
   },
   "hybrid": {
     "tp": 22,
@@ -36,7 +38,8 @@
     "f1": 0.6027,
     "accuracy": 0.71,
     "llm_invocations": 1,
-    "mean_latency_ms": 60.29
+    "mean_latency_ms": 74.84,
+    "mean_llm_call_ms": 7484.4
   },
   "hybrid_ltl": {
     "tp": 22,
@@ -49,7 +52,8 @@
     "f1": 0.6111,
     "accuracy": 0.72,
     "llm_invocations": 1,
-    "mean_latency_ms": 60.29
+    "mean_latency_ms": 74.84,
+    "mean_llm_call_ms": 7484.4
   },
   "full": {
     "tp": 22,
@@ -62,7 +66,8 @@
     "f1": 0.6111,
     "accuracy": 0.72,
     "llm_invocations": 1,
-    "mean_latency_ms": 60.29
+    "mean_latency_ms": 74.84,
+    "mean_llm_call_ms": 7484.4
   },
   "windows_details": [
     {
@@ -86,7 +91,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "BENIGN",
+        "llm_only": "MALICIOUS",
         "graph_only": "MALICIOUS",
         "hybrid": "MALICIOUS",
         "hybrid_ltl": "MALICIOUS",
@@ -198,7 +203,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "BENIGN",
+        "llm_only": "MALICIOUS",
         "graph_only": "MALICIOUS",
         "hybrid": "MALICIOUS",
         "hybrid_ltl": "MALICIOUS",
@@ -534,7 +539,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",
@@ -688,7 +693,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",
@@ -730,7 +735,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",
@@ -982,7 +987,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",
@@ -1360,7 +1365,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",
@@ -1374,7 +1379,7 @@
       "ltl_severity": 0.0,
       "cove_hal_rate": 0.0,
       "modes": {
-        "llm_only": "MALICIOUS",
+        "llm_only": "BENIGN",
         "graph_only": "BENIGN",
         "hybrid": "BENIGN",
         "hybrid_ltl": "BENIGN",

@@ -12,6 +12,12 @@ export SENTINEL__LLM__DRAFT_MODEL=llama3.2:1b
 export SENTINEL__LLM__TIMEOUT_SECONDS=300
 export SENTINEL_EVAL_PLATFORM="GCP g2-standard-4 NVIDIA L4 Ubuntu $(uname -r)"
 export SENTINEL_GIT_SHA="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+export SENTINEL_REQUIRE_GCP=1
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  echo "ERROR: run_gcp_eval_resume.sh must run on GCP sentinel-gpu-vm, not Mac." >&2
+  exit 1
+fi
 
 OUT=results/evaluations_gcp
 DARPA="${DARPA_PATH:-data/darpa/ta1-cadets-e3-official.json.2}"
@@ -33,9 +39,14 @@ run() {
 [[ -f "$OUT/ipg_token_reduction_gcp.json" ]] || { run "ipg-token-reduction" python3 src/python/measure_ipg_token_reduction.py; meta results/evaluations/ipg_token_reduction.json "$OUT/ipg_token_reduction_gcp.json"; }
 [[ -f "$OUT/ltl_fpr_real_gcp.json" ]]      || run "ltl-fpr-real" python3 src/python/evaluate_ltl_real.py --out "$OUT/ltl_fpr_real_gcp.json"
 [[ -f "$OUT/pcabp_real_nginx_gcp.json" ]]  || run "pcabp-real-nginx" env PCABP_OUT_PATH="$OUT/pcabp_real_nginx_gcp.json" PCABP_CSM_PATH="$ROOT/src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl" python3 scripts/pcabp_real_nginx.py
+[[ -f "$OUT/toctou_race_gcp.json" && "${TOCTOU_FORCE:-0}" != "1" ]] \
+  || run "toctou-race-benchmark" bash scripts/run_toctou_benchmark.sh 10000 "$OUT/toctou_race_gcp.json"
 [[ -f "$OUT/scenario_results_gcp.json" ]]  || { run "eval-scenarios" python3 src/python/measure_scenarios.py; meta results/evaluations/scenario_results.json "$OUT/scenario_results_gcp.json"; }
 [[ -f "$OUT/dual_tier_reduction_gcp.json" ]] || { run "dual-tier-reduction" python3 src/python/measure_dual_tier_reduction.py; meta results/evaluations/dual_tier_reduction.json "$OUT/dual_tier_reduction_gcp.json"; }
 [[ -f "$OUT/real_data_results_gcp.json" ]] || { run "eval-real" python3 src/python/evaluate_real_data.py; meta results/evaluations/real_data_results.json "$OUT/real_data_results_gcp.json"; }
+[[ -f "$OUT/real_data_fpr_breakdown_gcp.json" ]] || run "real-data-fpr-breakdown" python3 scripts/analyze_real_data_fpr.py "$OUT/real_data_results_gcp.json" --out "$OUT/real_data_fpr_breakdown_gcp.json"
+[[ -f "$OUT/entropy_sensitivity_gcp.json" ]] || run "entropy-threshold-sensitivity" python3 scripts/entropy_threshold_sensitivity.py --traces data/input/real_traces --labels "$OUT/real_data_results_gcp.json" --out "$OUT/entropy_sensitivity_gcp.json"
+[[ -f "$OUT/red_team_results_gcp.json" ]] || run "red-team-ollama" python3 src/python/evaluate_red_team.py --out "$OUT/red_team_results_gcp.json"
 [[ -f "$OUT/calibration_results_gcp.json" ]] || { run "eval-calibration" python3 src/python/measure_calibration.py; meta results/evaluations/calibration_results.json "$OUT/calibration_results_gcp.json"; }
 
 if [[ -f "$DARPA" ]]; then

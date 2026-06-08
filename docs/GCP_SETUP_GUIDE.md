@@ -27,13 +27,13 @@ To stay within the $20.00/month budget, the compute resources (vCPU, RAM, GPU) m
 ## 3. SSH Configuration & Connection Details
 
 ### Connection Details
-*   **Target IP**: `34.74.43.57`
+*   **Target IP**: `35.196.1.103` (ephemeral — refresh after each `gcloud compute instances start`)
 *   **SSH User**: `sentinel`
 *   **Local Private Key**: `/Users/jshaik/.ssh/id_ed25519_sentinel`
 
 ### How to SSH from your local Mac terminal:
 ```bash
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@34.74.43.57
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
 ```
 
 ### How to add/update SSH keys via GCP Cloud Shell:

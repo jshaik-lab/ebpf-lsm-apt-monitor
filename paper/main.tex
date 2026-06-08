@@ -1299,14 +1299,29 @@ between \texttt{sys\_enter} and the LSM hook will be correctly observed by
 LSM and silently missed by tracepoints.
 
 \noindent\textbf{Measured symlink-race micro-benchmark.}
-We instrument a repeated \texttt{open("race\_link")} loop ($N{=}1000$) while a
-pthread adversary swaps \texttt{race\_link} between \texttt{safe.txt} and
-\texttt{shadow\_target}.  For each successful \texttt{open}, we record the
-pre-resolution pathname (analogous to \texttt{sys\_enter\_openat} argument) and
-the post-resolution identity via \texttt{readlink(/proc/self/fd/$N$)} (analogous
-to \texttt{lsm/file\_open} \texttt{bpf\_d\_path}).  Results are produced only on
-the GCP VM (\texttt{toctou\_race\_gcp.json} in \texttt{run\_gcp\_eval\_chain.sh});
-Mac and Docker runs are blocked by platform guards.
+We instrument a repeated \texttt{open("race\_link")} loop ($N{=}10{,}000$ open
+attempts; victim and attacker pinned to CPU~0) while a pthread adversary swaps
+\texttt{race\_link} between \texttt{safe.txt} and \texttt{shadow\_target}.
+For each successful \texttt{open}, we record the pre-resolution pathname
+(\texttt{sys\_enter\_openat} analogue) and the post-resolution identity via
+\texttt{readlink(/proc/self/fd/$N$)} (an \emph{approximation} of
+\texttt{lsm/file\_open} \texttt{bpf\_d\_path}, not bitwise identical---\S\ref{sec:limits} L8).
+The GCP artifact \texttt{toctou\_race\_gcp.json} reports
+\texttt{userspace\_proxy.tracepoint\_miss\_rate}: among successful opens where
+post-resolution hits \texttt{shadow\_target}, the fraction whose pre-resolution
+pathname still reads \texttt{race\_link}---i.e., races invisible to a
+tracepoint-only HIDS.
+\textbf{This metric is not \sentinel{}'s detection rate}; it quantifies the
+telemetry-placement gap only.
+End-to-end detection of the same attack \emph{class} is validated separately by
+red-team EV-11 (Table~\ref{tab:redteam}): hard-trigger on \texttt{/etc/shadow}
+fires with ISOLATE-tier enforcement (\texttt{red\_team\_results\_gcp.json}).
+When root and \texttt{CONFIG\_BPF\_LSM} are available,
+\texttt{run\_toctou\_benchmark.sh} also attaches kernel
+\texttt{sys\_enter\_openat} vs.\ \texttt{lsm/file\_open} probes
+(\texttt{ebpf\_lsm} field in the same artifact).
+Low open yield ($\ll N$ successful opens) remains a reviewer-visible weakness;
+reviewers may request tighter pinning or larger~$N$.
 
 \subsection{AI Agent Prompt-Injection APT Chain Detection}
 
@@ -1701,11 +1716,13 @@ deployments is out of scope for this work.
 \textbf{(L7) EGTE not evaluated.} Evidence-Gated Tier-Calibrated Enforcement
 (\texttt{sentinel/egte.py}) is implemented but disabled by default; its
 calibration corpus is synthetic-only and is excluded from this evaluation.
-\textbf{(L8) TOCTOU eBPF confirmation.} The userspace open-vs-\texttt{readlink}
-measurement runs on GCP only; an optional eBPF harness
-(\texttt{scripts/run\_toctou\_benchmark.sh} with root +
-\texttt{CONFIG\_BPF\_LSM}) attaches production \texttt{tp\_openat} and
-\texttt{lsm\_file\_open} probes for kernel-level confirmation.
+\textbf{(L8) TOCTOU measurement scope.} The userspace open-vs-\texttt{readlink}
+layer is a deliberate proxy for the tracepoint/LSM pathname delta; it is not
+bitwise identical to production \texttt{lsm/file\_open} + \texttt{bpf\_d\_path}.
+The same harness optionally attaches kernel eBPF probes when run with root on
+GCP (\texttt{ebpf\_lsm} in \texttt{toctou\_race\_gcp.json}).  Neither layer
+proves live blocking---only that telemetry placement matters; pair with EV-11
+(Table~\ref{tab:redteam}) for end-to-end detection.
 
 %% ═════════════════════════════════════════════════════════════════════════════
 \section{Security Analysis}\label{sec:analysis}
@@ -1817,22 +1834,25 @@ EV-14$^*$ & DNS rebinding (domain→C2 IP)        & --- & \checkmark & --- & ---
 EV-15 & Multi-stage APT dormancy                & \checkmark & --- & \checkmark & --- & --- \\
 \midrule
 \multicolumn{2}{@{}l}{\textbf{Detection rate (GCP Ollama)}} & & & & &
-\textbf{see \texttt{red\_team\_results\_gcp.json}} \\
+\textbf{14/15 (93.3\%)} \\
 \bottomrule
 \end{tabular}
 \vspace{2pt}
-{\scriptsize EV-10 through EV-15 are new scenarios requiring PCABP, LSM post-resolution, or LTL temporal logic to detect; they would evade a syscall-type-only or entropy-only detector. EV-11 models SENTINEL's TOCTOU architectural advantage over tracepoint-based detectors.}
+{\scriptsize EV-10 through EV-15 are new scenarios requiring PCABP, LSM post-resolution, or LTL temporal logic to detect; they would evade a syscall-type-only or entropy-only detector. EV-11 models SENTINEL's TOCTOU architectural advantage over tracepoint-based detectors; the symlink-race micro-benchmark (\S\ref{sec:eval_lsm}) quantifies the tracepoint miss rate, while EV-11 confirms end-to-end hard-trigger + LSM detection. EV-14 evaded (DNS rebinding).}
 \end{table}
 
 \noindent\textbf{TOCTOU architectural advantage (EVASION-11).}
 EVASION-11 models a symlink-swap race: attacker's \texttt{open()} passes
-\texttt{/tmp/safe} at tracepoint (sys\_enter\_openat), then a concurrent
+\texttt{/tmp/safe} at tracepoint (\texttt{sys\_enter\_openat}), then a concurrent
 process replaces the symlink to \texttt{/etc/shadow} before the kernel
 resolves the final dentry.  A tracepoint-only eBPF detector logs
 \texttt{/tmp/safe} (false negative); \sentinel{}'s LSM hook fires
 post-resolution on the resolved \texttt{/etc/shadow} dentry and triggers
-the hard-trigger resource path.  This confirms the TOCTOU architectural
-guarantee (\S\ref{sec:eval_lsm}) in a modelled adversarial context.
+the hard-trigger resource path (ISOLATE tier, conf\,=\,0.93 on GCP).
+The micro-benchmark in \S\ref{sec:eval_lsm} measures how often that gap appears
+under controlled racing; EV-11 confirms that \sentinel{} \emph{detects and enforces}
+on the resolved path in the full pipeline---telemetry placement and end-to-end
+blocking are separate claims.
 
 \noindent\textbf{PCABP nginx-mimicry (EVASION-10).}
 Heap-injected shellcode calls \texttt{connect()} with a syscall pattern

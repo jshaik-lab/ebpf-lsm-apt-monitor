@@ -31,7 +31,7 @@
 |------|--------|
 | Instance | `sentinel-gpu-vm` |
 | Zone | `us-east1-c` |
-| IP | `34.74.43.57` |
+| IP | `35.196.1.103` |
 | SSH user | `sentinel` |
 | SSH key | `~/.ssh/id_ed25519_sentinel` |
 | Machine | g2-standard-4 + NVIDIA L4 24 GB |
@@ -43,7 +43,7 @@
 gcloud compute instances start sentinel-gpu-vm --zone=us-east1-c
 
 # SSH
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@34.74.43.57
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
 
 # Stop VM (save compute cost — disk billing continues ~$10/mo)
 gcloud compute instances stop sentinel-gpu-vm --zone=us-east1-c
@@ -78,7 +78,7 @@ Deploy code to GCP:
 
 ```bash
 rsync -avz --exclude .venv --exclude results --exclude .git \
-  ./ sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/
+  ./ sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/
 ```
 
 ---
@@ -89,7 +89,7 @@ rsync -avz --exclude .venv --exclude results --exclude .git \
 
 ```bash
 gcloud compute instances start sentinel-gpu-vm --zone=us-east1-c
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@34.74.43.57
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
 ```
 
 ### 2. Bootstrap (first time or after OS update)
@@ -116,7 +116,7 @@ From Mac:
 
 ```bash
 rsync -avP "/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2" \
-  sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/data/darpa/
+  sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/data/darpa/
 ```
 
 ### 5. Run full eval chain (~6–10 hours with DARPA)
@@ -133,7 +133,7 @@ Or via Makefile: `make eval-gcp-chain`
 
 ```bash
 # From Mac
-rsync -avz sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+rsync -avz sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

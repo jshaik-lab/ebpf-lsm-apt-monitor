@@ -422,12 +422,12 @@ records the PID, process name, syscall type, resource identifier, and
 timestamp.  The \emph{Intent Provenance Graph}
 $\mathcal{G} = (V, E, \lambda, \omega)$ is a directed multigraph where:
 \begin{align}
-V &= \{(\textit{comm}, \rho(r)) \mid
-       \exists\, e_i : e_i.\textit{comm} = \textit{comm},\,
+V &= \{(\textit{comm}, \rho(r)) \mid\nonumber\\
+    &\quad \exists\, e_i : e_i.\textit{comm} = \textit{comm},\,
        \rho(e_i.r) = \rho(r)\}, \label{eq:vertices}\\
-E &= \{(v_j, v_k, \textit{sc}_{j{\to}k}, \Delta t) \mid
-       e_j, e_{j+1} \in \mathcal{S},\,
-       v_j = \nu(e_j),\, v_k = \nu(e_{j+1})\}, \label{eq:edges}
+E &= \{(v_j, v_k, \textit{sc}_{j{\to}k}, \Delta t)\!\mid\nonumber\\
+    &\quad e_j, e_{j+1} \in \mathcal{S},\nonumber\\
+    &\quad v_j{=}\nu(e_j),\; v_k{=}\nu(e_{j+1})\}, \label{eq:edges}
 \end{align}
 where $\rho(r) \in \{\textsc{Exec}, \textsc{File}, \textsc{Net},
 \textsc{Pipe}\}$ is the resource-type abstraction function,
@@ -738,6 +738,7 @@ temporal kill-chain sequences.}
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.1}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}lll@{}}
 \toprule
 \textbf{ID} & \textbf{Formula} & \textbf{Severity} \\
@@ -748,7 +749,8 @@ AX-3 & $\Box(\texttt{prctl}(\texttt{PR\_SET\_NAME}) \Rightarrow \neg\Diamond_{50
 AX-4 & $\Box(\neg\texttt{execve}(\texttt{/tmp/*} \vee \texttt{/dev/shm/*}))$ & HIGH \\
 AX-5 & $\Box(\texttt{setuid}(0) \Rightarrow \neg\Diamond_5(\texttt{connect}(*)))$ & CRITICAL \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 AX-1, AX-3, AX-4, and AX-5 are evaluated by a \textsc{RuntimeMonitor} in O(1)
@@ -814,12 +816,12 @@ with $\textit{ai\_divergence}\!\approx\!0$ drag a \emph{confirmed} injection
 to exactly $0.40$, which maps to the PAUSE tier rather than KILL.  Because a
 deterministic violation must be non-maskable under fusion, we use a
 floor-gated consensus:
-\begin{equation}
-\textit{pcabp\_score} = \max\!\big(\,0.4\,\textit{static} +
-  0.6\,\textit{ai},\;\; \tau_{\!f}\cdot\textit{static}\,\big),
-\quad \tau_{\!f} = 0.55,
+\begin{align}
+\textit{pcabp\_score} &= \max\!\bigl(0.4\,\textit{static} +
+  0.6\,\textit{ai},\; \tau_{\!f}\cdot\textit{static}\bigr), \nonumber\\
+&\quad \tau_{\!f} = 0.55,
 \label{eq:pcabp}
-\end{equation}
+\end{align}
 so $\textit{static}{=}1$ floors the score in the KILL band irrespective of
 $\textit{ai\_divergence}$, while $\textit{ai\_divergence}$ may only raise
 severity (toward QUARANTINE/ISOLATE); the AI-only path
@@ -984,7 +986,7 @@ has already executed.
 
 \subsection{Classification on Simulation Scenarios}
 
-\begin{table}[!t]
+\begin{table*}[!t]
 \caption{Classification results on all 14 simulation scenarios, measured on
 the GCP VM (Ubuntu 24.04, 4\,vCPU, 16\,GB RAM, NVIDIA L4 GPU, Ollama
 \texttt{llama3.1:8b}). Confidence scores and MITRE TTP mappings are
@@ -1025,14 +1027,14 @@ All 11 attack scenarios are correctly classified as MALICIOUS with high confiden
 and all 3 benign scenarios are correctly classified as BENIGN with no false alerts ---
 yielding an overall accuracy of \textbf{14/14 = 100.0\%}.
 Full JSON at \texttt{results/evaluations\_gcp/scenario\_results\_gcp.json}.}
-\end{table}
+\end{table*}
 
 Table~\ref{tab:accuracy}: 14/14 correct on GCP Ollama (\texttt{scenario\_results\_gcp.json});
 all attacks exceed ISOLATE threshold ($c \geq 0.85$).
 
 \subsection{IPG Compression Effectiveness}
 
-\begin{table}[!t]
+\begin{table*}[!t]
 \caption{IPG token compression at $n{=}20$ and full-trace, measured on the GCP VM
 platform with tiktoken cl100k\_base on \textbf{15 strace files} (5 attack traces
 used for window-$n{=}20$ averages; 55 benign + 50 attack traces in the broader
@@ -1054,7 +1056,7 @@ full & --- & --- & \textbf{785} & \textbf{83.3\%} \\
 5 attack strace traces at $n{=}20$ (avg.\ raw\,=\,1{,}105 tokens;
 avg.\ IPG\,=\,470 tokens) and the same files at full trace (avg.\ raw\,=\,4{,}707;
 avg.\ IPG\,=\,785). JSON: \texttt{ipg\_token\_reduction\_gcp.json}.}
-\end{table}
+\end{table*}
 
 Table~\ref{tab:compression} reports IPG compression on the GCP-measured subset.
 At $n\!=\!20$ events the IPG achieves \textbf{57.5\% token reduction} (avg.\
@@ -1139,7 +1141,7 @@ which classifies all 14 scenarios correctly.
 
 We evaluate SENTINEL on \textbf{105 native-Linux strace traces} captured on the
 GCP VM (55 benign + 50 attack-mimicking) using
-\texttt{strace -f -tt -T -e trace=execve,openat,connect,listen,fork,clone,mmap,ptrace,setuid}.
+\texttt{strace -f -tt -T -e trace=execve,openat,}\allowbreak\texttt{connect,listen,fork,clone,}\allowbreak\texttt{mmap,ptrace,setuid}.
 Benign traces cover \texttt{systemctl}/\texttt{journalctl}/\texttt{ps}/
 \texttt{openssl}/\texttt{python}/shell pipelines; attack traces span T1003,
 T1041, T1055, T1059, T1068, T1071, T1078, T1562. The capture script is
@@ -1202,7 +1204,7 @@ We report \textbf{two modes}:
         appears in both ground truth and LLM input (partial circularity).
 \end{itemize}
 
-\begin{table}[!t]
+\begin{table*}[!t]
 \caption{DARPA TC~E3 CADETS window classification ($n{=}100$ windows,
 50 attack / 50 benign, \texttt{llama3.1:8b} via Ollama on a Linux
 x86\_64 host; platform details in \S\ref{sec:eval_setup}). Behavioral mode
@@ -1256,7 +1258,7 @@ systems and is left to future work. JSON:
 \texttt{darpa\_tc\_behavioral\_v5\_gcp.json},
 \texttt{darpa\_tc\_behavioral\_v4\_gcp.json},
 \texttt{darpa\_tc\_v8\_ti\_aided\_gcp.json}.}
-\end{table}
+\end{table*}
 
 \noindent\textbf{Ablation Study.}
 To quantify the individual contribution of each component in the \sentinel{} defense pipeline, we conduct a 5-mode ablation study using the same 100-window evaluation subset under identical host and model conditions. Table~\ref{tab:ablation} reports the results.
@@ -1273,7 +1275,7 @@ matches \texttt{hybrid\_ltl} on this corpus (F1\,$=$\,0.611): graph-first
 routing already resolves 99\% of windows without LLM inference, and LTL floors
 handle the remainder deterministically.
 
-\begin{table}[!t]
+\begin{table*}[!t]
 \caption{Ablation Study of \sentinel{} Components on DARPA TC~E3 ($n{=}100$ windows, 50 attack / 50 benign, \texttt{llama3.1:8b} via Ollama on GCP VM). LLM Invocations indicates the total number of full LLM inference cycles triggered over the 100 test windows.}
 \label{tab:ablation}
 \centering
@@ -1295,7 +1297,7 @@ Full (\texttt{full})             & 0.611 & 0.440 & 0.000 & 1   & 61\,ms \\
 divided by 100 windows). LLM-only invokes the 8B model on every window
 ($\approx$5.7\,s each); hybrid invokes it once ($\approx$61\,ms amortized).
 JSON: \texttt{darpa\_ablation\_gcp.json}.}
-\end{table}
+\end{table*}
 
 \subsection{Limitations and Honest Reporting}\label{sec:limits}
 

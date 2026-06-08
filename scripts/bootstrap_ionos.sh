@@ -63,10 +63,15 @@ ollama pull llama3.2:1b
 ollama list
 
 # Clone repo
-if [[ ! -d "$APP_DIR/.git" ]]; then
-  sudo -u "$INSTALL_USER" git clone "$REPO_URL" "$APP_DIR"
-else
+if [[ -d "$APP_DIR/.git" ]]; then
   sudo -u "$INSTALL_USER" git -C "$APP_DIR" pull --ff-only || true
+elif [[ -d "$APP_DIR" ]] && [[ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ]]; then
+  log "Directory $APP_DIR exists (non-git) — skipping clone; use rsync deploy from Mac for private repos"
+else
+  sudo -u "$INSTALL_USER" git clone "$REPO_URL" "$APP_DIR" || {
+    log "git clone failed (private repo?). Deploy via: rsync project to $APP_DIR"
+    mkdir -p "$APP_DIR"
+  }
 fi
 
 sudo -u "$INSTALL_USER" bash -lc "

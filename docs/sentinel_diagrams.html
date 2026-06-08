@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SENTINEL — Architecture & Process Flow</title>
+<title>SENTINEL — Unified Intent Provenance Graph (IPG) & Hybrid Detection Architecture</title>
 <style>
   :root {
     --kernel:   #1a0533;
@@ -51,6 +51,30 @@
   header .shield { font-size: 36px; }
   header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
   header p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Results table ── */
+  .results-grid {
+    max-width: 980px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  @media (max-width: 800px) { .results-grid { grid-template-columns: 1fr; } }
+  .result-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  .result-card h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; margin-bottom: 10px; color: var(--accent);
+  }
+  .result-card table { width: 100%; font-size: 12px; border-collapse: collapse; }
+  .result-card td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .result-card td:last-child { text-align: right; font-family: monospace; color: #81c784; }
+  .result-card .src { font-size: 10px; color: var(--muted); margin-top: 10px; font-family: monospace; }
+  .status-banner {
+    max-width: 980px; margin: 0 auto 20px; padding: 12px 16px;
+    background: rgba(46,125,50,0.12); border: 1px solid rgba(129,199,132,0.35);
+    border-radius: 8px; font-size: 12px; line-height: 1.6;
+  }
 
   /* ── Tabs ── */
   .tabs {
@@ -240,6 +264,25 @@
     background: rgba(88,166,255,0.15); color: var(--accent);
     border: 1px solid rgba(88,166,255,0.3);
   }
+  .path-banner {
+    max-width: 1200px; margin: 0 auto 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .path-card {
+    border-radius: 8px; padding: 14px 16px;
+    border: 1px solid var(--border); background: var(--card);
+    font-size: 11px; line-height: 1.6;
+  }
+  .path-card.primary { border-color: rgba(88,166,255,0.45); }
+  .path-card.legacy  { border-color: rgba(245,127,23,0.35); opacity: 0.92; }
+  .path-card h4 {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .path-card.primary h4 { color: var(--accent); }
+  .path-card.legacy h4  { color: #ffb74d; }
+  .path-card code { font-size: 10px; }
+  @media (max-width: 768px) { .path-banner { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -247,8 +290,8 @@
 <header>
   <div class="shield">🛡️</div>
   <div>
-    <h1>SENTINEL — Zero Trust Kernel Observability Framework</h1>
-    <p>eBPF + Local LLM Intent-Based Enforcement &nbsp;·&nbsp; IEEE TIFS Paper 1 &nbsp;·&nbsp; Architecture &amp; Process Flow</p>
+    <h1>SENTINEL — Unified Intent Provenance Graph (IPG) &amp; Hybrid Detection Architecture</h1>
+    <p>GCP measured results (2026-06-08) &nbsp;·&nbsp; Graph-First Option A &nbsp;·&nbsp; AgentPipeline &nbsp;·&nbsp; DARPA F1=0.603 hybrid / 0.915 TI-aided &nbsp;·&nbsp; IEEE TIFS Paper 1</p>
   </div>
 </header>
 
@@ -256,6 +299,7 @@
 <div class="tabs">
   <div class="tab active" onclick="switchTab('arch')">🏗️ &nbsp;Architecture &amp; Tech Stack</div>
   <div class="tab" onclick="switchTab('flow')">🔄 &nbsp;Process &amp; Data Flow</div>
+  <div class="tab" onclick="switchTab('results')">📊 &nbsp;GCP Measured Results</div>
 </div>
 
 <!-- ══════════════════════════════════════════════════
@@ -264,6 +308,16 @@
 <div id="tab-arch" class="panel active">
   <div class="section-header">
     System Architecture <span class="badge">Tech Stack View</span>
+  </div>
+
+  <div class="path-banner" style="grid-template-columns:1fr">
+    <div class="path-card primary">
+      <h4>Production runtime — AgentPipeline (Option A)</h4>
+      <code>main.py</code> → <code>SentinelAgent</code> → <code>AgentPipeline</code>
+      (DetectorAgent → AnalyzerAgent → AuditorAgent). Full stack:
+      <code>provenance_score()</code> gray-zone gates (0.15 / 0.55), dual-tier LLM, PCABP,
+      CoVe, LTL, <code>fuse_scores()</code>, CWAE.
+    </div>
   </div>
 
   <!-- Legend -->
@@ -290,14 +344,15 @@
         <span class="chip">:8080</span>
       </div>
       <div style="font-size:10px;margin-top:8px;opacity:0.7;line-height:1.6">
-        GET /health<br>GET /status<br>GET /decisions<br>GET /metrics
+        GET /health · /ready<br>GET /status<br>GET /decisions
       </div>
     </div>
 
     <div class="arch-box box-obs" style="grid-column:2">
       <div class="box-title">Observability Stack</div>
       <div class="chip-row">
-        <span class="chip">Prometheus :9091</span>
+        <span class="chip">Metrics :9090</span>
+        <span class="chip">Prometheus UI :9091</span>
         <span class="chip">Grafana :3000</span>
         <span class="chip">JSONL Audit Log</span>
         <span class="chip">Incident Log</span>
@@ -315,13 +370,13 @@
       <div style="margin-bottom:10px">
         <div style="font-size:10px;opacity:0.6;margin-bottom:4px">DRAFT MODEL</div>
         <div class="chip-row"><span class="chip" style="border-color:#81c784">llama3.2:1b</span></div>
-        <div style="font-size:10px;opacity:0.55;margin-top:4px">Fast triage · 1-3s</div>
+        <div style="font-size:10px;opacity:0.55;margin-top:4px">Gray-zone draft · ~0.025ms mock / seconds on Ollama</div>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.1);margin:10px 0"></div>
       <div style="margin-bottom:10px">
         <div style="font-size:10px;opacity:0.6;margin-bottom:4px">FULL MODEL</div>
         <div class="chip-row"><span class="chip" style="border-color:#81c784">llama3.1:8b</span></div>
-        <div style="font-size:10px;opacity:0.55;margin-top:4px">Deep analysis · 8-15s</div>
+        <div style="font-size:10px;opacity:0.55;margin-top:4px">Gray-zone full · ~8–32s GCP L4 (scenario-dependent)</div>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.1);margin:10px 0"></div>
       <div style="margin-bottom:8px">
@@ -344,8 +399,8 @@
         <span class="chip">prctl PR_SET_NAME</span>
       </div>
       <div style="font-size:10px;margin-top:8px;opacity:0.7;line-height:1.6">
-        Ring buffer · struct event_t · 180 bytes<br>
-        event_id UUID · 16 sc_types · 64-event entropy window
+        Ring buffer · struct event_t · <strong>224 bytes</strong><br>
+        event_id UUID · user_ip (PCABP) · 16 sc_types · 64-event entropy window
       </div>
     </div>
 
@@ -364,71 +419,83 @@
         </div>
       </div>
       <div style="font-size:10px;margin-top:8px;opacity:0.55">
-        asyncio.Queue · Semaphore(4) concurrent LLM calls · auto-fallback to simulation
+        asyncio.Queue · Semaphore(4) concurrent LLM calls · live eBPF load failure → SimulationSource fallback
       </div>
     </div>
 
     <!-- Arrow -->
     <div style="grid-column:1/3;display:flex;justify-content:center;align-items:center;height:30px;position:relative">
       <div style="position:absolute;left:25%;width:50%;height:2px;background:linear-gradient(90deg,rgba(88,166,255,0.2),rgba(88,166,255,0.6),rgba(88,166,255,0.2))"></div>
-      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent);z-index:1">KernelEvent stream · ts_ns, pid, comm, sc_type, resource, event_id</div>
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent);z-index:1">KernelEvent stream · ts_ns, pid, comm, sc_type, resource, event_id, ip (user_ip)</div>
       <div style="position:absolute;right:25%;top:50%;transform:translateY(-50%);color:var(--accent);font-size:14px">▼</div>
     </div>
 
     <!-- ── Row 2: Stage 1 ── -->
     <div class="arch-box box-s1" style="grid-column:1/3">
-      <div class="box-title">Stage 1 — DetectorAgent</div>
-      <div class="box-file">agents/detector.py · agent.py</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px">
+      <div class="box-title">Stage 1 — DetectorAgent: Fast Triage (No LLM)</div>
+      <div class="box-file">agents/detector.py</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px">
         <div style="border-radius:6px;padding:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">ENTROPY TRIAGE</div>
-          <div style="font-size:10px;opacity:0.65;line-height:1.5">Shannon entropy · per-PID · 64-event window · skip if low</div>
+          <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">LAYER 0 — PCABP STATIC</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.5">user_ip ∉ ValidCallSiteMap bloom → immediate ANALYZE (<code>pcabp_static_violation</code>)</div>
         </div>
         <div style="border-radius:6px;padding:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
           <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">HARD-TRIGGER BYPASS</div>
-          <div style="font-size:10px;opacity:0.65;line-height:1.5">/.ssh/ · /etc/shadow · /proc/self/mem · immediate LLM · child-PID bypass</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.5">/.ssh/, /etc/shadow, /proc/self/mem → always ANALYZE</div>
         </div>
         <div style="border-radius:6px;padding:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">IPG DEDUP</div>
-          <div style="font-size:10px;opacity:0.65;line-height:1.5">SHA-256 fingerprint · rolling Bloom filter · skip repeated behavioral patterns</div>
+          <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">FLAGGED-PARENT BYPASS</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.5">Child of MALICIOUS PID (TTL 120s) → always ANALYZE</div>
+        </div>
+        <div style="border-radius:6px;padding:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:10px;font-weight:700;color:#4db6ac;margin-bottom:4px">ENTROPY + MARKOV GATE</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.5">Marginal H + first-order Markov rate + novel (comm,syscall) edges → SKIP or ANALYZE</div>
         </div>
       </div>
+      <div style="font-size:10px;opacity:0.55;margin-top:8px">Output: <code>DetectionSignal</code> with per-PID window + trigger reason · target &lt;0.1 ms/event</div>
     </div>
 
     <!-- Arrow -->
     <div style="grid-column:1/3;display:flex;justify-content:center;align-items:center;height:28px;position:relative">
       <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--accent);font-size:14px">▼</div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent)">20-event window → IPGBuilder.build()</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent)">DetectionSignal → AnalyzerAgent queue</div>
     </div>
 
     <!-- ── Row 3: Stage 2 ── -->
     <div class="arch-box box-s2" style="grid-column:1/3">
-      <div class="box-title">Stage 2 — AnalyzerAgent (Algorithm 1 + 2)</div>
-      <div class="box-file">agents/analyzer.py · ipg.py · llm/base.py</div>
-      <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:6px">
+      <div class="box-title">Stage 2 — AnalyzerAgent: IPG + Provenance Scorer + Gray-Zone LLM + PCABP</div>
+      <div class="box-file">agents/analyzer.py · ipg.py · provenance_ml/scorer.py · llm/base.py</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px">
         <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">IPG BUILDER — Algorithm 1</div>
+          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">1 — IPG BUILD (Alg. 1)</div>
           <div style="font-size:10px;opacity:0.65;line-height:1.6">
-            Directed multigraph · YAML · Merge parallel edges<br>
-            Nodes: (comm, rtype) pairs — EXEC FILE NET MEM SYS<br>
-            Edges: syscall + dt_ms + sensitive flag<br>
-            64.1% token reduction (window=20)<br>
-            Structural entropy H(G)
+            <code>build()</code> → directed multigraph<br>
+            <code>analyze()</code> → IPGMeta behavioral signals<br>
+            <code>serialize()</code> → YAML · <strong>74.0%</strong> token reduction @ window=20 (GCP)
           </div>
         </div>
         <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">DUAL-TIER CLASSIFIER — Algorithm 2</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            <div style="border-radius:4px;padding:6px;background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.15)">
-              <div style="font-size:10px;font-weight:700;margin-bottom:3px">DRAFT (1b)</div>
-              <div style="font-size:9px;opacity:0.6;line-height:1.5">entropy &lt; thresh → classify<br>BENIGN + conf ≥ 0.90 → fast-path ✓<br>MALICIOUS → escalate</div>
-            </div>
-            <div style="border-radius:4px;padding:6px;background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.15)">
-              <div style="font-size:10px;font-weight:700;margin-bottom:3px">FULL (8b)</div>
-              <div style="font-size:9px;opacity:0.6;line-height:1.5">Always for MALICIOUS<br>High entropy bypass<br>Hard-trigger bypass</div>
-            </div>
+          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">2 — PROVENANCE SCORER</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.6">
+            <code>provenance_score(meta, G)</code> deterministic hand-weighted scorer (not GBDT).<br>
+            ≤0.15 BENIGN · ≥0.55 MALICIOUS → skip LLM.<br>
+            <code>GBDTDetector</code> exists but unwired (no <code>cadets_gbdt.pkl</code>).
           </div>
-          <div style="font-size:9px;margin-top:6px;opacity:0.55">Measured: 35.7% invocation reduction · 13/14 scenario accuracy</div>
+        </div>
+        <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">3 — GRAY-ZONE LLM (Alg. 2)</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.6">
+            (0.15, 0.55) → <code>DualTierClassifier</code>: llama3.2:1b draft → llama3.1:8b full.<br>
+            Measured <strong>35.7%</strong> invocation reduction (5/14 scenarios, GCP).
+          </div>
+        </div>
+        <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
+          <div style="font-size:10px;font-weight:700;color:#5c9bd6;margin-bottom:6px">4 — PCABP WINDOW SCORE</div>
+          <div style="font-size:10px;opacity:0.65;line-height:1.6">
+            Static bloom violation + BehavioralEncoder AI divergence.<br>
+            <code>pcabp_score = max(0.4·static+0.6·ai, 0.55·static)</code><br>
+            Disabled when <code>ip=0</code> (simulation / CDM18).
+          </div>
         </div>
       </div>
     </div>
@@ -436,39 +503,33 @@
     <!-- Arrow -->
     <div style="grid-column:1/3;display:flex;justify-content:center;align-items:center;height:28px;position:relative">
       <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--accent);font-size:14px">▼</div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent)">ThreatDecision {label, confidence, mitre_ttps, evidence_refs, event_id UUIDs}</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2px 10px;font-size:10px;color:var(--accent)">Unified Score Fusion (Algorithm 4)</div>
     </div>
 
     <!-- ── Row 4: Stage 3 ── -->
     <div class="arch-box box-s3" style="grid-column:1/3">
-      <div class="box-title">Stage 3 — AuditorAgent (Novel Contributions 4–6)</div>
-      <div class="box-file">agents/auditor.py · cove.py · ltl.py · enforcement.py · egte.py</div>
+      <div class="box-title">Stage 3 — AuditorAgent: Multi-Axis Security Auditing &amp; Fusion</div>
+      <div class="box-file">agents/auditor.py · cove.py · ltl.py · provenance_ml/fusion.py</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px">
         <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">CoVe LOOP — Novel 5</div>
+          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">CoVe GROUNDING (Alg. 5)</div>
           <div style="font-size:10px;opacity:0.65;line-height:1.55">
-            Draft → Verify → Ground → Synthesize<br>
-            EvidenceLinker: UUID links LLM claims → eBPF event_ids<br>
-            Blocks hallucinated syscalls/resources
+            Draft→Verify→Ground→Synthesize. EvidenceLinker matches <code>evidence_refs</code> to eBPF <code>event_id</code> UUIDs. If hallucination rate &gt; <strong>50%</strong>, caps MALICIOUS confidence at <strong>0.29</strong>.
           </div>
         </div>
         <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">LTL GUARDIAN — Novel 4</div>
+          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">LTL SYMBOLIC GUARDIAN (Alg. 4)</div>
           <div style="font-size:10px;opacity:0.65;line-height:1.55">
-            AX-1: nginx ≠ execve(/bin/bash)<br>
-            AX-2: shadow→connect kill-chain<br>
-            AX-3: prctl ≠ shadow_read<br>
-            AX-4: ≠execve(/tmp/*)<br>
-            AX-5: setuid(0)→connect
+            RuntimeMonitor O(1): AX-1, AX-3, AX-4, AX-5.<br>
+            BüchiMonitor: AX-2 shadow→exfil kill-chain.<br>
+            Violations boost MALICIOUS confidence (floor override).
           </div>
         </div>
         <div style="border-radius:6px;padding:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.07)">
-          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">CWAE ENGINE — Novel 3</div>
+          <div style="font-size:10px;font-weight:700;color:#9575cd;margin-bottom:5px">SCORE FUSION (Alg. 4)</div>
           <div style="font-size:10px;opacity:0.65;line-height:1.55">
-            Confidence → tier assignment<br>
-            Enforce p50=0.199ms, p99=0.253ms<br>
-            Writes audit.jsonl + incidents.jsonl<br>
-            EGTE optional (conformal calib.)
+            <code>fuse_scores(graph, llm, ltl, pcabp, cove_cap)</code> in <code>provenance_ml/fusion.py</code>.<br>
+            CWAE uses <code>effective_conf = max(llm_conf, pcabp_score)</code>. Optional EGTE conformal cap (disabled by default).
           </div>
         </div>
       </div>
@@ -519,8 +580,8 @@
       <span class="chip">Pydantic Settings</span><span class="chip">httpx async</span><span class="chip">structlog</span>
       <span class="chip">prometheus-client</span><span class="chip">BCC / libbpf</span><span class="chip">Ollama HTTP API</span>
       <span class="chip">Docker Compose</span><span class="chip">Prometheus</span><span class="chip">Grafana</span>
-      <span class="chip">pytest (201 tests)</span><span class="chip">ruff + mypy</span><span class="chip">tiktoken</span>
-      <span class="chip">CADETS CDM18 JSONL</span><span class="chip">ARM64 eBPF (BPF_PROG_TYPE_TRACEPOINT)</span>
+      <span class="chip">pytest (218 tests)</span><span class="chip">ruff + mypy</span><span class="chip">tiktoken</span>
+      <span class="chip">CADETS CDM18 JSONL</span><span class="chip">ARM64 eBPF LSM Hooks (BPF_PROG_TYPE_LSM)</span>
     </div>
   </div>
 </div><!-- /arch panel -->
@@ -531,7 +592,15 @@
 ══════════════════════════════════════════════════ -->
 <div id="tab-flow" class="panel">
   <div class="section-header">
-    Process &amp; Data Flow <span class="badge">Component Invocation View</span>
+    Process &amp; Data Flow <span class="badge">AgentPipeline (Option A)</span>
+  </div>
+
+  <div class="path-banner" style="max-width:980px;grid-template-columns:1fr">
+    <div class="path-card primary">
+      <h4>Production path — SentinelAgent → AgentPipeline</h4>
+      <code>main.py</code> → <code>SentinelAgent.run()</code> → <code>AgentPipeline.push_event()</code>.
+      Steps 2–10 below reflect the live runtime (Option A hybrid stack).
+    </div>
   </div>
 
   <div class="legend">
@@ -558,17 +627,19 @@
         <div class="flow-node box-kernel">
           <h3>🐧 eBPF Kernel Program</h3>
           <p>Tracepoints hook <strong>execve, openat, connect, mmap, setuid</strong> and LSM hooks intercept
-          security-sensitive operations. Each event is packed into a 180-byte <code>struct event_t</code>
-          with a <strong>UUID event_id</strong> for forensic linking. Submitted via lock-free ring buffer
-          to userspace at rates up to 2.9M events/s.</p>
-          <div class="fn-file">sentinel.c · BCC loader: bpf.py · Fallback: SimulationSource (simulation.py)</div>
+          security-sensitive operations. Each event is packed into a <strong>224-byte</strong> <code>struct event_t</code>
+          (must match <code>EventStruct</code> in bpf.py) with a <strong>UUID event_id</strong> and
+          <strong>user_ip</strong> from <code>bpf_get_stack(BPF_F_USER_STACK)</code> for PCABP call-site verification.
+          Submitted via lock-free ring buffer to userspace.</p>
+          <div class="fn-file">sentinel.c · bpf.py (BPFLoader) · live load failure → SimulationSource (simulation.py)</div>
           <div>
-            <span class="output-tag">pid, ppid, uid</span>
+            <span class="output-tag">pid, ppid, uid, gid</span>
             <span class="output-tag">comm[:15]</span>
             <span class="output-tag">sc_type (16 types)</span>
             <span class="output-tag">resource path/ip:port</span>
             <span class="output-tag">ts_ns</span>
             <span class="output-tag">event_id UUID</span>
+            <span class="output-tag">user_ip → KernelEvent.ip</span>
           </div>
         </div>
       </div>
@@ -585,122 +656,71 @@
       <div class="flow-right"></div>
     </div>
 
-    <!-- Step 2: Event Queue + Windowing -->
+    <!-- Step 2: Event Ingestion -->
     <div class="flow-step">
-      <div class="flow-left"><span class="out-badge">20-event window</span></div>
+      <div class="flow-left"><span class="out-badge">KernelEvent</span></div>
       <div class="flow-center">
         <div class="step-circle" style="background:#1565c0;border-color:#42a5f5">2</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
         <div class="flow-node box-source">
-          <h3>📥 SentinelAgent — Event Ingestion Loop</h3>
-          <p>Receives <code>KernelEvent</code> objects from the BPF ring buffer (or SimulationSource).
-          Maintains a <strong>per-PID sliding window</strong> (configurable, default 20 events).
-          Updates the <strong>EntropyTracker</strong> (Shannon entropy over 64 events) for each PID.</p>
-          <div class="fn-file">agent.py · asyncio.TaskGroup · Semaphore(4) for concurrent LLM calls</div>
-          <div>
-            <span class="output-tag" style="background:rgba(66,165,245,0.1);border-color:rgba(66,165,245,0.3);color:#42a5f5">window[pid] → List[KernelEvent]</span>
-            <span class="output-tag" style="background:rgba(66,165,245,0.1);border-color:rgba(66,165,245,0.3);color:#42a5f5">entropy H per PID</span>
-          </div>
+          <h3>📥 SentinelAgent — Event Ingestion</h3>
+          <p>Live eBPF ring buffer or <code>SimulationSource</code> feeds events into
+          <code>AgentPipeline.push_event()</code>. FastAPI (:8080) and Prometheus metrics (:9090)
+          run concurrently via <code>asyncio.TaskGroup</code>.</p>
+          <div class="fn-file">agent.py · agents/pipeline.py</div>
         </div>
       </div>
-    </div>
-
-    <!-- Arrow label -->
-    <div class="flow-step" style="height:36px">
-      <div class="flow-left"></div>
-      <div class="flow-center" style="align-items:center">
-        <div class="vline"></div>
-        <div class="arrow-label">window full → DetectorAgent.should_invoke_llm(pid)</div>
-        <div class="vline"></div>
-      </div>
-      <div class="flow-right"></div>
     </div>
 
     <!-- Step 3: DetectorAgent -->
     <div class="flow-step">
-      <div class="flow-left">
-        <div style="text-align:right">
-          <div class="out-badge" style="display:block;margin-bottom:4px">skip signal</div>
-          <div class="out-badge">trigger signal</div>
-        </div>
-      </div>
+      <div class="flow-left"><span class="out-badge">DetectionSignal</span></div>
       <div class="flow-center">
         <div class="step-circle" style="background:#00695c;border-color:#4db6ac">3</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
         <div class="flow-node box-s1">
-          <h3>🔍 Stage 1 — DetectorAgent</h3>
+          <h3>🔍 Stage 1 — DetectorAgent (fast triage, no LLM)</h3>
           <p>
-            <strong>O(1) Entropy Triage:</strong> if H(pid) &lt; low_threshold → skip LLM entirely (not suspicious).<br>
-            <strong>Hard-trigger bypass:</strong> resource matches <code>/.ssh/</code>, <code>/etc/shadow</code>,
-            <code>/proc/self/mem</code> → immediately escalate to LLM regardless of entropy.<br>
-            <strong>Flagged-PID bypass:</strong> if parent PID was previously classified MALICIOUS → immediate LLM.<br>
-            <strong>Bloom dedup:</strong> <code>IPGBuilder.fingerprint()</code> (SHA-256) → skip if seen in last 5 min.
+            <strong>Layer 0:</strong> PCABP static — <code>user_ip</code> outside bloom → ANALYZE.<br>
+            <strong>Layers 1–2:</strong> hard-trigger (/.ssh/, /etc/shadow) + flagged-parent bypass.<br>
+            <strong>Layer 4:</strong> marginal Shannon + Markov entropy + novel edge/transition gate.<br>
+            Emits <code>DetectionSignal</code> with per-PID window (default 20 events).
           </p>
-          <div class="fn-file">sentinel/agents/detector.py · sentinel/agent.py</div>
+          <div class="fn-file">agents/detector.py</div>
           <div>
-            <span class="output-tag" style="background:rgba(77,182,172,0.1);border-color:rgba(77,182,172,0.3);color:#4db6ac">→ SKIP (low entropy)</span>
-            <span class="output-tag" style="background:rgba(77,182,172,0.1);border-color:rgba(77,182,172,0.3);color:#4db6ac">→ TRIGGER (high H or hard-match)</span>
+            <span class="output-tag">trigger: pcabp_static_violation | hard_trigger | entropy | …</span>
+            <span class="output-tag">SKIP (no signal) or ANALYZE</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Arrow label -->
-    <div class="flow-step" style="height:36px">
-      <div class="flow-left"></div>
-      <div class="flow-center" style="align-items:center">
-        <div class="vline"></div>
-        <div class="arrow-label">window[] → IPGBuilder.build(window) + structural_entropy(G)</div>
-        <div class="vline"></div>
-      </div>
-      <div class="flow-right"></div>
-    </div>
-
-    <!-- Step 4: IPGBuilder -->
+    <!-- Step 4: IPG + Provenance Scorer -->
     <div class="flow-step">
-      <div class="flow-left"><span class="out-badge">YAML IPG text</span></div>
+      <div class="flow-left"><span class="out-badge">graph_score</span></div>
       <div class="flow-center">
         <div class="step-circle" style="background:#0d47a1;border-color:#5c9bd6">4</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
         <div class="flow-node box-s2">
-          <h3>🗺️ IPGBuilder — Algorithm 1 (Novel Contribution 1)</h3>
+          <h3>🗺️ Stage 2a — IPG Build + Provenance Scorer</h3>
           <p>
-            Converts the 20-event window into a <strong>directed multigraph</strong>: nodes are
-            <code>(comm, resource_type)</code> pairs; edges are syscalls with <code>dt_ms</code>
-            time deltas. Parallel edges with the same syscall label are <strong>merged</strong> (deduplication).
-            Sensitive resources (<code>/etc/shadow</code>, SSH keys) are flagged with
-            <code>sensitive:true</code>. Serialized to compact YAML — <strong>64.1% token reduction</strong>
-            vs raw strace (avg 1097→394 tokens at window=20). Structural entropy H(G) computed
-            for tier selection in Algorithm 2.
+            <code>build()</code> → directed multigraph → <code>analyze()</code> → <code>serialize()</code> YAML IPG.
+            <strong>74.0%</strong> token reduction @ window=20 (GCP measured). Then
+            <code>provenance_score(meta, G)</code> deterministic scorer (not GBDT):
+            ≤0.15 BENIGN short-circuit · ≥0.55 MALICIOUS short-circuit · else gray-zone.
           </p>
-          <div class="fn-file">sentinel/ipg.py · tiktoken cl100k_base · 86.7% reduction at full-trace</div>
-          <div>
-            <span class="output-tag">ipg_text (YAML)</span>
-            <span class="output-tag">H(G) structural entropy</span>
-            <span class="output-tag">sensitive: true edges</span>
-          </div>
+          <div class="fn-file">ipg.py · provenance_ml/scorer.py</div>
         </div>
       </div>
     </div>
 
-    <!-- Arrow label -->
-    <div class="flow-step" style="height:36px">
-      <div class="flow-left"></div>
-      <div class="flow-center" style="align-items:center">
-        <div class="vline"></div>
-        <div class="arrow-label">ipg_text + H → DualTierClassifier.classify(ipg_text, H)</div>
-        <div class="vline"></div>
-      </div>
-      <div class="flow-right"></div>
-    </div>
-
-    <!-- Step 5: DualTierClassifier -->
+    <!-- Step 5: Gray-Zone LLM -->
     <div class="flow-step">
       <div class="flow-left"><span class="out-badge">ThreatDecision</span></div>
       <div class="flow-center">
@@ -709,46 +729,43 @@
       </div>
       <div class="flow-right">
         <div class="flow-node box-s2">
-          <h3>🤖 DualTierClassifier — Algorithm 2 (Novel Contribution 2)</h3>
+          <h3>🤖 Stage 2b — Gray-Zone Dual-Tier LLM (Algorithm 2)</h3>
           <p>
-            <strong>Draft tier (llama3.2:1b):</strong> if H(G) &lt; high_threshold, send to fast 1B model.
-            If response is BENIGN with conf ≥ 0.90 → accept (fast-path, 35.7% of cases skip 8B).
-            If MALICIOUS → always escalate.<br><br>
-            <strong>Full tier (llama3.1:8b):</strong> receives IPG + system prompt (MITRE ATT&amp;CK expert persona)
-            + few-shot examples + FreeBSD/Linux domain context. Returns structured JSON:
-            <code>label, confidence, mitre_ttps, evidence_refs[], chain_of_thought</code>.
-            <strong>Structured output enforced</strong> via <code>format:"json"</code> + Ollama.
-            3 retries with exponential backoff; falls back to MockClassifier on timeout.
+            Only when 0.15 &lt; graph_score &lt; 0.55: <code>DualTierClassifier</code>
+            runs llama3.2:1b draft → llama3.1:8b full on escalation.
+            Measured <strong>35.7%</strong> invocation reduction (GCP, 14 scenarios).
+            Returns structured JSON with MITRE TTPs and <code>evidence_refs</code> UUIDs.
           </p>
-          <div class="fn-file">sentinel/llm/base.py · sentinel/llm/ollama.py · sentinel/llm/mock.py</div>
-          <div>
-            <span class="output-tag">label: MALICIOUS | BENIGN</span>
-            <span class="output-tag">confidence: 0.0–1.0</span>
-            <span class="output-tag">mitre_ttps: [T1003…]</span>
-            <span class="output-tag">evidence_refs[] with event_id UUIDs</span>
-            <span class="output-tag">chain_of_thought</span>
-            <span class="output-tag">latency_ms</span>
-          </div>
+          <div class="fn-file">agents/analyzer.py · llm/base.py · llm/ollama.py</div>
         </div>
       </div>
     </div>
 
-    <!-- Arrow label: fork -->
-    <div class="flow-step" style="height:36px">
-      <div class="flow-left"></div>
-      <div class="flow-center" style="align-items:center">
-        <div class="vline"></div>
-        <div class="arrow-label">if BENIGN → stop. if MALICIOUS → AuditorAgent</div>
+    <!-- Step 5b: PCABP -->
+    <div class="flow-step">
+      <div class="flow-left"><span class="out-badge">pcabp_score</span></div>
+      <div class="flow-center">
+        <div class="step-circle" style="background:#1565c0;border-color:#5c9bd6">6</div>
         <div class="vline"></div>
       </div>
-      <div class="flow-right"></div>
+      <div class="flow-right">
+        <div class="flow-node box-s2">
+          <h3>🎯 Stage 2c — PCABP Window Scoring</h3>
+          <p>
+            Static bloom violation + BehavioralEncoder AI divergence on full window.
+            <code>pcabp_score = max(0.4·static + 0.6·ai, 0.55·static)</code>.
+            Disabled when <code>ip=0</code> (simulation / CDM18). Passed to Auditor for fusion.
+          </p>
+          <div class="fn-file">agents/analyzer.py · pcabp/</div>
+        </div>
+      </div>
     </div>
 
     <!-- Step 6: CoVe -->
     <div class="flow-step">
       <div class="flow-left"><span class="out-badge">verified_decision</span></div>
       <div class="flow-center">
-        <div class="step-circle" style="background:#4527a0;border-color:#9575cd">6</div>
+        <div class="step-circle" style="background:#4527a0;border-color:#9575cd">7</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
@@ -788,7 +805,7 @@
     <div class="flow-step">
       <div class="flow-left"><span class="out-badge">ltl_violations[]</span></div>
       <div class="flow-center">
-        <div class="step-circle" style="background:#4527a0;border-color:#9575cd">7</div>
+        <div class="step-circle" style="background:#4527a0;border-color:#9575cd">8</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
@@ -818,7 +835,7 @@
       <div class="flow-left"></div>
       <div class="flow-center" style="align-items:center">
         <div class="vline"></div>
-        <div class="arrow-label">final_decision + ltl_violations → CWAEEngine.enforce(pid, comm, decision)</div>
+        <div class="arrow-label">fuse_scores(graph, llm, ltl, pcabp, cove_cap) → CWAEEngine.enforce()</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right"></div>
@@ -828,7 +845,7 @@
     <div class="flow-step">
       <div class="flow-left"><span class="out-badge">EnforcementRecord</span></div>
       <div class="flow-center">
-        <div class="step-circle" style="background:#b71c1c;border-color:#ef5350">8</div>
+        <div class="step-circle" style="background:#b71c1c;border-color:#ef5350">9</div>
         <div class="vline"></div>
       </div>
       <div class="flow-right">
@@ -847,7 +864,7 @@
           <div class="fn-file">sentinel/enforcement.py · sentinel/egte.py · asyncio.to_thread(audit write)</div>
           <div>
             <span class="output-tag">tier: LOG|PAUSE|KILL|QUARANTINE|ISOLATE</span>
-            <span class="output-tag">p50=0.199ms p99=0.253ms</span>
+            <span class="output-tag">measure on GCP → overhead_gcp.json</span>
           </div>
         </div>
       </div>
@@ -868,7 +885,7 @@
     <div class="flow-step">
       <div class="flow-left"><span class="out-badge">metrics + logs</span></div>
       <div class="flow-center">
-        <div class="step-circle" style="background:#004d40;border-color:#4db6ac">9</div>
+        <div class="step-circle" style="background:#004d40;border-color:#4db6ac">10</div>
       </div>
       <div class="flow-right">
         <div class="flow-node box-obs">
@@ -879,9 +896,10 @@
             <strong>Prometheus counters:</strong> events_total, llm_calls_total[tier], enforcement_total[action], threats_detected_total[ttp].<br>
             <strong>Histograms:</strong> llm_latency_seconds (p50/p95/p99), enforcement_latency_seconds.<br>
             <strong>Grafana dashboard:</strong> 6 panels — events/s, TTP heatmap, LLM tier usage pie, enforcement breakdown, latency percentiles, active PIDs gauge.<br>
-            <strong>FastAPI:</strong> GET /health, /status, /decisions (last 100), /metrics.
+            <strong>FastAPI:</strong> GET /health, /ready, /status, /decisions (last 100).<br>
+            <strong>Metrics server:</strong> :9090 (Prometheus UI mapped to :9091 in Docker).
           </p>
-          <div class="fn-file">sentinel/metrics.py · results/logs/audit.jsonl · Prometheus :9091 · Grafana :3000 · FastAPI :8080</div>
+          <div class="fn-file">metrics.py · results/logs/audit.jsonl · Grafana :3000 · FastAPI :8080</div>
         </div>
       </div>
     </div>
@@ -892,26 +910,102 @@
   <div style="max-width:980px;margin:28px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
     <div style="background:var(--card);border:1px solid #6a1b9a;border-radius:8px;padding:16px">
       <div style="font-size:11px;font-weight:700;color:#ab47bc;margin-bottom:6px;letter-spacing:0.5px">WHAT IPGBuilder ACHIEVES</div>
-      <div style="font-size:11px;opacity:0.75;line-height:1.6">64.1% token reduction vs raw strace → fits attack patterns in LLM context window · merges parallel edges · attaches semantic hints · enables LLM to reason over graph structure not raw syscall sequences</div>
+      <div style="font-size:11px;opacity:0.75;line-height:1.6">74.0% token reduction @ window=20 (92.7% full trace, GCP) → compact YAML IR for LLM attribution. Parallel edges merged; behavioral meta signals feed the deterministic provenance scorer.</div>
     </div>
     <div style="background:var(--card);border:1px solid #1565c0;border-radius:8px;padding:16px">
-      <div style="font-size:11px;font-weight:700;color:#5c9bd6;margin-bottom:6px;letter-spacing:0.5px">WHAT DualTier ACHIEVES</div>
-      <div style="font-size:11px;opacity:0.75;line-height:1.6">35.7% reduction in 8B model invocations → lower latency for benign workloads · 1B handles routine decisions · 8B focuses on ambiguous/suspicious patterns → system scales to 2.9M events/s non-LLM path</div>
+      <div style="font-size:11px;font-weight:700;color:#5c9bd6;margin-bottom:6px;letter-spacing:0.5px">WHAT PROVENANCE SCORER ACHIEVES</div>
+      <div style="font-size:11px;opacity:0.75;line-height:1.6">Graph-first detection: short-circuits clear benign/malicious windows without LLM. Gray-zone (0.15–0.55) escalates to dual-tier LLM — measured 35.7% fewer full-model calls vs 8B-only.</div>
     </div>
     <div style="background:var(--card);border:1px solid #4527a0;border-radius:8px;padding:16px">
-      <div style="font-size:11px;font-weight:700;color:#9575cd;margin-bottom:6px;letter-spacing:0.5px">WHAT CoVe + LTL ACHIEVES</div>
-      <div style="font-size:11px;opacity:0.75;line-height:1.6">Forensic auditability: every enforcement action traces back to real eBPF event UUIDs · LTL provides formal safety floor (axiom violations override BENIGN decisions) · zero false negatives on 5 critical axioms</div>
+      <div style="font-size:11px;font-weight:700;color:#9575cd;margin-bottom:6px;letter-spacing:0.5px">WHAT CoVe + LTL + PCABP ACHIEVES</div>
+      <div style="font-size:11px;opacity:0.75;line-height:1.6">Forensic grounding: CoVe caps LLM confidence to block hallucinations. LTL enforces formal safety floors (axiom violations override LLM). PCABP stack verification protects against memory injection.</div>
     </div>
   </div>
 
 </div><!-- /flow panel -->
 
+<!-- ══════════════════════════════════════════════════
+     TAB 3 — GCP MEASURED RESULTS
+══════════════════════════════════════════════════ -->
+<div id="tab-results" class="panel">
+  <div class="section-header">
+    GCP Evaluation Results <span class="badge">sentinel-gpu-vm · 2026-06-08</span>
+  </div>
+
+  <div class="status-banner">
+    ✅ Full eval chain complete. Source: <code>results/evaluations_gcp/*_gcp.json</code> +
+    <code>MANIFEST.json</code>. Platform: g2-standard-4, NVIDIA L4, Ubuntu kernel 6.17.0-1018-gcp,
+    Ollama <code>llama3.1:8b</code> + <code>llama3.2:1b</code>. All LLM evals:
+    <code>ollama_fallback_to_mock_count: 0</code>.
+  </div>
+
+  <div class="results-grid">
+    <div class="result-card">
+      <h3>DARPA TC E3 CADETS (100 windows)</h3>
+      <table>
+        <tr><td>Behavioral hybrid (v5)</td><td>F1=0.603 TPR=0.44 FPR=0.02</td></tr>
+        <tr><td>Behavioral LLM-only (v4)</td><td>F1=0.597 TPR=0.46 FPR=0.08</td></tr>
+        <tr><td>TI-aided (v8) †</td><td>F1=0.915 TPR=0.86 FPR=0.02</td></tr>
+        <tr><td>Graph-only ablation</td><td>F1=0.611 · 0 LLM calls</td></tr>
+        <tr><td>Hybrid ablation</td><td>F1=0.603 · 1/100 LLM calls</td></tr>
+      </table>
+      <div class="src">darpa_tc_behavioral_v5_gcp.json · darpa_ablation_gcp.json</div>
+    </div>
+
+    <div class="result-card">
+      <h3>IPG · Dual-Tier · Overhead</h3>
+      <table>
+        <tr><td>Token reduction @ n=20</td><td>74.0%</td></tr>
+        <tr><td>Token reduction full trace</td><td>92.7%</td></tr>
+        <tr><td>Dual-tier invocation reduction</td><td>35.7% (5/14)</td></tr>
+        <tr><td>Dual-tier accuracy</td><td>12/14 vs 8B 14/14</td></tr>
+        <tr><td>IPG build p50 / CWAE p50</td><td>0.184 ms / 0.888 ms</td></tr>
+        <tr><td>Detector throughput</td><td>25,665 events/s</td></tr>
+      </table>
+      <div class="src">ipg_token_reduction_gcp.json · dual_tier_reduction_gcp.json · overhead_gcp.json</div>
+    </div>
+
+    <div class="result-card">
+      <h3>Real Strace Corpus (105 traces)</h3>
+      <table>
+        <tr><td>Evaluated</td><td>n=104 (1 skipped)</td></tr>
+        <tr><td>TPR</td><td>0.714</td></tr>
+        <tr><td>FPR</td><td>0.291</td></tr>
+        <tr><td>Accuracy</td><td>0.712</td></tr>
+        <tr><td>95% CI (accuracy)</td><td>[0.625, 0.798]</td></tr>
+        <tr><td>ECE (calibration)</td><td>0.205</td></tr>
+      </table>
+      <div class="src">real_data_results_gcp.json · calibration_results_gcp.json</div>
+    </div>
+
+    <div class="result-card">
+      <h3>LTL · PCABP · Scenarios</h3>
+      <table>
+        <tr><td>LTL FPR (benign)</td><td>0.0 / 387 windows</td></tr>
+        <tr><td>PCABP real nginx</td><td>F1=1.0 (controlled)</td></tr>
+        <tr><td>PCABP call sites (x86)</td><td>663 sites</td></tr>
+        <tr><td>MITRE scenarios (8B)</td><td>14/14 correct</td></tr>
+      </table>
+      <div class="src">ltl_fpr_real_gcp.json · pcabp_real_nginx_gcp.json · scenario_results_gcp.json</div>
+    </div>
+  </div>
+
+  <div style="max-width:980px;margin:20px auto 0;font-size:11px;color:var(--muted);line-height:1.7">
+    † TI-aided mode injects <code>[C2]</code>/<code>[MALWARE]</code> from the same <code>KNOWN_C2_IPS</code>
+    list used for ground truth — not directly comparable to WATSON/UNICORN behavioral F1.
+    Behavioral F1 remains below published competitors (WATSON 0.82, UNICORN 0.88); the mimicry
+    ceiling (24/25 nginx_backdoor windows) is documented in the paper Limitations section.
+    Reproduce: <code>bash scripts/run_gcp_eval_chain.sh</code> — see <code>docs/RUNME.md</code>.
+  </div>
+</div>
+
 <script>
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const idx = name === 'arch' ? 0 : 1;
-  document.querySelectorAll('.tab')[idx].classList.add('active');
+  const tabs = ['arch', 'flow', 'results'];
+  const idx = tabs.indexOf(name);
+  document.querySelectorAll('.tab')[idx >= 0 ? idx : 0].classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
 }
 </script>

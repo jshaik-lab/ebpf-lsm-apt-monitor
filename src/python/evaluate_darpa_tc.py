@@ -50,10 +50,11 @@ from typing import Dict, Generator, List, Optional, Tuple
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from sentinel.ipg import IPGBuilder
+from sentinel.ipg import IPGBuilder, _KNOWN_DAEMONS, _is_external_routable
 from sentinel.llm import make_classifier
 from sentinel.models import KernelEvent, SyscallType
 from sentinel.config import SentinelConfig
+from sentinel.provenance_ml import provenance_score
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s [%(levelname)-8s] %(message)s")
@@ -674,6 +675,10 @@ async def evaluate(
     max_windows: int,
     dataset: str,
     strip_annotations: bool = False,
+    cove_ablation:     bool = False,
+    detector_mode:     str = "hybrid",
+    graph_threshold_high: float = 0.55,
+    graph_threshold_low:  float = 0.15,
 ) -> dict:
     from sentinel.llm.ollama import OllamaClassifier
 
@@ -685,8 +690,9 @@ async def evaluate(
     # The 1B draft fast-path classifies CDM18 FreeBSD patterns as BENIGN at
     # conf=0.99 and short-circuits, preventing the 8B model from seeing attacks.
     # For benchmark accuracy we want the full model on every window.
-    # NOTE: CADETS_FEW_SHOT_BEHAVIORAL was tested but caused anchor bias regression
-    # (v2: F1=0.394 vs v1: F1=0.500). Always use CADETS_FEW_SHOT regardless of mode.
+    # Align few-shot examples to query distribution: use behavioral examples when stripping annotations
+    # (fixes anchoring bias mismatch where the model expected explicit [C2]/[MALWARE] tags to detect threat).
+    examples = CADETS_FEW_SHOT_BEHAVIORAL if strip_annotations else CADETS_FEW_SHOT
     classifier = OllamaClassifier(
         base_url=config.llm.ollama_url,
         model=config.llm.full_model,
@@ -694,7 +700,7 @@ async def evaluate(
         max_retries=config.llm.max_retries,
         tier="full",
         extra_context=FREEBSD_CONTEXT,
-        extra_examples=CADETS_FEW_SHOT,
+        extra_examples=examples,
     )
 
     ipg_builder = IPGBuilder()
@@ -702,22 +708,76 @@ async def evaluate(
     results = []
     sample = windows[:max_windows]
 
+    # Optional CoVe ablation: verify each ThreatDecision via CoVeLoop and record
+    # paired raw vs verified outcomes for §V CoVe ablation analysis. The verify
+    # step uses EvidenceLinker only (max_grounding_iterations=0) — no extra LLM
+    # calls — so the marginal cost is sub-millisecond per window.
+    cove_loop = None
+    if cove_ablation:
+        from sentinel.cove import CoVeLoop
+        cove_loop = CoVeLoop(max_grounding_iterations=0)
+        logger.info("CoVe ablation ENABLED — paired raw/verified outcomes will be recorded")
+
     logger.info("Evaluating %d windows with Ollama llama3.1:8b ...", len(sample))
 
     for i, w in enumerate(sample):
         G        = ipg_builder.build(w.events)
-        ipg_text = ipg_builder.serialize(G)
+        meta     = ipg_builder.analyze(G)
+        ipg_text = ipg_builder.serialize(G, meta)
         H        = ipg_builder.structural_entropy(G)
 
         # Optionally strip [C2]/[MALWARE] annotations for honest behavioral-only eval.
-        # When stripped, the LLM must detect attacks from syscall patterns alone
-        # (same task as WATSON/UNICORN). When NOT stripped, [C2] is a direct hint.
         if strip_annotations:
             ipg_text = _strip_annotations(ipg_text)
 
-        t0       = time.perf_counter()
-        decision = await classifier.classify(ipg_text)
-        lat_ms   = round((time.perf_counter() - t0) * 1000, 1)
+        graph_score = provenance_score(meta, G)
+        llm_invoked = False
+
+        t0 = time.perf_counter()
+        if detector_mode == "llm_only":
+            decision = await classifier.classify(ipg_text)
+            llm_invoked = True
+        elif detector_mode == "graph_only":
+            label = "MALICIOUS" if graph_score >= 0.50 else "BENIGN"
+            conf = graph_score if label == "MALICIOUS" else 1.0 - graph_score
+            from sentinel.models import ThreatDecision
+            decision = ThreatDecision(
+                label=label,
+                confidence=conf,
+                reasoning=f"Graph-only mode: provenance score {graph_score:.2f}",
+                mitre_ttps=[],
+                chain_of_thought="Deterministic graph classification.",
+                model_used="graph-scorer",
+                latency_ms=0.0,
+            )
+        else:  # hybrid
+            if graph_score >= graph_threshold_high:
+                from sentinel.models import ThreatDecision
+                decision = ThreatDecision(
+                    label="MALICIOUS",
+                    confidence=graph_score,
+                    reasoning=f"Option A Graph-First Detector: high provenance score {graph_score:.2f}",
+                    mitre_ttps=[],
+                    chain_of_thought="Deterministic graph-first detection.",
+                    model_used="graph-scorer",
+                    latency_ms=0.0,
+                )
+            elif graph_score <= graph_threshold_low:
+                from sentinel.models import ThreatDecision
+                decision = ThreatDecision(
+                    label="BENIGN",
+                    confidence=1.0 - graph_score,
+                    reasoning=f"Option A Graph-First Detector: low provenance score {graph_score:.2f}",
+                    mitre_ttps=[],
+                    chain_of_thought="Deterministic graph-first benign classification.",
+                    model_used="graph-scorer",
+                    latency_ms=0.0,
+                )
+            else:
+                decision = await classifier.classify(ipg_text)
+                llm_invoked = True
+        
+        lat_ms = round((time.perf_counter() - t0) * 1000, 1)
 
         pred_attack = decision.label == "MALICIOUS"
         correct     = pred_attack == w.is_attack
@@ -729,20 +789,40 @@ async def evaluate(
 
         status = "✓" if correct else "✗"
         logger.info(
-            "%s [%s→%s] conf=%.2f lat=%.0fms pid=%d %s",
+            "%s [%s→%s] conf=%.2f lat=%.0fms pid=%d %s (graph_score=%.2f, llm_invoked=%s)",
             status, "ATTACK" if w.is_attack else "BENIGN",
             decision.label, decision.confidence, lat_ms, w.pid, w.gt_name or "",
+            graph_score, llm_invoked
         )
-        results.append({
-            "pid":        w.pid,
-            "gt":         "MALICIOUS" if w.is_attack else "BENIGN",
-            "pred":       decision.label,
-            "confidence": round(decision.confidence, 3),
-            "correct":    correct,
-            "latency_ms": lat_ms,
-            "gt_window":  w.gt_name,
-            "mitre_ttps": decision.mitre_ttps,
-        })
+        record = {
+            "pid":           w.pid,
+            "gt":            "MALICIOUS" if w.is_attack else "BENIGN",
+            "pred":          decision.label,
+            "confidence":    round(decision.confidence, 3),
+            "correct":       correct,
+            "latency_ms":    lat_ms,
+            "gt_window":     w.gt_name,
+            "mitre_ttps":    decision.mitre_ttps,
+            "detector_mode": detector_mode,
+            "llm_invoked":   llm_invoked,
+            "graph_score":   round(graph_score, 4),
+        }
+        if cove_loop is not None:
+            comm = w.events[0].comm if w.events else ""
+            cove_report = cove_loop.run(decision, w.events, pid=w.pid, comm=comm)
+            cove_pred_attack = cove_report.final_label == "MALICIOUS"
+            cove_correct     = cove_pred_attack == w.is_attack
+            record.update({
+                "cove_pred":          cove_report.final_label,
+                "cove_confidence":    round(cove_report.final_confidence, 3),
+                "cove_correct":       cove_correct,
+                "cove_hal_rate":      round(cove_report.hallucination_rate, 3),
+                "cove_verified":      len(cove_report.verified_claims),
+                "cove_retracted":     len(cove_report.retracted_claims),
+                "cove_iterations":    cove_report.grounding_iterations,
+                "cove_latency_ms":    round(cove_report.cove_latency_ms, 3),
+            })
+        results.append(record)
 
     total = tp + fp + tn + fn
     tpr   = tp / max(tp + fn, 1)
@@ -752,12 +832,14 @@ async def evaluate(
     acc   = (tp + tn) / max(total, 1)
 
     dataset_name = f"DARPA_TC_E3_{dataset.upper()}"
+    from sentinel.provenance import make_meta
     summary = {
         "dataset":            dataset_name,
         "model":              "llama3.1:8b via Ollama",
-        "platform":           "MacBook Pro M5",
+        "meta":               make_meta(model_full="llama3.1:8b"),
         "parser":             "two-pass CDM18 (v2 — resolves NetFlowObject ordering bug)",
         "strip_annotations":  strip_annotations,
+        "cove_ablation":      cove_ablation,
         "eval_mode":          "behavioral_only" if strip_annotations else "ti_aided",
         "n_windows": total,
         "n_attack":  tp + fn,
@@ -776,6 +858,41 @@ async def evaluate(
         },
         "results": results,
     }
+
+    # CoVe ablation analysis: McNemar's test on paired raw vs CoVe-verified outcomes
+    if cove_ablation and results and "cove_pred" in results[0]:
+        from sentinel.stats import mcnemar_pvalue, bootstrap_metric
+        # Pair: (raw_correct, cove_correct)
+        b = sum(1 for r in results if r.get("correct") and not r.get("cove_correct"))
+        c = sum(1 for r in results if not r.get("correct") and r.get("cove_correct"))
+        cove_tp = sum(1 for r in results if r["gt"] == "MALICIOUS" and r.get("cove_pred") == "MALICIOUS")
+        cove_fp = sum(1 for r in results if r["gt"] == "BENIGN"    and r.get("cove_pred") == "MALICIOUS")
+        cove_tn = sum(1 for r in results if r["gt"] == "BENIGN"    and r.get("cove_pred") == "BENIGN")
+        cove_fn = sum(1 for r in results if r["gt"] == "MALICIOUS" and r.get("cove_pred") == "BENIGN")
+        cove_prec = cove_tp / max(cove_tp + cove_fp, 1)
+        cove_rec  = cove_tp / max(cove_tp + cove_fn, 1)
+        cove_f1   = 2 * cove_prec * cove_rec / max(cove_prec + cove_rec, 1e-9)
+        cove_outcomes = [(r["gt"] == "MALICIOUS", r.get("cove_pred") == "MALICIOUS")
+                         for r in results if "cove_pred" in r]
+        mean_hal = sum(r.get("cove_hal_rate", 0.0) for r in results) / max(len(results), 1)
+        total_verified  = sum(r.get("cove_verified",  0) for r in results)
+        total_retracted = sum(r.get("cove_retracted", 0) for r in results)
+        summary["cove_ablation_summary"] = {
+            "n_paired":          len(cove_outcomes),
+            "raw_correct_cove_wrong":  b,
+            "raw_wrong_cove_correct":  c,
+            "mcnemar_pvalue":          round(mcnemar_pvalue(b, c), 4),
+            "cove_tp": cove_tp, "cove_fp": cove_fp,
+            "cove_tn": cove_tn, "cove_fn": cove_fn,
+            "cove_f1":           round(cove_f1, 4),
+            "cove_f1_ci_95":     list(bootstrap_metric(cove_outcomes, "f1")),
+            "cove_tpr_ci_95":    list(bootstrap_metric(cove_outcomes, "tpr")),
+            "cove_fpr_ci_95":    list(bootstrap_metric(cove_outcomes, "fpr")),
+            "mean_hallucination_rate": round(mean_hal, 4),
+            "total_verified_claims":   total_verified,
+            "total_retracted_claims":  total_retracted,
+        }
+
     return summary
 
 
@@ -810,6 +927,36 @@ async def main() -> None:
             "0.5 = balanced (25 easy + 25 hard per 50-window attack set). "
             "Use --strip-annotations with --hard-fraction>0 for the fairest eval."
         ),
+    )
+    ap.add_argument(
+        "--cove-ablation",
+        action="store_true",
+        default=False,
+        help=(
+            "Enable paired CoVe ablation: for each window, also score the "
+            "ThreatDecision through CoVeLoop (verify-only, no extra LLM calls). "
+            "Output includes per-window cove_pred + cove_confidence + "
+            "hallucination_rate, plus a cove_ablation_summary block with "
+            "McNemar's test on paired raw vs verified outcomes."
+        ),
+    )
+    ap.add_argument(
+        "--detector-mode",
+        choices=["llm_only", "graph_only", "hybrid"],
+        default="hybrid",
+        help="Detection mode: llm_only, graph_only, or hybrid (default)."
+    )
+    ap.add_argument(
+        "--graph-threshold-high",
+        type=float,
+        default=0.55,
+        help="High threshold for hybrid mode (above this = malicious)."
+    )
+    ap.add_argument(
+        "--graph-threshold-low",
+        type=float,
+        default=0.15,
+        help="Low threshold for hybrid mode (below this = benign)."
     )
     args = ap.parse_args()
 
@@ -860,7 +1007,11 @@ async def main() -> None:
 
     summary = await evaluate(windows, max_windows=args.max_windows,
                              dataset=args.dataset,
-                             strip_annotations=args.strip_annotations)
+                             strip_annotations=args.strip_annotations,
+                             cove_ablation=args.cove_ablation,
+                             detector_mode=args.detector_mode,
+                             graph_threshold_high=args.graph_threshold_high,
+                             graph_threshold_low=args.graph_threshold_low)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(summary, indent=2))

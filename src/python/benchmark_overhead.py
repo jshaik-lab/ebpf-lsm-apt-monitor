@@ -298,11 +298,12 @@ def bench_memory() -> dict:
     texts   = [builder.serialize(g) for g in graphs]
 
     rss_after = _rss_mb()
+    from sentinel.provenance import make_meta
     return {
         "rss_before_mb": round(rss_before, 1),
         "rss_after_mb":  round(rss_after, 1),
         "delta_mb":      round(rss_after - rss_before, 1),
-        "platform":      sys.platform,
+        "meta":          make_meta(),
     }
 
 
@@ -313,7 +314,9 @@ def main() -> None:
     parser.add_argument("--n", type=int, default=1000,
                         help="Number of samples per benchmark (default: 1000)")
     parser.add_argument("--json", action="store_true",
-                        help="Output machine-readable JSON")
+                        help="Output machine-readable JSON at end of stdout")
+    parser.add_argument("--out", default="",
+                        help="Write summary JSON (with provenance meta) to PATH")
     args = parser.parse_args()
 
     N = args.n
@@ -384,6 +387,15 @@ def main() -> None:
 
     if args.json:
         print(json.dumps(results, indent=2))
+
+    if args.out:
+        from sentinel.provenance import make_meta
+        import pathlib
+        results["meta"] = make_meta()
+        out_path = pathlib.Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(results, indent=2))
+        print(f"\nSummary JSON (with provenance) written to {out_path}")
 
 
 if __name__ == "__main__":

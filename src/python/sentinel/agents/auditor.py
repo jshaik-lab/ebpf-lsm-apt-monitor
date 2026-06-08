@@ -54,6 +54,7 @@ class AuditorAgent:
         audit_log_path:  str,
         incident_path:   str,
         flag_pid_cb:     Optional[Callable[[int], None]] = None,
+        on_audit_entry:  Optional[Callable[[dict], None]] = None,
         max_hallucination: float = _MAX_HALLUCINATION_RATE,
         egte:            Optional[EGTEEngine] = None,
     ):
@@ -62,6 +63,7 @@ class AuditorAgent:
         self._audit_path    = Path(audit_log_path)
         self._incident_path = Path(incident_path)
         self._flag_cb       = flag_pid_cb
+        self._on_audit      = on_audit_entry
         self._max_hal       = max_hallucination
         self._cove          = CoVeLoop(max_grounding_iterations=1,
                                        hallucination_threshold=max_hallucination)
@@ -182,16 +184,41 @@ class AuditorAgent:
                     score=round(egte_result.score, 4),
                 )
 
-        # ── Step 4: CWAE enforcement with PCABP consensus ────────────────────
-        # Pass the PCABP score so CWAEEngine can use
-        #   effective_conf = max(llm_conf, 0.4·static + 0.6·AI)
-        # This ensures heap-injected shellcode that fools the LLM is still
-        # caught and escalated to the correct enforcement tier.
-        pcabp_score = getattr(result, "pcabp_score", 0.0)
-        if decision.label == "MALICIOUS" or pcabp_score >= 0.40:
+        # ── Step 4: CWAE enforcement with Score Fusion (Algorithm 4) ──────────
+        from sentinel.provenance_ml import fuse_scores
+        
+        # Calculate LTL severity
+        _SEV_MAP = {"CRITICAL": 0.95, "HIGH": 0.85, "MEDIUM": 0.65}
+        ltl_severity = max(_SEV_MAP.get(v.severity, 0.0) for v in ltl_violations) if ltl_violations else 0.0
+        
+        # CoVe cap (if hallucination rate exceeds limit, cap confidence to 0.29)
+        cove_cap = 0.29 if (decision.label == "MALICIOUS" and cove_report.hallucination_rate > self._max_hal) else None
+        
+        fused_label, fused_conf = fuse_scores(
+            graph_score=getattr(result, "graph_score", 0.0),
+            llm_label=decision.label,
+            llm_conf=decision.confidence,
+            ltl_severity=ltl_severity,
+            pcabp_score=getattr(result, "pcabp_score", 0.0),
+            cove_cap=cove_cap,
+        )
+        
+        # Update decision with fused label and confidence
+        decision = ThreatDecision(
+            label=fused_label,
+            confidence=fused_conf,
+            reasoning=decision.reasoning + f" [Fused graph:{getattr(result, 'graph_score', 0.0):.2f}, pcabp:{getattr(result, 'pcabp_score', 0.0):.2f}, ltl:{ltl_severity:.2f}]",
+            mitre_ttps=decision.mitre_ttps,
+            chain_of_thought=decision.chain_of_thought,
+            model_used=decision.model_used,
+            latency_ms=decision.latency_ms,
+            evidence_refs=decision.evidence_refs,
+        )
+        
+        if decision.label == "MALICIOUS":
             rec = await self._cwae.enforce(pid, comm, decision,
                                            max_tier=egte_max_tier,
-                                           pcabp_score=pcabp_score)
+                                           pcabp_score=0.0) # PCABP already fused
             self._stats["enforced"] += 1
             if self._flag_cb:
                 self._flag_cb(pid)
@@ -250,6 +277,8 @@ class AuditorAgent:
         }
 
         await asyncio.to_thread(self._write_audit, entry, decision.label)
+        if self._on_audit is not None:
+            self._on_audit(entry)
         logger.info(
             "audit_complete",
             pid=pid, label=decision.label,

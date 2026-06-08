@@ -23,7 +23,8 @@ Queue depths are bounded to provide back-pressure:
 from __future__ import annotations
 
 import asyncio
-from typing import Optional
+from pathlib import Path
+from typing import Callable, Optional
 
 import structlog
 
@@ -37,6 +38,56 @@ from sentinel.llm.base import DualTierClassifier
 from sentinel.models import KernelEvent
 
 logger = structlog.get_logger(__name__)
+
+# PCABP bloom-filter paths searched at pipeline startup (first hit wins).
+_PCABP_CANDIDATES = (
+    "src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl",
+    "src/python/sentinel/pcabp/nginx_callsites_x86_64_ionos.pkl",
+    "src/python/sentinel/pcabp/nginx_callsites.pkl",
+)
+
+
+def _load_call_site_map() -> "Optional[object]":
+    try:
+        from sentinel.pcabp.call_site_map import ValidCallSiteMap
+    except ImportError:
+        return None
+    root = Path(__file__).resolve()
+    for parent in root.parents:
+        if (parent / "config" / "sentinel.yaml").is_file():
+            root = parent
+            break
+    else:
+        root = Path(__file__).resolve().parents[4]
+    for rel in _PCABP_CANDIDATES:
+        p = root / rel
+        if p.is_file():
+            logger.info("pcabp_call_site_map_loaded", path=str(p))
+            return ValidCallSiteMap.load(str(p))
+    return None
+
+
+def _load_behavioral_encoder() -> "Optional[object]":
+    try:
+        from sentinel.pcabp.behavioral_encoder import BehavioralEncoder
+        return BehavioralEncoder()
+    except Exception:
+        return None
+
+
+def _load_egte(config: SentinelConfig) -> "Optional[object]":
+    if not config.egte.enabled:
+        return None
+    try:
+        from sentinel.egte import EGTEEngine, TierCalibrator
+        cal = TierCalibrator(alpha=config.egte.alpha)
+        return EGTEEngine(
+            calibrator=cal,
+            cove_hal_threshold=config.egte.cove_hal_threshold,
+        )
+    except Exception as exc:
+        logger.warning("egte_load_failed", error=str(exc))
+        return None
 
 
 class AgentPipeline:
@@ -64,6 +115,7 @@ class AgentPipeline:
         classifier:       Optional[DualTierClassifier] = None,
         enforce_map_fd:   int = -1,
         xdp_fd:           int = -1,
+        on_audit_entry:   Optional[Callable[[dict], None]] = None,
     ) -> "AgentPipeline":
         det_queue: asyncio.Queue = asyncio.Queue(maxsize=500)
         ana_queue: asyncio.Queue = asyncio.Queue(maxsize=200)
@@ -77,18 +129,24 @@ class AgentPipeline:
             dry_run=config.enforcement.dry_run,
         )
 
+        csm = _load_call_site_map()
+        encoder = _load_behavioral_encoder() if csm is not None else None
+
         detector = DetectorAgent(
             out_queue=det_queue,
             window_size=config.processing.syscall_window_size,
             entropy_low=config.processing.entropy.low_threshold,
             entropy_high=config.processing.entropy.high_threshold,
             entropy_window=config.processing.entropy.window_size,
+            call_site_map=csm,
         )
         analyzer = AnalyzerAgent(
             in_queue=det_queue,
             out_queue=ana_queue,
             classifier=clf,
             max_concurrent_llm=config.processing.max_concurrent_llm,
+            call_site_map=csm,
+            behavioral_encoder=encoder,
         )
         auditor = AuditorAgent(
             in_queue=ana_queue,
@@ -96,6 +154,8 @@ class AgentPipeline:
             audit_log_path=config.enforcement.audit_log,
             incident_path=config.enforcement.incident_log,
             flag_pid_cb=detector.flag_pid,
+            on_audit_entry=on_audit_entry,
+            egte=_load_egte(config),
         )
         return cls(detector, analyzer, auditor, det_queue, ana_queue)
 
@@ -122,6 +182,7 @@ class AgentPipeline:
             "detector":  self._detector.stats,
             "analyzer":  self._analyzer.stats,
             "auditor":   self._auditor.stats,
+            "classifier": getattr(self._analyzer._clf, "stats", {}),
             "queue_depths": {
                 "detector_out": self._det_queue.qsize(),
                 "analyzer_out": self._ana_queue.qsize(),

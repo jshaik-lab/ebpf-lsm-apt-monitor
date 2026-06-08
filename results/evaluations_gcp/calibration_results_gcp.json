@@ -1,0 +1,146 @@
+{
+  "input_file": "results/evaluations/real_data_results.json",
+  "n_predictions": 104,
+  "ece": 0.2053,
+  "interpretation": "SEVERELY MISCALIBRATED (ECE > 0.20) \u2014 CWAE thresholds should not rely on raw confidence",
+  "n_high_conf_errors": 12,
+  "calibration_note": "ECE computed from n=15 traces. This is insufficient for reliable calibration estimation \u2014 need \u2265200 predictions for ECE to be statistically meaningful. Values shown are directional only.",
+  "bins": [
+    {
+      "bin": 0,
+      "range": [
+        0.0,
+        0.1
+      ],
+      "n": 12,
+      "acc": 1.0,
+      "conf": 0.0283,
+      "gap": 0.9717,
+      "overconfident": false
+    },
+    {
+      "bin": 1,
+      "range": [
+        0.1,
+        0.2
+      ],
+      "n": 0,
+      "acc": null,
+      "conf": null,
+      "gap": null
+    },
+    {
+      "bin": 2,
+      "range": [
+        0.2,
+        0.3
+      ],
+      "n": 0,
+      "acc": null,
+      "conf": null,
+      "gap": null
+    },
+    {
+      "bin": 3,
+      "range": [
+        0.3,
+        0.4
+      ],
+      "n": 2,
+      "acc": 1.0,
+      "conf": 0.32,
+      "gap": 0.68,
+      "overconfident": false
+    },
+    {
+      "bin": 4,
+      "range": [
+        0.4,
+        0.5
+      ],
+      "n": 22,
+      "acc": 0.5,
+      "conf": 0.42,
+      "gap": 0.08,
+      "overconfident": false
+    },
+    {
+      "bin": 5,
+      "range": [
+        0.5,
+        0.6
+      ],
+      "n": 1,
+      "acc": 1.0,
+      "conf": 0.56,
+      "gap": 0.44,
+      "overconfident": false
+    },
+    {
+      "bin": 6,
+      "range": [
+        0.6,
+        0.7
+      ],
+      "n": 20,
+      "acc": 0.65,
+      "conf": 0.6285,
+      "gap": 0.0215,
+      "overconfident": false
+    },
+    {
+      "bin": 7,
+      "range": [
+        0.7,
+        0.8
+      ],
+      "n": 0,
+      "acc": null,
+      "conf": null,
+      "gap": null
+    },
+    {
+      "bin": 8,
+      "range": [
+        0.8,
+        0.9
+      ],
+      "n": 33,
+      "acc": 0.6667,
+      "conf": 0.8373,
+      "gap": 0.1706,
+      "overconfident": true
+    },
+    {
+      "bin": 9,
+      "range": [
+        0.9,
+        1.0
+      ],
+      "n": 14,
+      "acc": 0.9286,
+      "conf": 0.9336,
+      "gap": 0.005,
+      "overconfident": true
+    }
+  ],
+  "tikz_reliability_diagram": "% Reliability diagram \u2014 paste into paper Figure X\n% Perfect calibration: \\addplot [dashed] coordinates {(0,0)(1,1)};\n\\addplot [blue, mark=*, mark size=2pt] coordinates {\n  (0.05, 1.0000)  % n=12, gap=0.972\n  (0.35, 1.0000)  % n=2, gap=0.680\n  (0.45, 0.5000)  % n=22, gap=0.080\n  (0.55, 1.0000)  % n=1, gap=0.440\n  (0.65, 0.6500)  % n=20, gap=0.021\n  (0.85, 0.6667)  % n=33, gap=0.171\n  (0.95, 0.9286)  % n=14, gap=0.005\n};",
+  "recommendation": "If ECE > 0.10: apply temperature scaling (T \u2248 1.3\u20132.0) to re-calibrate confidence scores before CWAE thresholding. Alternatively, learn thresholds from a held-out calibration set.",
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T16:11:18Z",
+    "ollama_fallback_to_mock_count": 0
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "task": "pcabp_real_nginx_input",
+  "bloom_source": "src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl",
+  "nginx_binary": "/usr/sbin/nginx",
+  "nginx_worker_pid": 1172,
+  "nginx_aslr_base": "0x58821468d000",
+  "libc_aslr_base": "0x75f06e428000",
+  "sample_n_per_class": 200,
+  "n_call_sites_in_bloom": 663,
+  "n_symbols_in_bloom": 9,
+  "classes": {
+    "legit_bloom_callsites": {
+      "n": 200,
+      "in_bloom_count": 200,
+      "in_bloom_rate": 1.0,
+      "delta_mean": 0.0,
+      "delta_max": 0
+    },
+    "runtime_nginx_text": {
+      "n": 200,
+      "in_bloom_count": 0,
+      "in_bloom_rate": 0.0,
+      "delta_mean": 15661.23,
+      "delta_max": 154748
+    },
+    "heap_injected": {
+      "n": 200,
+      "in_bloom_count": 0,
+      "in_bloom_rate": 0.0,
+      "delta_mean": 119644169955650.06,
+      "delta_max": 129675514150192
+    },
+    "libc_text": {
+      "n": 200,
+      "in_bloom_count": 0,
+      "in_bloom_rate": 0.0,
+      "delta_mean": 7030062.62,
+      "delta_max": 11516779
+    }
+  },
+  "aggregate": {
+    "tp": 200,
+    "fp": 0,
+    "tn": 200,
+    "fn": 0,
+    "tpr": 1.0,
+    "fpr": 0.0,
+    "precision": 1.0,
+    "f1": 1.0,
+    "tpr_ci_95": [
+      1.0,
+      1.0
+    ],
+    "fpr_ci_95": [
+      0.0,
+      0.0
+    ],
+    "f1_ci_95": [
+      1.0,
+      1.0
+    ]
+  },
+  "interpretation": "GT=heap_injected vs. legit (bloom_callsites+runtime_text). TPR = correctly flagged heap IPs / total heap IPs (PCABP detection). FPR = legit IPs incorrectly flagged. The 'runtime_nginx_text' class tests bloom recognition of addresses the kernel actually mapped for nginx at runtime \u2014 the operational question PCABP must answer.",
+  "meta": {
+    "platform": "Linux 6.17.0-1018-gcp (sentinel-gpu-vm)",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "unknown",
+    "model_full": "unknown",
+    "model_draft": "unknown",
+    "timeout_seconds": 0,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T15:48:00Z",
+    "ollama_fallback_to_mock_count": 0,
+    "bloom_path": "src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl"
+  }
+}

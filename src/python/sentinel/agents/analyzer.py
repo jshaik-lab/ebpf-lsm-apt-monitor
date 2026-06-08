@@ -66,6 +66,7 @@ class AnalysisResult:
     pcabp_static:     float = 0.0   # 1.0 if ≥1 IP outside call-site bloom filter
     pcabp_ai:         float = 0.0   # BehavioralEncoder divergence ∈ [0, 1]
     pcabp_score:      float = 0.0   # max(0.4*static+0.6*ai, 0.55*static)
+    graph_score:      float = 0.0   # Option A deterministic graph anomaly score
 
 
 class AnalyzerAgent:
@@ -122,12 +123,39 @@ class AnalyzerAgent:
                 )
 
             G        = self._ipg.build(window)
-            ipg_text = self._ipg.serialize(G)
+            meta     = self._ipg.analyze(G)
+            ipg_text = self._ipg.serialize(G, meta)
             H        = signal.entropy
 
+            from sentinel.provenance_ml import provenance_score
+            graph_score = provenance_score(meta, G)
+
             t1       = time.perf_counter()
-            decision = await self._clf.classify(ipg_text, H)
-            llm_ms   = (time.perf_counter() - t1) * 1000
+            llm_ms   = 0.0
+            
+            # Gray-zone model escalation (Option A hybrid mode)
+            # High/Low zones skip LLM for labeling, Gray zone escalates to LLM
+            if graph_score >= 0.55:
+                decision = ThreatDecision(
+                    label="MALICIOUS",
+                    confidence=graph_score,
+                    reasoning=f"Option A Graph-First Detector: high provenance anomaly score ({graph_score:.2f})",
+                    mitre_ttps=[],
+                    chain_of_thought="Deterministic graph-first detection triggered.",
+                    model_used="graph-scorer",
+                )
+            elif graph_score <= 0.15:
+                decision = ThreatDecision(
+                    label="BENIGN",
+                    confidence=1.0 - graph_score,
+                    reasoning="Option A Graph-First Detector: low provenance anomaly score",
+                    mitre_ttps=[],
+                    chain_of_thought="Deterministic graph-first benign classification.",
+                    model_used="graph-scorer",
+                )
+            else:
+                decision = await self._clf.classify(ipg_text, H)
+                llm_ms   = (time.perf_counter() - t1) * 1000
 
             # ── PCABP scoring (runs in thread to avoid blocking event loop) ──
             pcabp_static = 0.0
@@ -159,6 +187,7 @@ class AnalyzerAgent:
                 pcabp_static=round(pcabp_static, 4),
                 pcabp_ai=round(pcabp_ai, 4),
                 pcabp_score=round(pcabp_score, 4),
+                graph_score=round(graph_score, 4),
             )
             logger.debug(
                 "analysis_complete",

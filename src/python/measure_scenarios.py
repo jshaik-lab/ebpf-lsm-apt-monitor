@@ -26,11 +26,16 @@ SEPARATOR  = "-" * 80
 
 
 async def main() -> None:
+    # Match the DARPA config (config/sentinel.yaml): 300 s timeout, 3 retries.
+    # Lower values caused silent MockClassifier fallback on the first window of
+    # the IONOS VPS run because CPU-only llama3.1:8b inference can exceed 60 s
+    # on a cold worker. See sentinel/llm/ollama.py:188 — fallback is logged
+    # via ollama_fallback_to_mock and counted in sentinel.provenance.
     classifier = OllamaClassifier(
         base_url=OLLAMA_URL,
         model=MODEL,
-        timeout=60,
-        max_retries=1,   # no retries — we want real failures, not silent fallback
+        timeout=300,
+        max_retries=3,
         tier="full",
     )
     builder = IPGBuilder()

@@ -1,0 +1,420 @@
+{
+  "task": "ltl_fpr_real_benign",
+  "trace_dir": "data/input/real_traces",
+  "only_benign": true,
+  "window_size": 20,
+  "n_traces": 55,
+  "n_windows": 387,
+  "n_events": 7204,
+  "n_false_positive": 0,
+  "fpr": 0.0,
+  "fpr_ci_95": [
+    0.0,
+    0.0
+  ],
+  "axiom_violations": {},
+  "per_file": [
+    {
+      "trace": "benign_cat_hostname.log",
+      "events": 11,
+      "windows": 1,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_cat_os_release.log",
+      "events": 11,
+      "windows": 1,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_001.log",
+      "events": 46,
+      "windows": 3,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_002.log",
+      "events": 107,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_003.log",
+      "events": 89,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_004.log",
+      "events": 57,
+      "windows": 3,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_005.log",
+      "events": 88,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_006.log",
+      "events": 87,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_007.log",
+      "events": 109,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_008.log",
+      "events": 89,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_009.log",
+      "events": 135,
+      "windows": 7,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_010.log",
+      "events": 87,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_011.log",
+      "events": 88,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_012.log",
+      "events": 88,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_013.log",
+      "events": 96,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_014.log",
+      "events": 97,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_015.log",
+      "events": 110,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_016.log",
+      "events": 110,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_017.log",
+      "events": 91,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_018.log",
+      "events": 87,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_019.log",
+      "events": 103,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_020.log",
+      "events": 108,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_021.log",
+      "events": 149,
+      "windows": 8,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_022.log",
+      "events": 88,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_023.log",
+      "events": 89,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_024.log",
+      "events": 103,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_025.log",
+      "events": 718,
+      "windows": 36,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_026.log",
+      "events": 687,
+      "windows": 35,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_027.log",
+      "events": 171,
+      "windows": 9,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_028.log",
+      "events": 192,
+      "windows": 10,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_029.log",
+      "events": 209,
+      "windows": 11,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_030.log",
+      "events": 203,
+      "windows": 11,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_031.log",
+      "events": 203,
+      "windows": 11,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_032.log",
+      "events": 219,
+      "windows": 11,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_033.log",
+      "events": 83,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_034.log",
+      "events": 110,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_035.log",
+      "events": 104,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_036.log",
+      "events": 103,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_037.log",
+      "events": 175,
+      "windows": 9,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_038.log",
+      "events": 377,
+      "windows": 19,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_039.log",
+      "events": 112,
+      "windows": 6,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_040.log",
+      "events": 128,
+      "windows": 7,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_041.log",
+      "events": 126,
+      "windows": 7,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_042.log",
+      "events": 190,
+      "windows": 10,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_043.log",
+      "events": 171,
+      "windows": 9,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_044.log",
+      "events": 71,
+      "windows": 4,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_045.log",
+      "events": 72,
+      "windows": 4,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_046.log",
+      "events": 81,
+      "windows": 4,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_047.log",
+      "events": 88,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ext_048.log",
+      "events": 89,
+      "windows": 5,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_find_libs.log",
+      "events": 41,
+      "windows": 2,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_ls_usr.log",
+      "events": 21,
+      "windows": 1,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_python_json.log",
+      "events": 75,
+      "windows": 4,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_python_math.log",
+      "events": 52,
+      "windows": 3,
+      "violations": 0,
+      "axioms_hit": []
+    },
+    {
+      "trace": "benign_which_bash.log",
+      "events": 10,
+      "windows": 1,
+      "violations": 0,
+      "axioms_hit": []
+    }
+  ],
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T15:47:11Z",
+    "ollama_fallback_to_mock_count": 0
+  }
+}

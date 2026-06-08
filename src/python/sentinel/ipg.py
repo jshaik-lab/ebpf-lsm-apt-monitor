@@ -42,6 +42,12 @@ _KNOWN_DAEMONS = frozenset({
 
 def _is_external_routable(resource: str) -> bool:
     """Return True if resource encodes a non-private, non-loopback IPv4/IPv6 address."""
+    if "→" in resource:
+        resource = resource.split("→")[-1]
+    if ":" in resource:
+        port = resource.split(":")[-1]
+        if port == "53":
+            return False
     host = resource.split(":")[0]
     try:
         ip = ipaddress.ip_address(host)
@@ -130,6 +136,18 @@ def infer_resource_type(sc_type: int, resource: str) -> ResourceType:
     return ResourceType.UNK
 
 
+@dataclass
+class IPGMeta:
+    n_nodes: int
+    n_edges: int
+    outbound_ext: int
+    exec_after_net: bool
+    unusual_comm: bool
+    sensitive_reads: int
+    tmp_exec: bool
+    external_connect: bool
+
+
 class IPGBuilder:
     """Builds Intent Provenance Graphs (Algorithm 1) from kernel event windows."""
 
@@ -202,42 +220,86 @@ class IPGBuilder:
 
         return G
 
-    def serialize(self, G: nx.MultiDiGraph) -> str:
-        """YAML-structured IPG (~441 tokens avg at window=20; 60% reduction vs raw strace)."""
-        node_list  = list(G.nodes())
-        node_index = {n: f"n{i}" for i, n in enumerate(node_list)}
-
-        # ── Behavioral analysis: pre-scan edges for anomaly signals ──────────
-        outbound_ext   = 0
-        net_con_seen   = False
+    def analyze(self, G: nx.MultiDiGraph) -> IPGMeta:
+        """Analyze the graph structure and extract metadata/behavioral anomalies."""
+        outbound_ext = 0
+        net_con_seen = False
         exec_after_net = False
+        external_connect = False
+        
         for _, _, data in G.edges(data=True):
-            sc  = data.get("sc_label", "")
+            sc = data.get("sc_label", "")
             res = data.get("resource", "")
             if sc == "connect":
                 net_con_seen = True
                 if _is_external_routable(res):
                     outbound_ext += 1
+                    external_connect = True
             elif sc == "execve" and net_con_seen:
                 exec_after_net = True
+
         unusual_comm = any(
             n.comm.lower() not in _KNOWN_DAEMONS for n in G.nodes()
         )
+        
+        # Calculate sensitive reads
+        sensitive_reads = 0
+        for _, _, data in G.edges(data=True):
+            if data.get("sensitive") and data.get("sc_label") == "openat(R)":
+                sensitive_reads += 1
+                
+        # Calculate tmp exec
+        tmp_exec = False
+        for _, _, data in G.edges(data=True):
+            if data.get("sc_label") == "execve":
+                res = data.get("resource", "")
+                if any(res.startswith(p) for p in ("/tmp/", "/var/log/", "/home/admin/cache")):
+                    tmp_exec = True
+                    break
+
+        return IPGMeta(
+            n_nodes=G.number_of_nodes(),
+            n_edges=G.number_of_edges(),
+            outbound_ext=outbound_ext,
+            exec_after_net=exec_after_net,
+            unusual_comm=unusual_comm,
+            sensitive_reads=sensitive_reads,
+            tmp_exec=tmp_exec,
+            external_connect=external_connect,
+        )
+
+    def serialize(self, G: nx.MultiDiGraph, meta: IPGMeta | None = None) -> str:
+        """YAML-structured IPG (~441 tokens avg at window=20; 60% reduction vs raw strace)."""
+        node_list  = list(G.nodes())
+        node_index = {n: f"n{i}" for i, n in enumerate(node_list)}
+
+        if meta is None:
+            meta = self.analyze(G)
 
         # Build meta line — only emit signals when positive (avoid zero-anchoring:
         # explicit zero/false values cause LLMs to infer benign from absence of signal)
-        meta = f"{{nodes: {G.number_of_nodes()}, edges: {G.number_of_edges()}"
-        if outbound_ext:
-            meta += f", outbound_ext: {outbound_ext}"
-        if exec_after_net:
-            meta += ", exec_after_net: true"
-        if unusual_comm:
-            meta += ", unusual_comm: true"
-        meta += "}"
+        meta_parts = [
+            f"nodes: {meta.n_nodes}",
+            f"edges: {meta.n_edges}"
+        ]
+        if meta.outbound_ext:
+            meta_parts.append(f"outbound_ext: {meta.outbound_ext}")
+        if meta.exec_after_net:
+            meta_parts.append("exec_after_net: true")
+        if meta.unusual_comm:
+            meta_parts.append("unusual_comm: true")
+        if meta.sensitive_reads:
+            meta_parts.append(f"sensitive_reads: {meta.sensitive_reads}")
+        if meta.tmp_exec:
+            meta_parts.append("tmp_exec: true")
+        if meta.external_connect:
+            meta_parts.append("external_connect: true")
+            
+        meta_str = f"{{{', '.join(meta_parts)}}}"
 
         lines: List[str] = [
             "# Intent Provenance Graph -- SENTINEL v1.0",
-            f"meta: {meta}",
+            f"meta: {meta_str}",
             "nodes:",
         ]
         for n, nid in node_index.items():

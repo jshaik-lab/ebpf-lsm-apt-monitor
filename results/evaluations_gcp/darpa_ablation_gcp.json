@@ -1,0 +1,1469 @@
+{
+  "llm_only": {
+    "tp": 23,
+    "fp": 4,
+    "tn": 46,
+    "fn": 27,
+    "tpr": 0.46,
+    "fpr": 0.08,
+    "precision": 0.8519,
+    "f1": 0.5974,
+    "accuracy": 0.69,
+    "llm_invocations": 100,
+    "mean_latency_ms": 5674.45
+  },
+  "graph_only": {
+    "tp": 22,
+    "fp": 0,
+    "tn": 50,
+    "fn": 28,
+    "tpr": 0.44,
+    "fpr": 0.0,
+    "precision": 1.0,
+    "f1": 0.6111,
+    "accuracy": 0.72,
+    "llm_invocations": 0,
+    "mean_latency_ms": 0.0
+  },
+  "hybrid": {
+    "tp": 22,
+    "fp": 1,
+    "tn": 49,
+    "fn": 28,
+    "tpr": 0.44,
+    "fpr": 0.02,
+    "precision": 0.9565,
+    "f1": 0.6027,
+    "accuracy": 0.71,
+    "llm_invocations": 1,
+    "mean_latency_ms": 60.29
+  },
+  "hybrid_ltl": {
+    "tp": 22,
+    "fp": 0,
+    "tn": 50,
+    "fn": 28,
+    "tpr": 0.44,
+    "fpr": 0.0,
+    "precision": 1.0,
+    "f1": 0.6111,
+    "accuracy": 0.72,
+    "llm_invocations": 1,
+    "mean_latency_ms": 60.29
+  },
+  "full": {
+    "tp": 22,
+    "fp": 0,
+    "tn": 50,
+    "fn": 28,
+    "tpr": 0.44,
+    "fpr": 0.0,
+    "precision": 1.0,
+    "f1": 0.6111,
+    "accuracy": 0.72,
+    "llm_invocations": 1,
+    "mean_latency_ms": 60.29
+  },
+  "windows_details": [
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 59141,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "graph_score": 0.8,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "MALICIOUS",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "MALICIOUS",
+        "full": "MALICIOUS"
+      }
+    },
+    {
+      "pid": 72202,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72202,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72251,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72271,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72271,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72329,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72329,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72381,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72393,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72393,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72460,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72460,
+      "gt": "MALICIOUS",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 72517,
+      "gt": "MALICIOUS",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57533,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.35,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "MALICIOUS",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "graph_score": 0.15,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57539,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "MALICIOUS",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "graph_score": 0.0,
+      "ltl_severity": 0.0,
+      "cove_hal_rate": 0.0,
+      "modes": {
+        "llm_only": "BENIGN",
+        "graph_only": "BENIGN",
+        "hybrid": "BENIGN",
+        "hybrid_ltl": "BENIGN",
+        "full": "BENIGN"
+      }
+    }
+  ]
+}

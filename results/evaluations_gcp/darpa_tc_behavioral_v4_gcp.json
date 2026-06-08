@@ -1,0 +1,1479 @@
+{
+  "dataset": "DARPA_TC_E3_CADETS",
+  "model": "llama3.1:8b via Ollama",
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T16:24:47Z",
+    "ollama_fallback_to_mock_count": 0
+  },
+  "parser": "two-pass CDM18 (v2 \u2014 resolves NetFlowObject ordering bug)",
+  "strip_annotations": true,
+  "cove_ablation": false,
+  "eval_mode": "behavioral_only",
+  "n_windows": 100,
+  "n_attack": 50,
+  "n_benign": 50,
+  "tp": 23,
+  "fp": 4,
+  "tn": 46,
+  "fn": 27,
+  "tpr": 0.46,
+  "fpr": 0.08,
+  "precision": 0.8519,
+  "f1": 0.5974,
+  "accuracy": 0.69,
+  "comparison": {
+    "WATSON_2020_F1": 0.82,
+    "UNICORN_2020_F1": 0.88,
+    "ProvDetector_2021_F1": 0.87,
+    "DEPIMPACT_2022_F1": 0.91
+  },
+  "results": [
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6686.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "latency_ms": 6067.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 5624.8,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5698.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5701.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 7864.6,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1003",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59137,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5372.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 59141,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 8076.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1068",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6341.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1068",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.42,
+      "correct": true,
+      "latency_ms": 6995.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1210",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 6634.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1190",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6830.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 5920.7,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 7399.9,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "latency_ms": 6927.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 6321.5,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1055",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 7434.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 8166.4,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1036",
+        "T1059"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6081.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 5971.2,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "latency_ms": 7227.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1059",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.42,
+      "correct": true,
+      "latency_ms": 6553.3,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.42,
+      "correct": true,
+      "latency_ms": 6288.8,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 5965.1,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 59144,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.62,
+      "correct": true,
+      "latency_ms": 5982.0,
+      "gt_window": "c2_detected",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.8
+    },
+    {
+      "pid": 72202,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4882.0,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1029"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72202,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5196.3,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.02,
+      "correct": false,
+      "latency_ms": 5184.5,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5723.6,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5891.8,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4458.1,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4246.9,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72241,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": false,
+      "latency_ms": 5041.6,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72251,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6928.9,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72271,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4849.3,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72271,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.02,
+      "correct": false,
+      "latency_ms": 7463.4,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1019",
+        "T1021"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72329,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4844.1,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72329,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5853.0,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1016"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.02,
+      "correct": false,
+      "latency_ms": 5181.0,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": false,
+      "latency_ms": 7200.8,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1003",
+        "T1016"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5936.7,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4472.2,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4441.6,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72371,
+      "gt": "MALICIOUS",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "latency_ms": 6479.5,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72381,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": false,
+      "latency_ms": 6879.1,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72393,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4850.7,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72393,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 5860.4,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1016"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72460,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": false,
+      "latency_ms": 5463.5,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1029"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 72460,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.02,
+      "correct": false,
+      "latency_ms": 6587.1,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1019",
+        "T1021"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 72517,
+      "gt": "MALICIOUS",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": false,
+      "latency_ms": 4886.4,
+      "gt_window": "20180406_1100_nginx_backdoor",
+      "mitre_ttps": [
+        "T1029"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5655.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4501.9,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57526,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 5377.2,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5654.0,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4570.6,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57528,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5148.8,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5236.3,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "latency_ms": 5376.5,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1027"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 6213.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4367.7,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4355.9,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57530,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4366.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57533,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 5864.3,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 4947.7,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 7110.6,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1019"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.35
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 6957.7,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1010",
+        "T1068"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5040.4,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5002.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4999.4,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5010.4,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4991.9,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4984.3,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4996.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4989.9,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4989.7,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4994.6,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4994.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4999.6,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5002.6,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4987.5,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.02,
+      "correct": true,
+      "latency_ms": 6921.4,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1003",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5904.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57534,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4739.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.15
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 6330.4,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5002.5,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5096.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 8155.3,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1003",
+        "T1071"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5100.3,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5564.5,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57536,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5027.8,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4680.2,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57538,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4484.1,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57539,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 6116.2,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1068"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "latency_ms": 8047.1,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1068",
+        "T1059",
+        "T1016"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4981.2,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "latency_ms": 4948.3,
+      "gt_window": "",
+      "mitre_ttps": [
+        "T1019"
+      ],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4801.7,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4998.5,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 5115.0,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    },
+    {
+      "pid": 57540,
+      "gt": "BENIGN",
+      "pred": "BENIGN",
+      "confidence": 0.99,
+      "correct": true,
+      "latency_ms": 4939.8,
+      "gt_window": "",
+      "mitre_ttps": [],
+      "detector_mode": "llm_only",
+      "llm_invoked": true,
+      "graph_score": 0.0
+    }
+  ]
+}

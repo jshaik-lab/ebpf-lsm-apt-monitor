@@ -34,7 +34,7 @@ from typing import Deque, Dict, List, Optional
 
 import structlog
 
-from sentinel.agent import _HARD_TRIGGER_RESOURCES, _FLAGGED_PID_TTL_SECONDS
+from sentinel.triggers import HARD_TRIGGER_RESOURCES, FLAGGED_PID_TTL_SECONDS
 from sentinel.models import KernelEvent
 
 try:
@@ -168,7 +168,7 @@ class DetectorAgent:
 
     def flag_pid(self, pid: int) -> None:
         """Called by AuditorAgent when a MALICIOUS verdict is confirmed."""
-        self._flagged[pid] = time.monotonic() + _FLAGGED_PID_TTL_SECONDS
+        self._flagged[pid] = time.monotonic() + FLAGGED_PID_TTL_SECONDS
 
     def _maybe_evict_pids(self) -> None:
         """Evict per-PID state for processes inactive for _pid_evict_ttl events."""
@@ -213,7 +213,7 @@ class DetectorAgent:
                 return "pcabp_static_violation"
 
         # Layer 1: hard-trigger (sensitive resource)
-        if any(p in event.resource for p in _HARD_TRIGGER_RESOURCES):
+        if any(p in event.resource for p in HARD_TRIGGER_RESOURCES):
             return "hard_trigger"
 
         # Layer 2: flagged-parent bypass

@@ -187,6 +187,8 @@ class OllamaClassifier(BaseClassifier):
 
         logger.error("ollama_fallback_to_mock", model=self._model, attempts=self._retries)
         from sentinel.llm.mock import MockClassifier
+        from sentinel.provenance import record_ollama_fallback
+        record_ollama_fallback()
         return await MockClassifier(tier=f"mock/{self._tier}").classify(ipg_text)
 
     async def health(self) -> bool:

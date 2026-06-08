@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> [!IMPORTANT]
+   > **DO NOT RUN ANY WORKLOADS, COMMANDS, OR TESTS ON THE IONOS VPS (`74.208.76.97`) unless the user explicitly requests it.**
+   > All execution, benchmarks, and evaluations must run ONLY on Google Cloud Platform (GCP) or local environments. This rule is absolute and applies across all subagents and tasks.
+
 ## What This Is
 
 SENTINEL is an IEEE research paper + production Python implementation targeting **IEEE Transactions on Information Forensics and Security (TIFS)**. It integrates eBPF kernel tracing with local LLMs to enforce zero-trust policies based on process behavioral intent.
@@ -10,21 +14,20 @@ Seven novel contributions define the paper's claims — do not change these mech
 
 1. **Intent Provenance Graph (IPG)** — `sentinel/ipg.py`, Algorithm 1, Section IV-B.
    Converts a sliding window of `KernelEvent`s into a compact YAML-serialized directed multigraph. Parallel edges with the same syscall label are merged into a bounded summary `(count, min_dt_ms, max_dt_ms, first_idx)` — NOT min-Δt-only (audit fix #5: min-only let a fast benign instance mask a slow malicious one of the same src→dst→syscall). `n:`/`dt_max_ms:` emitted only for merged edges. Semantic hints attached to sensitive resources.
-   **Measured** (tiktoken cl100k_base, n=6 real traces): 59.8% token reduction at window=20 (avg 1097→441 tokens); 84.5% at full trace. Use 59.8% in Section V. The drop from the prior 64.1% is the honest cost of the audit-#5 per-edge summary fields and is already reflected in `paper/main.tex` (Table tab:compression + abstract/intro/conclusion).
-   See `results/evaluations/ipg_token_reduction.json`.
+   **Measured (GCP, 105 strace traces, tiktoken cl100k_base)**: 74.0% token reduction at window=20 (avg 1122→292 tokens); 92.7% at full trace (avg 12185→885 tokens). See `results/evaluations_gcp/ipg_token_reduction_gcp.json`.
 
 2. **Dual-Tier Inference Pipeline** — `sentinel/llm/base.py`, Algorithm 2, Section IV-C.
    Draft (llama3.2:1b) → if BENIGN at conf ≥ 0.90, skip full model. MALICIOUS from draft always escalates to llama3.1:8b.
    **Measured** (real Ollama, M5): 35.7% invocation reduction (5/14 draft hits). Prior paper claim of 94.7% is wrong — **must update Section V-B**. BENIGN-only fast-path causes 2 false negatives: draft misclassifies Lateral Movement (T1210, conf=0.99) and Valid Accounts (T1078, conf=0.98).
-   8B-only accuracy: 13/14; dual-tier accuracy: 11/14. See `results/evaluations/dual_tier_reduction.json`.
+   8B-only accuracy: 14/14; dual-tier accuracy: 12/14 (GCP Ollama). See `results/evaluations_gcp/dual_tier_reduction_gcp.json`.
 
 3. **Confidence-Weighted Adaptive Enforcement (CWAE)** — `sentinel/enforcement.py`, Algorithm 3, Section IV-D.
-   **Measured**: enforce p50=0.199ms, p99=0.253ms. Non-LLM pipeline: 2.9M events/s, 0.17% CPU at 5k events/s.
+   **Measured (GCP)**: CWAE enforce p50=0.888ms, p99=0.932ms; IPG p50=0.184ms. Detector throughput: 25,665 events/s. See `results/evaluations_gcp/overhead_gcp.json`.
    Now accepts `pcabp_score` param: `effective_conf = max(llm_conf, pcabp_score)`. This ensures heap-injected shellcode that fools the LLM is still escalated to correct tier.
 
 4. **LTL Symbolic Guardian** — `sentinel/ltl.py`, Section IV-E.
    Five formal safety axioms (AX-1 through AX-5). Tier-1: O(1) RuntimeMonitor (AX-1, AX-3, AX-4, AX-5); Tier-2: BüchiMonitor (AX-2 shadow→exfil kill-chain).
-   **Measured**: 0 false positives on 3 synthetic benign scenarios. Still needs real-workload FPR (nginx, sshd, postgres).
+   **Measured (GCP)**: 0 false positives on 387 benign sliding windows (55 traces). See `results/evaluations_gcp/ltl_fpr_real_gcp.json`.
 
 5. **Chain of Verification (CoVe)** — `sentinel/cove.py`, Section IV-F.
    4-step Draft→Verify→Ground→Synthesize. Each LLM claim linked to a real eBPF `event_id` UUID. `hallucination_eval.py` tests blocking, but "zero hallucinations" claim requires Ollama measurement — MockClassifier always returns `evidence_refs=[]`.
@@ -42,39 +45,31 @@ Seven novel contributions define the paper's claims — do not change these mech
 
 ---
 
-## Measured Results
+## Measured Results (GCP authoritative — `results/evaluations_gcp/`)
 
-**Overhead**: RSS = 60.6 MB (45.8 MB incremental). IPG p50=0.029ms; CWAE enforce p50=0.199ms. Prior <15 MB claim was for native C, not Python. See `results/evaluations/claims_validation_summary.json`.
+**Source of truth:** `results/evaluations_gcp/*_gcp.json` + `MANIFEST.json` (2026-06-08 run on `sentinel-gpu-vm`). Platform: g2-standard-4, NVIDIA L4, kernel 6.17.0-1018-gcp. All LLM evals: `ollama_fallback_to_mock_count: 0`.
 
-**Real-data evaluation** (15 strace traces, Docker ubuntu:22.04, real kernel, llama3.1:8b):
-TPR=1.0, FPR=0.286 (2/7 benign FP: benign_python_json, benign_which_bash), accuracy=86.7% [95% CI: 66.7%–100%].
-CIs are wide (n=15) — expand to ≥50 traces for publication-quality bounds. See `results/evaluations/real_data_results.json`.
+**Overhead** (`overhead_gcp.json`): IPG p50=0.184ms, p99=0.306ms; CWAE p50=0.888ms; detector 25,665 events/s.
 
-**DARPA TC E3 CADETS — v8, BOTH MODES (100 windows, 50 attack / 50 benign)**:
+**Real-data** (105 native strace traces, llama3.1:8b, `real_data_results_gcp.json`):
+TPR=0.714, FPR=0.291, accuracy=0.712 [95% CI: 0.625–0.798], n=104 evaluated.
 
-| Mode | F1 | TPR | FPR | Precision | Accuracy | TP | FP | TN | FN |
-|---|---|---|---|---|---|---|---|---|---|
-| TI-aided (v8) | **0.931** | 0.940 | 0.080 | 0.922 | 0.930 | 47 | 4 | 46 | 3 |
-| Behavioral-only (v4, current) | **0.568** | 0.420 | 0.060 | 0.875 | 0.680 | 21 | 3 | 47 | 29 |
+**DARPA TC E3 CADETS (100 windows, 50 attack / 50 benign)**:
 
-Competitors (behavioral-only, no TI oracle): WATSON F1=0.82, UNICORN F1=0.88, ProvDetector F1=0.87, DEPIMPACT F1=0.91.
-Result files: `results/evaluations/darpa_tc_v8_ti_aided.json`, `results/evaluations/darpa_tc_behavioral_v4.json` (current best behavioral).
-Old v1 baseline (no behavioral meta): `results/evaluations/darpa_tc_behavioral.json` (F1=0.500).
-Dataset: `/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2`.
+| Mode | F1 | TPR | FPR | Precision | Accuracy | File |
+|---|---|---|---|---|---|---|
+| Hybrid behavioral (v5) | **0.603** | 0.44 | 0.02 | 0.957 | 0.71 | `darpa_tc_behavioral_v5_gcp.json` |
+| LLM-only behavioral (v4) | **0.597** | 0.46 | 0.08 | 0.852 | 0.69 | `darpa_tc_behavioral_v4_gcp.json` |
+| TI-aided (v8) | **0.915** | 0.86 | 0.02 | 0.977 | 0.92 | `darpa_tc_v8_ti_aided_gcp.json` |
 
-**Behavioral improvement (2026-05-04)**: IPG now emits `outbound_ext`, `exec_after_net`, `unusual_comm` in the meta: block ONLY when positive (non-zero/true). Zero/false values are omitted to prevent LLM zero-anchoring bias. +3 TP (+17%), -1 FP over v1 baseline. Key insight: 24/25 nginx_backdoor windows remain undetectable behaviorally — their syscall pattern is identical to normal nginx workers; TI annotation is required to distinguish them.
+**Ablation** (`darpa_ablation_gcp.json`): graph-only F1=0.611 (0 LLM calls); hybrid F1=0.603 (1/100 LLM calls); hybrid+LTL F1=0.611 (0 FPR).
+
+Competitors (behavioral-only, no TI oracle): WATSON F1=0.82, UNICORN F1=0.88, ProvDetector F1=0.87, DEPIMPACT F1=0.91. SENTINEL behavioral F1 remains below all competitors.
 
 **CRITICAL METHODOLOGICAL NOTE — TI-aided result is NOT comparable to competitors:**
-The v8 F1=0.931 uses `[C2]` and `[MALWARE]` annotations in the IPG YAML. These annotations come from the same `KNOWN_C2_IPS` list used to label ground truth — circular evaluation. WATSON/UNICORN/ProvDetector/DEPIMPACT perform behavioral-only detection with no TI oracle. The honest behavioral-only F1=0.568 (v4) is **still below every competitor**. Always report v8 as "TI-aided" in the paper; the behavioral-only v4 result must also be reported.
+TI-aided F1=0.915 uses `[C2]`/`[MALWARE]` from the same `KNOWN_C2_IPS` list as ground truth. Always report as "TI-aided" with circularity caveat. 24/25 nginx_backdoor windows are syscall-indistinguishable from benign nginx workers.
 
-Key v8 improvements over v7 (in `evaluate_darpa_tc.py`):
-- **Fix 1**: pid=0 filter — skip windows where CDM18 subject UUID is unresolved (garbage IPG → FP source). Reduced FP 8→4.
-- **Fix 2**: Parent-child C2 chain injection — two-phase build: Phase 1 streams all events collecting ppid_map + c2_pids; Phase 2 injects a synthetic NET_CON edge into ancestor (nginx parent) windows whose descendant (vUgefal) connected to a known C2 IP. Allows LLM to see cross-process kill-chain. FN 32→3.
-- vUgefal APT process appears at line 3,824,597 of 3.9M total lines (97.8%). Must read full file — early sampling gets only nginx workers.
-
-Remaining errors (7 total in v8):
-- 3 FN: pid=59137 c2_detected windows — LLM returns BENIGN at conf=0.95–0.99 on some windows despite [C2] tag.
-- 4 FP: pids 57534, 57539, 57540 — benign nginx/sshd workers flagged as T1068. Ambiguous syscall patterns.
+Dataset: `data/darpa/ta1-cadets-e3-official.json.2` on GCP VM (also on Mac external SSD).
 
 ---
 
@@ -83,7 +78,7 @@ Remaining errors (7 total in v8):
 ```bash
 pip install -r requirements-dev.txt  # one-time setup
 
-make test        # 201 unit tests — no Docker/root/LLM needed, runs in <2s
+make test        # 218 unit tests — no Docker/root/LLM needed, runs in <2s
 make lint        # ruff check
 make type-check  # mypy
 
@@ -98,10 +93,9 @@ cd src/python && python -m sentinel.pcabp.behavioral_encoder --train
 # Evaluations (require Ollama running with llama3.1:8b):
 make eval-scenarios   # 14 MITRE ATT&CK scenarios → results/evaluations/scenario_results.json
 make eval-real        # 15 real strace traces → results/evaluations/real_data_results.json
-make eval-darpa-tc    # DARPA TC E3 CADETS, 100 windows → results/evaluations/darpa_tc_results.json
-                      # Requires: /Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2
-                      # Script: src/python/evaluate_darpa_tc.py
-                      # Current result: F1=0.931, TPR=0.940 (TI-AIDED, see note above)
+make eval-darpa-tc    # DARPA TC E3 CADETS, 100 windows (run on GCP for paper numbers)
+                      # Paper results: results/evaluations_gcp/darpa_tc_*_gcp.json
+                      # GCP chain: bash scripts/run_gcp_eval_chain.sh (see docs/RUNME.md)
 make eval-darpa-tc-full  # 400 windows (full paper submission run)
 make eval-all         # all evaluations except eval-real and eval-darpa-tc
 
@@ -384,23 +378,22 @@ Constants that must stay in sync between `sentinel.c` and Python:
 
 ## Key Open Gaps Before IEEE TIFS Submission
 
-**COMPLETED (measured, results on disk):**
-- ✅ Honest behavioral-only DARPA TC: F1=0.500, TPR=0.360 (`results/evaluations/darpa_tc_behavioral.json`)
-- ✅ TI-aided DARPA TC v8 confirmed: F1=0.931 (`results/evaluations/darpa_tc_v8_ti_aided.json`)
-- ✅ PCABP real nginx binary: 311 call sites from nginx 1.18.0 linux/arm64 (`sentinel/pcabp/nginx_callsites.pkl`)
-- ✅ PCABP 500-trial stats: TPR=1.0, FPR=0.0, F1=1.0 on synthetic classes (`results/evaluations/pcabp_results.json`)
-- ✅ Dual-tier gap: 35.7% measured vs 94.7% claimed (`results/evaluations/dual_tier_reduction.json`)
+**COMPLETED (GCP 2026-06-08, `results/evaluations_gcp/`):**
+- ✅ Full eval chain + MANIFEST.json; 0 mock fallbacks on LLM evals
+- ✅ DARPA hybrid v5 F1=0.603; LLM-only v4 F1=0.597; TI-aided v8 F1=0.915
+- ✅ Ablation: graph-only F1=0.611; hybrid 1/100 LLM invocations
+- ✅ Real strace n=104: TPR=0.714, FPR=0.291; LTL 0/387 FP
+- ✅ IPG 74.0% @ n=20; dual-tier 35.7%; PCABP real nginx F1=1.0 (663 x86 sites)
+- ✅ `paper/main.tex` synced to GCP JSONs; docs updated (RUNME, REPRO, diagrams)
 
-**STILL OPEN (must fix before IEEE TIFS submission):**
+**STILL OPEN (before IEEE TIFS submission):**
 
-1. **CRITICAL — DARPA TC F1 gap**: Behavioral-only improved from 0.500→0.568 (v4, positive-only IPG meta signals). Still below WATSON (0.82), UNICORN (0.88), all competitors. Hard ceiling: 24/25 nginx_backdoor windows are behaviorally identical to normal nginx workers — TI oracle required to detect them. Paper must reframe as "SENTINEL + TI integration" contribution; report both modes honestly. The behavioral F1=0.568 with full reasoning in the paper is defensible as an honest comparison.
-2. **CoVe "zero hallucinations"** unfalsifiable with MockClassifier. Requires Ollama measurement with structured `evidence_refs` populated.
-3. **EGTE calibration** on synthetic data only. Needs ≥50 real benign traces for finite-sample guarantee to hold.
-4. **Real-data CI width**: n=15 → [66.7%, 100%] accuracy CI. Need ≥50 traces for publication-quality bounds.
-5. **N-gram LR baseline** in `baseline_comparison.json` trains and tests on the same scenarios (contamination). Falco baseline is a Python reimplementation of 8 rules, not the real Falco binary.
-6. **PCABP evaluation is synthetic-only**: The 500-trial stats show F1=1.0 because test classes are perfectly pure (all legit IPs from bloom filter, all injected IPs from heap). This is expected behavior but the paper must acknowledge it. For stronger evidence: test with real nginx processes under strace showing actual call-site IPs.
-7. **PCABP integration in simulation scenarios**: `ip` field on KernelEvents in `simulation.py` is always 0. PCABP scoring in simulation mode always returns 0 (gracefully disabled). Cannot demonstrate PCABP end-to-end in simulation — needs live eBPF.
-8. **Section V updates needed**: V-B (dual-tier 94.7%→35.7%), V-D (DARPA TC both modes with honest comparison note), IV-H (add PCABP real-binary results).
+1. **Author metadata + PDF build** — affiliation, funding, `pdflatex`, page count ≤14
+2. **CoVe Ollama measurement** — hallucination rate with structured `evidence_refs`
+3. **High real-data FPR** (0.291) — analyze benign FP patterns; document in paper
+4. **EGTE** — demoted from paper; code retained as future work
+5. **Baseline honesty** — Falco/N-gram LR contamination fixes
+6. **Live eBPF PCABP** — optional demo with non-zero `user_ip`
 
 ---
 
@@ -412,9 +405,7 @@ Before submitting to IEEE Manuscript Central (https://mc.manuscriptcentral.com/t
 - Verify TikZ architecture diagram (Figure 1) renders (add PCABP as 7th contribution box)
 - Check page count ≤ 14 pages
 - Run `chktex main.tex`
-- **[DONE]** Behavioral DARPA TC improved to F1=0.568 (v4). Use `results/evaluations/darpa_tc_behavioral_v4.json`. Report both TI-aided (0.931) and behavioral-only (0.568) with explicit TI-aided caveat.
-- **[DONE]** Update Section V-B dual-tier reduction from 94.7% → 35.7% (measured, in `dual_tier_reduction.json`)
-- Update Section V-D with DARPA TC table (TI-aided 0.931 + behavioral 0.568) and honest framing note
-- Add PCABP section IV-H with: 311 call sites from nginx 1.18.0 ARM64, centroid separation=1.717, consensus weights (0.4/0.6), 500-trial synthetic F1=1.0 with caveat
-- **[DONE]** `results/evaluations/darpa_tc_behavioral_v4.json` and `darpa_tc_v8_ti_aided.json` exist
-- Reframe DARPA TC contribution: "SENTINEL + TI integration achieves F1=0.931; behavioral-only F1=0.568 reflects hard detection limit of nginx-mimicry attacks without TI oracle"
+- **[DONE]** GCP DARPA: v5 hybrid F1=0.603, v4 LLM-only F1=0.597, TI-aided F1=0.915 (`results/evaluations_gcp/`)
+- **[DONE]** Section V-B dual-tier 35.7%; Section V-D DARPA + ablation tables synced
+- **[DONE]** PCABP real nginx x86 (663 sites) in `pcabp_real_nginx_gcp.json`
+- [ ] Author/affiliation, funding, final PDF build

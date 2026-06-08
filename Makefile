@@ -11,6 +11,7 @@ COMPOSE    := docker compose -f docker/docker-compose.yml
 RESULTS_DIR      := results
 LOGS_DIR         := results/logs
 EVAL_DIR         := results/evaluations
+EVAL_GCP_DIR     := results/evaluations_gcp
 DATA_DIR         := data/input/real_traces
 
 .PHONY: help install test lint type-check \
@@ -18,8 +19,10 @@ DATA_DIR         := data/input/real_traces
         logs audit-log incidents tail-log \
         shell run run-mock \
         capture-traces eval-real eval-scenarios eval-tls \
-        eval-baselines eval-red-team eval-calibration eval-tracee \
-        eval-ipg-tokens eval-darpa-tc eval-all benchmark-overhead benchmark-sysbench \
+        eval-baselines eval-red-team eval-red-team-full eval-calibration eval-tracee \
+        eval-ipg-tokens eval-darpa-tc eval-darpa-ablation eval-dual-tier \
+        eval-adfa-ld eval-synthetic-multi-host \
+        eval-gcp-chain eval-all benchmark-overhead benchmark-sysbench \
         dirs clean
 
 # ── Default target ─────────────────────────────────────────────────────────────
@@ -55,11 +58,14 @@ help:
 	@echo "  eval-scenarios  Evaluate on 14 simulation scenarios"
 	@echo "  eval-tls        Measure TLS injection confidence lift"
 	@echo "  eval-baselines  Falco + N-gram LR vs SENTINEL comparison table"
-	@echo "  eval-red-team   Adversarial evasion scenario evaluation"
+	@echo "  eval-red-team       Adversarial evasion evaluation (15 scenarios, mock LLM)
+  eval-red-team-full  Red team with Ollama llama3.1:8b (paper numbers)"
 	@echo "  eval-calibration ECE + reliability diagram data"
 	@echo "  eval-tracee     Tracee (Aqua Security) baseline comparison"
 	@echo "  eval-ipg-tokens IPG token reduction vs raw strace (tiktoken; n=6 real traces)"
-	@echo "  eval-darpa-tc   DARPA TC E3 CADETS evaluation (100 windows, needs Ollama + SSD)"
+	@echo "  eval-adfa-ld        ADFA-LD syscall traces evaluation (needs --dataset path)
+  eval-synthetic      Synthetic multi-host corpus generation + eval (no external data)
+  eval-darpa-tc       DARPA TC E3 CADETS evaluation (100 windows, needs Ollama + SSD)"
 	@echo "  eval-darpa-tc-full  Full 400-window DARPA TC evaluation for paper submission"
 	@echo "  eval-all        Run all evaluations except eval-real (no Ollama needed)"
 	@echo "  benchmark-overhead  CPU/memory/latency overhead measurements"
@@ -73,7 +79,8 @@ help:
 	@echo "  Audit log  : results/logs/audit.jsonl"
 	@echo "  Incidents  : results/logs/incidents.jsonl"
 	@echo "  Mem dumps  : results/logs/memdump_<pid>_<ts>.txt"
-	@echo "  Eval JSON  : results/evaluations/*.json"
+	@echo "  Eval JSON  : results/evaluations/*.json (dev)"
+	@echo "  GCP JSON   : results/evaluations_gcp/*_gcp.json (paper source of truth)"
 	@echo "  Trace files: data/input/real_traces/*.log"
 	@echo "  Prometheus : http://localhost:9091"
 	@echo "  Grafana    : http://localhost:3000  (admin / sentinel)"
@@ -84,9 +91,9 @@ install:
 	pip install -r requirements-dev.txt
 
 dirs:
-	@mkdir -p $(LOGS_DIR) $(EVAL_DIR) $(DATA_DIR)
-	@touch $(LOGS_DIR)/.gitkeep $(EVAL_DIR)/.gitkeep $(DATA_DIR)/.gitkeep
-	@echo "Created: $(LOGS_DIR)/  $(EVAL_DIR)/  $(DATA_DIR)/"
+	@mkdir -p $(LOGS_DIR) $(EVAL_DIR) $(EVAL_GCP_DIR) $(DATA_DIR)
+	@touch $(LOGS_DIR)/.gitkeep $(EVAL_DIR)/.gitkeep $(EVAL_GCP_DIR)/.gitkeep $(DATA_DIR)/.gitkeep
+	@echo "Created: $(LOGS_DIR)/  $(EVAL_DIR)/  $(EVAL_GCP_DIR)/  $(DATA_DIR)/"
 
 # ── Quality ────────────────────────────────────────────────────────────────────
 
@@ -193,8 +200,38 @@ eval-baselines: dirs
 	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_baselines.py
 
 eval-red-team: dirs
-	@echo "Adversarial red team evaluation → $(EVAL_DIR)/red_team_results.json"
+	@echo "Adversarial red team evaluation (15 scenarios, mock LLM) → $(EVAL_DIR)/red_team_results.json"
 	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_red_team.py
+
+eval-red-team-full: dirs
+	@echo "Adversarial red team evaluation (Ollama llama3.1:8b) → $(EVAL_DIR)/red_team_results_ollama.json"
+	@echo "Requires: Ollama running with llama3.1:8b"
+	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_red_team.py --ollama --out $(EVAL_DIR)/red_team_results_ollama.json
+
+eval-adfa-ld: dirs
+	@echo "ADFA-LD evaluation → $(EVAL_DIR)/adfa_ld_results.json"
+	@echo "Requires: ADFA-LD dataset path set in ADFA_LD_PATH env var"
+	@echo "  Download: https://github.com/verazuo/a-dataset-for-developing-IDS"
+	@echo "  Usage:    ADFA_LD_PATH=/path/to/ADFA-LD make eval-adfa-ld"
+	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_adfa_ld.py \
+		--dataset $${ADFA_LD_PATH:-data/adfa_ld} \
+		--out $(EVAL_DIR)/adfa_ld_results.json
+
+eval-synthetic: dirs
+	@echo "Synthetic multi-host corpus eval (500 benign + 100 attack) → $(EVAL_DIR)/synthetic_multi_host_results.json"
+	PYTHONPATH=$(SRC) $(PYTHON) -c "\
+import asyncio, json, sys, pathlib; \
+sys.path.insert(0, '$(SRC)'); \
+from evaluation.synthetic_multi_host import MultiHostGenerator; \
+from sentinel.ipg import IPGBuilder; \
+from sentinel.llm.mock import MockClassifier; \
+gen = MultiHostGenerator(seed=42); \
+traces = gen.generate(n_benign=500, n_attack=100); \
+print(json.dumps(MultiHostGenerator.summary(traces), indent=2)); \
+pathlib.Path('$(EVAL_DIR)').mkdir(parents=True, exist_ok=True); \
+with open('$(EVAL_DIR)/synthetic_multi_host_summary.json', 'w') as f: \
+    json.dump({'summary': MultiHostGenerator.summary(traces), 'n_traces': len(traces)}, f, indent=2); \
+print('Summary → $(EVAL_DIR)/synthetic_multi_host_summary.json')"
 
 eval-calibration: dirs
 	@echo "Confidence calibration (ECE) → $(EVAL_DIR)/calibration_results.json"
@@ -240,7 +277,22 @@ eval-darpa-tc-full: dirs
 	@echo "DARPA TC E3 CADETS full evaluation (400 windows) → $(EVAL_DIR)/darpa_tc_results.json"
 	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_darpa_tc.py --max-windows 400
 
-eval-all: dirs eval-scenarios eval-red-team eval-calibration eval-baselines eval-tracee eval-ltl eval-ipg-tokens
+eval-darpa-ablation: dirs
+	@echo "DARPA 5-mode ablation → $(EVAL_DIR)/darpa_ablation.json"
+	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_darpa_ablation.py \
+		--dataset cadets --max-windows 100 \
+		--strip-annotations --hard-fraction 0.5 \
+		--out $(EVAL_DIR)/darpa_ablation.json
+
+eval-dual-tier: dirs
+	@echo "Dual-tier invocation reduction → $(EVAL_DIR)/dual_tier_reduction.json"
+	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/measure_dual_tier_reduction.py
+
+eval-gcp-chain: dirs
+	@echo "Full GCP paper eval chain → $(EVAL_GCP_DIR)/"
+	bash scripts/run_gcp_eval_chain.sh
+
+eval-all: dirs eval-scenarios eval-red-team eval-calibration eval-baselines eval-tracee eval-ltl eval-ipg-tokens eval-synthetic
 	@echo ""
 	@echo "All evaluations complete. Results in $(EVAL_DIR)/"
 	@ls -lh $(EVAL_DIR)/*.json 2>/dev/null | awk '{print "  " $$5 "  " $$9}'

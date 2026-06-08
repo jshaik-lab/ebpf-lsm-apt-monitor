@@ -1,0 +1,55 @@
+2026-06-08 16:59:34 [debug    ] ollama_inference               latency_ms=15256.8 model=llama3.2:1b
+2026-06-08 16:59:45 [debug    ] ollama_inference               latency_ms=11581.5 model=llama3.1:8b
+2026-06-08 16:59:53 [debug    ] ollama_inference               latency_ms=8132.4 model=llama3.1:8b
+  Credential Dumping: dual=MALICIOUS@0.98 (llama3.1:8b)  8b=MALICIOUS@0.98
+2026-06-08 16:59:56 [debug    ] ollama_inference               latency_ms=2538.2 model=llama3.2:1b
+2026-06-08 17:00:02 [debug    ] ollama_inference               latency_ms=6495.1 model=llama3.1:8b
+2026-06-08 17:00:11 [debug    ] ollama_inference               latency_ms=8548.9 model=llama3.1:8b
+  Privilege Escalation: dual=MALICIOUS@0.93 (llama3.1:8b)  8b=MALICIOUS@0.95
+2026-06-08 17:00:14 [debug    ] ollama_inference               latency_ms=2623.5 model=llama3.2:1b
+2026-06-08 17:00:21 [debug    ] ollama_inference               latency_ms=7622.6 model=llama3.1:8b
+2026-06-08 17:00:29 [debug    ] ollama_inference               latency_ms=7554.2 model=llama3.1:8b
+  Process Injection: dual=MALICIOUS@0.98 (llama3.1:8b)  8b=MALICIOUS@0.98
+2026-06-08 17:00:31 [debug    ] ollama_inference               latency_ms=2450.8 model=llama3.2:1b
+2026-06-08 17:00:39 [debug    ] ollama_inference               latency_ms=7834.3 model=llama3.1:8b
+2026-06-08 17:00:47 [debug    ] ollama_inference               latency_ms=7555.6 model=llama3.1:8b
+  Defense Evasion: dual=MALICIOUS@0.85 (llama3.1:8b)  8b=MALICIOUS@0.85
+2026-06-08 17:00:49 [debug    ] ollama_inference               latency_ms=2318.6 model=llama3.2:1b
+2026-06-08 17:00:57 [debug    ] ollama_inference               latency_ms=8384.8 model=llama3.1:8b
+2026-06-08 17:01:06 [debug    ] ollama_inference               latency_ms=9003.2 model=llama3.1:8b
+  C2 over HTTP: dual=MALICIOUS@0.93 (llama3.1:8b)  8b=MALICIOUS@0.83
+2026-06-08 17:01:09 [debug    ] ollama_inference               latency_ms=2224.5 model=llama3.2:1b
+2026-06-08 17:01:16 [debug    ] ollama_inference               latency_ms=7210.0 model=llama3.1:8b
+  Lateral Movement: dual=BENIGN@0.99 (llama3.2:1b)  8b=MALICIOUS@0.85
+2026-06-08 17:01:18 [debug    ] ollama_inference               latency_ms=2026.8 model=llama3.2:1b
+2026-06-08 17:01:25 [debug    ] ollama_inference               latency_ms=7041.6 model=llama3.1:8b
+  Data Exfiltration: dual=BENIGN@0.98 (llama3.2:1b)  8b=MALICIOUS@0.95
+2026-06-08 17:01:27 [debug    ] ollama_inference               latency_ms=2548.5 model=llama3.2:1b
+2026-06-08 17:01:33 [debug    ] ollama_inference               latency_ms=5882.7 model=llama3.1:8b
+2026-06-08 17:01:39 [debug    ] ollama_inference               latency_ms=6043.0 model=llama3.1:8b
+  Scripted Execution: dual=MALICIOUS@0.85 (llama3.1:8b)  8b=MALICIOUS@0.83
+2026-06-08 17:01:42 [debug    ] ollama_inference               latency_ms=2230.2 model=llama3.2:1b
+2026-06-08 17:01:49 [debug    ] ollama_inference               latency_ms=7740.2 model=llama3.1:8b
+2026-06-08 17:01:57 [debug    ] ollama_inference               latency_ms=7307.1 model=llama3.1:8b
+  Valid Accounts: dual=MALICIOUS@0.85 (llama3.1:8b)  8b=MALICIOUS@0.85
+2026-06-08 17:01:59 [debug    ] ollama_inference               latency_ms=2321.2 model=llama3.2:1b
+2026-06-08 17:02:06 [debug    ] ollama_inference               latency_ms=7364.1 model=llama3.1:8b
+2026-06-08 17:02:14 [debug    ] ollama_inference               latency_ms=7802.0 model=llama3.1:8b
+  Web Exploitation: dual=MALICIOUS@0.85 (llama3.1:8b)  8b=MALICIOUS@0.93
+2026-06-08 17:02:16 [debug    ] ollama_inference               latency_ms=2330.4 model=llama3.2:1b
+2026-06-08 17:02:24 [debug    ] ollama_inference               latency_ms=7410.6 model=llama3.1:8b
+2026-06-08 17:02:31 [debug    ] ollama_inference               latency_ms=7068.9 model=llama3.1:8b
+  Agent Prompt Injection: dual=MALICIOUS@0.93 (llama3.1:8b)  8b=MALICIOUS@0.85
+2026-06-08 17:02:33 [debug    ] ollama_inference               latency_ms=1918.4 model=llama3.2:1b
+2026-06-08 17:02:39 [debug    ] ollama_inference               latency_ms=6037.3 model=llama3.1:8b
+  Nginx Web Server: dual=BENIGN@0.99 (llama3.2:1b)  8b=BENIGN@0.42
+2026-06-08 17:02:41 [debug    ] ollama_inference               latency_ms=1995.0 model=llama3.2:1b
+2026-06-08 17:02:49 [debug    ] ollama_inference               latency_ms=8280.2 model=llama3.1:8b
+  Apt Package Update: dual=BENIGN@0.99 (llama3.2:1b)  8b=BENIGN@0.93
+2026-06-08 17:02:51 [debug    ] ollama_inference               latency_ms=1911.4 model=llama3.2:1b
+2026-06-08 17:02:56 [debug    ] ollama_inference               latency_ms=4840.7 model=llama3.1:8b
+  PostgreSQL Normal Op: dual=BENIGN@0.98 (llama3.2:1b)  8b=BENIGN@0.04
+
+Reduction: 35.7% (5/14 draft hits)
+Accuracy: dual 12/14  8b-only 14/14
+→ results/evaluations/dual_tier_reduction.json

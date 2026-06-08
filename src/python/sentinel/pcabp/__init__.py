@@ -18,8 +18,24 @@ Pipeline (integrated into the main SENTINEL stages):
     → pcabp_score = 0.4 * static_violation + 0.6 * ai_divergence
     → effective_confidence = max(llm_confidence, pcabp_score)
     → enforcement tier derived from effective_confidence (Algorithm 3)
+
+BehavioralEncoder (PyTorch) is imported lazily so bloom-filter rebuild and
+static-only paths work without torch installed.
 """
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sentinel.pcabp.call_site_map import ValidCallSiteMap
-from sentinel.pcabp.behavioral_encoder import BehavioralEncoder, PCAPBScore
 
 __all__ = ["ValidCallSiteMap", "BehavioralEncoder", "PCAPBScore"]
+
+if TYPE_CHECKING:
+    from sentinel.pcabp.behavioral_encoder import BehavioralEncoder, PCAPBScore
+
+
+def __getattr__(name: str):
+    if name in ("BehavioralEncoder", "PCAPBScore"):
+        from sentinel.pcabp.behavioral_encoder import BehavioralEncoder, PCAPBScore
+        return BehavioralEncoder if name == "BehavioralEncoder" else PCAPBScore
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

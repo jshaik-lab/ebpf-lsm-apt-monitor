@@ -82,8 +82,12 @@ def _load_label_sidecar(scenario: str) -> dict | None:
     path = os.path.join(TRACE_DIR, f"{scenario}.label.json")
     if not os.path.isfile(path):
         return None
-    with open(path) as f:
-        return json.load(f)
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except json.JSONDecodeError as exc:
+        print(f"WARN: invalid sidecar {path}: {exc}", file=sys.stderr)
+        return None
 
 
 def _ground_truth_for(scenario: str) -> str | None:
@@ -190,8 +194,11 @@ async def main() -> None:
     print(SEP)
 
     builder    = IPGBuilder()
+    # Match the DARPA config (config/sentinel.yaml): 300 s timeout, 3 retries.
+    # Earlier 90 s/1-retry caused silent MockClassifier fallback on the IONOS
+    # VPS where llama3.1:8b CPU inference exceeds 60–120 s for first windows.
     classifier = OllamaClassifier(
-        base_url=OLLAMA_URL, model=MODEL, timeout=90, max_retries=1, tier="full"
+        base_url=OLLAMA_URL, model=MODEL, timeout=300, max_retries=3, tier="full"
     )
     results = []
 
@@ -278,9 +285,10 @@ async def main() -> None:
         print(f"  {r['scenario']:<35} {r['ground_truth']:<10} {r['label']:<10} "
               f"{r['confidence']:>6.3f}  {ok}")
 
+    from sentinel.provenance import make_meta
     summary = {
         "model":    MODEL,
-        "platform": platform,
+        "meta":     make_meta(model_full=MODEL, extra={"legacy_platform": platform}),
         "capture":  "strace -f -tt -T (real kernel syscalls)",
         "n_benign":  len(benign),
         "n_attack":  len(attacks),

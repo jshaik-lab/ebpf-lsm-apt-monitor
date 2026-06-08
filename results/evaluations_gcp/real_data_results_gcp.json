@@ -1,0 +1,1741 @@
+{
+  "model": "llama3.1:8b",
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T16:11:18Z",
+    "ollama_fallback_to_mock_count": 0
+  },
+  "capture": "strace -f -tt -T (real kernel syscalls)",
+  "n_benign": 55,
+  "n_attack": 49,
+  "n_skipped": 1,
+  "tp": 35,
+  "fn": 14,
+  "tn": 39,
+  "fp": 16,
+  "tpr": 0.7143,
+  "fpr": 0.2909,
+  "accuracy": 0.7115,
+  "bootstrap_ci_95": {
+    "tpr": [
+      0.585,
+      0.84
+    ],
+    "fpr": [
+      0.179,
+      0.404
+    ],
+    "accuracy": [
+      0.625,
+      0.798
+    ],
+    "n_resamples": 1000
+  },
+  "results": [
+    {
+      "scenario": "attack_T1003_T1071",
+      "ground_truth": "MALICIOUS",
+      "events": 60,
+      "nodes": 10,
+      "edges": 20,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash writes to temp dir, reads user database, and executes cat; then multiple processes interact with /etc/ld.so.cache; finally nc connects to external IP :4444 \u2014 a probable C2 beacon.",
+      "mitre_ttps": [
+        "T1074",
+        "T1003",
+        "T1087",
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 9770.4,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; an nc process connects to external IP 10.0.0.1:4444 (outbound to unusual port). Step 2: the edge sequence is write to temp dir \u2192 read from user database \u2192 execve of cat \u2192 mmap and clone in multiple processes \u2192 connect to external IP. Step 3: openat(W) on /tmp/.x matches T1074; openat(R) on /etc/passwd matches T1003/T1087; connect to external :4444 matches T1071/T1095. Step 4: the causal chain data staging \u2192 account enumeration \u2192 C2 beacon is a suspicious kill-chain."
+    },
+    {
+      "scenario": "attack_T1003_shadow",
+      "ground_truth": "MALICIOUS",
+      "events": 40,
+      "nodes": 6,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash reads sensitive user database file /etc/passwd (T1003) and then executes cat from /usr/bin/cat (T1059) \u2014 a suspicious sequence of syscalls.",
+      "mitre_ttps": [
+        "T1003",
+        "T1059"
+      ],
+      "latency_ms": 6593.4,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources. Step 2: a chain of mmap syscalls is followed by an openat(R) on /etc/passwd (sensitive file), which precedes clone and execve syscalls. Step 3: the sensitive read matches T1003; subsequent execve from /usr/bin/cat matches T1059 staged payload. Step 4: the sequence of mmap, openat(R), clone, and execve suggests a potential privilege escalation attempt."
+    },
+    {
+      "scenario": "attack_T1041_exfil",
+      "ground_truth": "MALICIOUS",
+      "events": 62,
+      "nodes": 10,
+      "edges": 21,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash writes to /tmp and reads sensitive user database; then cat execs and connects to external IP :443, indicating a potential C2 channel.",
+      "mitre_ttps": [
+        "T1074",
+        "T1003/T1087",
+        "T1071"
+      ],
+      "latency_ms": 8813.7,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; nc connects to external IP. Step 2: the edge sequence is write to temp dir \u2192 read from same dir \u2192 read sensitive user database \u2192 execve of cat \u2192 mmap in mem space \u2192 connect to external IP. Step 3: openat(W) on /tmp matches T1074; openat(R) on /etc/passwd matches T1003/T1087; connect to external :443 matches T1071 C2. Step 4: the causal chain data staging \u2192 credential access \u2192 C2 is a suspicious APT kill-chain."
+    },
+    {
+      "scenario": "attack_T1055_ptrace",
+      "ground_truth": "MALICIOUS",
+      "events": 87,
+      "nodes": 6,
+      "edges": 14,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads sensitive /etc/passwd (T1003), then executes python3 which is ptraced by another python3 instance (T1055) \u2014 a clear indication of process injection and credential access.",
+      "mitre_ttps": [
+        "T1003",
+        "T1055"
+      ],
+      "latency_ms": 6481.5,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence is a complex interplay between file reads, memory mappings, and process cloning/executing. Step 3: T1003 (account enumeration) via reading /etc/passwd; T1055 (process injection) via ptrace attach to python3 process. Step 4: the combination of credential access and process manipulation suggests malicious intent."
+    },
+    {
+      "scenario": "attack_T1059_scripted",
+      "ground_truth": "MALICIOUS",
+      "events": 82,
+      "nodes": 7,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/passwd (T1003) and python3 connects to unusual port 31337 (probable T1071 C2 beacon), indicating a likely APT kill-chain.",
+      "mitre_ttps": [
+        "T1003",
+        "T1071"
+      ],
+      "latency_ms": 6632.0,
+      "cot": "Step 1: two bash and three python3 processes interact with various resources. Step 2: the edge sequence is a complex interplay between memory mapping, file reads, and network connections. Step 3: T1003 (account enumeration) via openat(R) on /etc/passwd; T1071 C2 beacon via connect to unusual port 31337. Step 4: the combination of credential access and probable C2 beacon is a strong indicator of malicious activity."
+    },
+    {
+      "scenario": "attack_T1068_setuid",
+      "ground_truth": "MALICIOUS",
+      "events": 97,
+      "nodes": 10,
+      "edges": 20,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash reads /etc/passwd (T1003) and python3 makes setuid call (T1068), but these are part of a larger process that includes legitimate syscalls like mmap and openat; the presence of multiple processes with similar syscall patterns suggests a possible web-shell or reverse shell scenario.",
+      "mitre_ttps": [
+        "T1003",
+        "T1068"
+      ],
+      "latency_ms": 7369.0,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence is a complex chain of mmap, openat, clone, execve calls. Step 3: sensitive read on /etc/passwd (T1003) and setuid call (T1068) are suspicious; however, they are part of a larger process that also includes legitimate syscalls like listen and connect. Step 4: the presence of multiple processes with similar syscall patterns suggests a possible web-shell or reverse shell scenario."
+    },
+    {
+      "scenario": "attack_T1078_valid_accts",
+      "ground_truth": "MALICIOUS",
+      "events": 0,
+      "label": "SKIP",
+      "confidence": 0.0,
+      "correct": false,
+      "reasoning": "No parseable events in trace",
+      "mitre_ttps": [],
+      "latency_ms": 0
+    },
+    {
+      "scenario": "attack_T1562_evasion",
+      "ground_truth": "MALICIOUS",
+      "events": 18,
+      "nodes": 3,
+      "edges": 6,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads sensitive /etc/passwd (T1003) and overwrites security log /var/log/syslog (T1562), indicating account enumeration and log tampering.",
+      "mitre_ttps": [
+        "T1003",
+        "T1087",
+        "T1562"
+      ],
+      "latency_ms": 6084.7,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap edges form a chain from exec to mem to file, then back to mem. Step 3: openat(R) on /etc/passwd matches T1003; openat(W) on /var/log/syslog matches T1562. Step 4: the sensitive read of user database and log tampering are malicious indicators."
+    },
+    {
+      "scenario": "attack_ext_001",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "bash writes to /tmp/.cache1 (T1074) and then connects to external :443 (T1047 C2), but the presence of multiple self-cloning processes makes it unclear whether this is a staged payload or normal system activity.",
+      "mitre_ttps": [
+        "T1074",
+        "T1047"
+      ],
+      "latency_ms": 7588.1,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; an nc process connects to external IP 34.2.1.1:443 (anomaly: ext_outbound). Step 2: the edge sequence is complex, but it appears that each process creates a new instance of itself through execve or clone syscalls. Step 3: openat(W) on /tmp/.cache1 matches T1074; connect to external :443 matches T1047 C2. Step 4: while there are some suspicious edges, the overall pattern is not as clear-cut malicious as in previous graphs."
+    },
+    {
+      "scenario": "attack_ext_002",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "python3's setuid call [T1068/HIGH] is isolated and does not directly lead to sensitive file access or execution of malicious payloads; the overall pattern appears complex but benign.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7356.7,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but a pattern emerges where each process creates memory mappings (mmap) and opens files (openat), often recursively. Step 3: setuid call [T1068/HIGH] in python3 process suggests privilege escalation attempt; however, this is not directly connected to any sensitive file access or execve from temp dirs. Step 4: while the pattern is suspicious, it does not clearly indicate a malicious intent."
+    },
+    {
+      "scenario": "attack_ext_003",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "python3 injects into another process via ptrace (T1055), while multiple bash processes engage in suspicious memory interactions \u2014 indicative of a sophisticated APT attack.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 6662.2,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a complex causal chain involves mmap, openat, execve, clone, and ptrace syscalls. Step 3: T1055 process injection via ptrace attach is detected in the edge {src: n5, dst: n4, syscall: ptrace}. Step 4: the presence of multiple bash processes with complex memory interactions and a python3 process injecting into another process suggests malicious activity."
+    },
+    {
+      "scenario": "attack_ext_004",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash maps /etc/ld.so.cache (T1027), reads locale files (T1210), then executes itself after a long delay \u2014 suspicious behaviour indicative of a malicious library load and execution.",
+      "mitre_ttps": [
+        "T1027",
+        "T1210"
+      ],
+      "latency_ms": 6803.0,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap \u2192 openat(R) \u2192 execve is a sequence where the process maps a library, reads a locale file, then executes itself (with a long delay). Step 3: mmap of /etc/ld.so.cache matches T1027; openat(R) on locale files matches T1210. Step 4: the causal chain is consistent with a bash process trying to load a malicious library and execute it."
+    },
+    {
+      "scenario": "attack_ext_005",
+      "ground_truth": "MALICIOUS",
+      "events": 215,
+      "nodes": 10,
+      "edges": 34,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash processes exhibit unusual memory mapping patterns and interact with sensitive files; nc connects to external IP 10.6.5.5:8080 \u2014 a potential C2 channel (T1041).",
+      "mitre_ttps": [
+        "T1010",
+        "T1036",
+        "T1041"
+      ],
+      "latency_ms": 7949.1,
+      "cot": "Step 1: multiple bash and nc processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but appears to involve memory mapping, file reading, and network connections. Step 3: mmap on /etc/ld.so.cache matches T1010 (Dynamic Linking); connect to external IP 10.6.5.5:8080 matches T1041 (Network Device Association). Step 4: the presence of multiple bash processes with unusual memory mapping patterns, combined with network connections and file reads, raises suspicion."
+    },
+    {
+      "scenario": "attack_ext_006",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 reads from ld.so.cache and locale files, then connects to port 31337 on IP 10.0.7.6 (T1071 C2 beacon) \u2014 a probable APT communication channel.",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "latency_ms": 7682.1,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash (n0) and then clone; another chain involves reading from ld.so.cache, locale files, and executing python3. Step 3: the connect syscall to port 31337 on IP 10.0.7.6 matches T1071 C2 beacon activity. Step 4: while some syscalls are benign (e.g., reading locale files), the outbound connection to an unusual port is suspicious."
+    },
+    {
+      "scenario": "attack_ext_007",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple bash and cat processes interact with system resources, but only internal lateral connections (RFC-1918) are made by nc, which does not raise immediate suspicion.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6637.4,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: unusual_comm=true indicates non-standard process names, which could be indicative of T1036. However, no sensitive files are accessed, and network communication is within RFC-1918 range."
+    },
+    {
+      "scenario": "attack_ext_008",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": false,
+      "reasoning": "bash writes to /tmp/.cache8 (T1074) and executes from temp dir (T1059); nc connects externally (anomaly: ext_outbound), but this is a common pattern for legitimate reverse proxies.",
+      "mitre_ttps": [
+        "T1074",
+        "T1059"
+      ],
+      "latency_ms": 7448.4,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; an nc process connects to external IP 34.9.8.1:443 (anomaly: ext_outbound). Step 2: the edge sequence is complex, but it appears that each process executes a series of syscalls in a deterministic order. Step 3: openat(W) on /tmp/.cache8 matches T1074; execve from temp dir matches T1059. Step 4: while there are some suspicious edges (e.g., external connect), the overall pattern is consistent with normal system behavior."
+    },
+    {
+      "scenario": "attack_ext_009",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "python3's setuid call [T1068/HIGH] is isolated and does not directly lead to sensitive file access or network activity; however, the unusual process names (unusual_comm=true) and recursive mmap/openat patterns warrant further investigation.",
+      "mitre_ttps": [
+        "T1036",
+        "T1068"
+      ],
+      "latency_ms": 7672.2,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but a pattern emerges where each process creates memory mappings (mmap) and opens files (openat), often recursively. Step 3: setuid call [T1068/HIGH] in python3 process suggests privilege escalation attempt; however, this is not directly connected to any sensitive file access or network activity. Step 4: while the pattern is suspicious, it does not clearly indicate a malicious intent."
+    },
+    {
+      "scenario": "attack_ext_010",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "python3 process n5 injects into python3 process n4 via ptrace attach (T1055), indicating a malicious intent to execute arbitrary code within another process.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 5539.2,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a complex sequence of mmap, openat(R), and execve edges indicates process injection (T1055) via ptrace attach from n5 to n4. Step 3: T1055 is confirmed by the presence of ptrace semantic in edge n5->n4. Step 4: the combined pattern suggests a malicious intent."
+    },
+    {
+      "scenario": "attack_ext_011",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": false,
+      "reasoning": "bash loads /etc/ld.so.cache (T1210), reads locale file (T1087), then executes itself \u2014 a normal process lifecycle with some potentially suspicious library loading and discovery.",
+      "mitre_ttps": [
+        "T1210",
+        "T1087"
+      ],
+      "latency_ms": 7680.0,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: process n0 maps a region of memory (mmap), then process n1 opens /etc/ld.so.cache (library cache) and maps another region of memory, before executing itself with execve. Process n2 reads /usr/lib/locale/C.utf8/LC_IDENTIFICATION. Step 3: mmap on /etc/ld.so.cache matches T1210; openat(R) on locale file matches T1087. Step 4: the chain is consistent with a bash process loading libraries and then executing itself, but the presence of T1210 (new service) and T1087 (file and directory discovery) raises some suspicion."
+    },
+    {
+      "scenario": "attack_ext_012",
+      "ground_truth": "MALICIOUS",
+      "events": 211,
+      "nodes": 7,
+      "edges": 21,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "unusual_comm=true indicates non-standard process names; multiple execve calls from /usr/local/sbin/nc and /usr/bin/bash; connect to external IP 10.13.12.5:8080 (T1071 C2) \u2014 a combination of suspicious indicators.",
+      "mitre_ttps": [
+        "T1036",
+        "T1071"
+      ],
+      "latency_ms": 8003.2,
+      "cot": "Step 1: multiple bash and nc processes appear; complex memory interactions (mmap) and file access. Step 2: the edge sequence is a mix of memory allocation, file reading, and network communication \u2014 difficult to discern causal relationships. Step 3: unusual_comm=true indicates non-standard process names (T1036); multiple execve calls from /usr/local/sbin/nc and /usr/bin/bash; connect to external IP 10.13.12.5:8080 (T1071 C2). Step 4: the presence of T1036, combined with network communication and complex memory interactions, raises suspicion."
+    },
+    {
+      "scenario": "attack_ext_013",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 reads from ld.so.cache and locale files, then connects to unusual port 31337 on IP 10.0.14.13 (probable C2 beacon), while bash executes /usr/bin/bash after a chain of mmap syscalls.",
+      "mitre_ttps": [
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 8332.3,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash (n0) and then clone; another chain involves reading from ld.so.cache, locale files, and executing python3. Step 3: the connect syscall to port 31337 on IP 10.0.14.13 matches T1071 C2 beacon activity. Step 4: while some syscalls are benign (e.g., reading locale files), the presence of a probable C2 beacon is suspicious."
+    },
+    {
+      "scenario": "attack_ext_014",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "nc connects to internal IP 10.0.15.14:4014 (T1021/T1210), while cat and bash processes exhibit unusual behavior with mmap on /etc/ld.so.cache and execve from /usr/bin/bash/cat/nc.",
+      "mitre_ttps": [
+        "T1010",
+        "T1021",
+        "T1210"
+      ],
+      "latency_ms": 8094.8,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: mmap on /etc/ld.so.cache (T1010) and execve from /usr/bin/bash/cat/nc are common system calls. However, the unusual_comm signal indicates non-standard process names (cat and nc used as exec wrappers). Step 4: while some edges match normal system behavior, others suggest a possible lateral movement attempt via RFC-1918 connection."
+    },
+    {
+      "scenario": "attack_ext_015",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "bash writes to temp dir /tmp/.cache15 (T1074/MEDIUM), then executes nc and cat with execve from their respective binaries (T1059) \u2014 a staged payload kill-chain.",
+      "mitre_ttps": [
+        "T1074",
+        "T1059"
+      ],
+      "latency_ms": 8017.8,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; an nc process connects to external IP 34.16.15.1:443 (anomaly: ext_outbound). Step 2: the edge sequence is complex, but it appears that each process executes a series of syscalls in a deterministic order. Step 3: T1074 data staging is indicated by write to temp directory /tmp/.cache15; T1059 staged payload is suggested by execve from /usr/bin/nc and cat. Step 4: the presence of unusual_comm=true (non-standard process name) and external_connect=true (connect to external IP) raises suspicion, but the overall pattern does not clearly indicate malicious intent."
+    },
+    {
+      "scenario": "attack_ext_016",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "python3's setuid call [T1068/HIGH] is isolated and does not directly lead to sensitive file access or execution of malicious payloads; the overall pattern appears complex but benign.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7356.4,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but a pattern emerges where each process creates memory mappings (mmap) and opens files (openat), often recursively. Step 3: setuid call [T1068/HIGH] in python3 process suggests privilege escalation attempt; however, this is not directly connected to any sensitive file access or execve from temp dirs. Step 4: while the pattern is suspicious, it does not clearly indicate a malicious intent."
+    },
+    {
+      "scenario": "attack_ext_017",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache and executes bash via execve from mmap'd memory (T1055 process injection via ptrace attach)",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 5392.4,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources. Step 2: a complex sequence of mmap, openat(R), and execve edges indicates process injection (T1055) via ptrace attach from n5 to n4. Step 3: T1055 is confirmed by the presence of ptrace semantic in edge n5->n4. Step 4: the combined pattern suggests a malicious intent."
+    },
+    {
+      "scenario": "attack_ext_018",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": false,
+      "reasoning": "bash maps memory, reads locale data, and executes new instance of itself \u2014 a normal process restart sequence.",
+      "mitre_ttps": [
+        "T1027",
+        "T1210"
+      ],
+      "latency_ms": 6270.6,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap \u2192 openat(R) \u2192 mmap \u2192 execve is a sequence of memory mapping, reading locale data, and executing /usr/bin/bash. Step 3: mmap on /etc/ld.so.cache matches T1027; openat(R) on locale files matches T1210; execve from /usr/bin/bash is normal process restart. Step 4: the causal chain is consistent with a legitimate process restarting itself."
+    },
+    {
+      "scenario": "attack_ext_019",
+      "ground_truth": "MALICIOUS",
+      "events": 229,
+      "nodes": 10,
+      "edges": 35,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple nc processes interact with system resources, but no clear malicious pattern emerges; unusual_comm signal is present due to non-standard process names (nc instead of netcat).",
+      "mitre_ttps": [],
+      "latency_ms": 7915.1,
+      "cot": "Step 1: multiple bash and nc processes interact with various system resources; timeout is also present but does not directly interact with sensitive data. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve); some edges are repeated, indicating loops or recursive calls. Step 3: while there are many syscalls, none of them appear to be malicious; however, the unusual_comm signal is present due to non-standard process names (nc instead of netcat). Step 4: the presence of multiple nc processes and their interactions with various system resources raises suspicion, but without further context or evidence of sensitive data access, it's difficult to conclude malicious intent."
+    },
+    {
+      "scenario": "attack_ext_020",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 connects to port 31337 on IP 10.0.21.20 (T1071 C2 beacon), which is a probable indicator of command and control activity.",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "latency_ms": 6739.6,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash and then another execve to /usr/bin/python3, indicating process spawning. Step 3: the connect syscall from python3 to port 31337 on IP 10.0.21.20 matches T1071 C2 beacon activity. Step 4: the presence of multiple mmap syscalls and the execution of bash and then python3 suggests a complex process creation chain, but the connection to an unusual port is suspicious."
+    },
+    {
+      "scenario": "attack_ext_021",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple bash and cat processes interact with system resources; nc connects to internal IP 10.0.22.21:4021 \u2014 no sensitive files accessed or external connections made.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6681.2,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: unusual_comm=true indicates non-standard process names, which could be indicative of T1036. However, no sensitive files are accessed, and network communication is within RFC-1918 range."
+    },
+    {
+      "scenario": "attack_ext_022",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "bash writes to temp dir /tmp/.cache22 (T1074/MEDIUM), then executes nc and cat with execve from their respective binaries (T1059) \u2014 a staged payload kill-chain.",
+      "mitre_ttps": [
+        "T1074",
+        "T1059"
+      ],
+      "latency_ms": 7890.1,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; an nc process connects to external IP 34.23.22.1:443 (anomaly: ext_outbound). Step 2: the edge sequence is complex, but it appears that each process executes a series of syscalls in a deterministic order. Step 3: T1074 data staging is indicated by write to temp directory /tmp/.cache22; T1059 staged payload is suggested by execve from /usr/bin/nc and cat. Step 4: the presence of unusual_comm=true (non-standard process name) and external_connect=true raises suspicion, but the overall pattern does not clearly indicate malicious intent."
+    },
+    {
+      "scenario": "attack_ext_023",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "python3's setuid call is concerning, but no clear malicious pattern emerges; multiple mmap calls to ld.so.cache may be legitimate caching operations.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7730.1,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but key observations are: a) multiple mmap calls to /etc/ld.so.cache and other files; b) setuid call [T1068/HIGH] from python3; c) execve from /usr/bin/bash and /usr/bin/python3. Step 3: T1036 (unusual_comm=true) is present, but no clear malicious pattern emerges. Step 4: the presence of multiple mmap calls to ld.so.cache may indicate a legitimate caching operation, while setuid call [T1068/HIGH] raises some suspicion."
+    },
+    {
+      "scenario": "attack_ext_024",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache (T1055) and then executes itself; python3 is ptraced by bash (T1055), indicating potential malicious activity.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 6407.1,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve from /usr/bin/bash (n0) and then from /usr/bin/python3 (n3). Step 3: the ptrace syscall on n5 matches T1055 process injection, indicating potential malicious activity. Step 4: the presence of multiple bash processes with memory mappings and the ptrace attach to python3 process suggests a possible exploitation attempt."
+    },
+    {
+      "scenario": "attack_ext_025",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash executes itself via mmap \u2192 execve from /usr/bin/bash, accessing ld.so.cache and locale files (T1216) before executing the payload (T1059).",
+      "mitre_ttps": [
+        "T1216",
+        "T1059"
+      ],
+      "latency_ms": 7139.4,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: process n1 (mmap) precedes execve in another process (n0), indicating a self-executing bash instance. Step 3: mmap and openat(R) on /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION match T1216 Dynamic Linker Hijacking, while the subsequent execve from /usr/bin/bash matches T1059 Command and Control. Step 4: the causal chain is consistent with a self-executing bash instance hijacked by malware."
+    },
+    {
+      "scenario": "attack_ext_026",
+      "ground_truth": "MALICIOUS",
+      "events": 206,
+      "nodes": 10,
+      "edges": 36,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash executes nc and timeout commands, accessing sensitive files like /etc/ld.so.cache and connecting to external IP 10.27.26.5:8080 (T1071 C2) \u2014 a suspicious network scanning or exploitation attempt.",
+      "mitre_ttps": [
+        "T1003",
+        "T1059",
+        "T1071"
+      ],
+      "latency_ms": 8272.7,
+      "cot": "Step 1: multiple bash and nc processes interact with various memory regions (mmap) and files (openat). Step 2: the edge sequence is complex, but appears to involve bash executing nc and timeout commands. Step 3: openat(R) on /dev/null matches T1003; execve from /usr/bin/nc matches T1059 staged payload. Step 4: the presence of multiple nc processes with listen and connect syscalls suggests a network scanning or exploitation attempt."
+    },
+    {
+      "scenario": "attack_ext_027",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 connects to unusual port 31337 on IP 10.0.28.27 (probable C2 beacon [T1071,T1095/HIGH]), while multiple mmap syscalls and execve to bash suggest a web-shell dropper.",
+      "mitre_ttps": [
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 8741.2,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash (n0) and then clone; another chain leads to execve to /usr/bin/python3 (n3). Step 3: the connect syscall from n6 to port 31337 on IP 10.0.28.27 matches T1071 C2, with unusual port number indicating probable beaconing [T1095/HIGH]. Step 4: the presence of multiple mmap syscalls and execve to bash suggests a possible web-shell dropper (T1190\u2192T1105\u2192T1059), but the connect syscall to an unusual port on a non-standard IP raises suspicion."
+    },
+    {
+      "scenario": "attack_ext_028",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple non-standard process names (bash/cat/nc) interact with system resources, but no sensitive files are accessed and network communication is internal (RFC-1918), reducing suspicion.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7559.4,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: unusual_comm=true indicates non-standard process names, which could be indicative of T1036. However, no sensitive files are accessed, and network communication is internal (RFC-1918). Step 4: the presence of multiple bash and cat processes with complex interactions raises suspicion, but the lack of sensitive file access and internal network communication reduces the likelihood of malicious activity."
+    },
+    {
+      "scenario": "attack_ext_029",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash writes sensitive data to /tmp/.cache29 (T1074), then executes nc which connects to external IP 34.30.29.1:443 (T1047 C2) \u2014 a possible web-shell or reverse proxy scenario.",
+      "mitre_ttps": [
+        "T1074",
+        "T1047"
+      ],
+      "latency_ms": 7919.7,
+      "cot": "Step 1: multiple bash and cat processes interact with various files; an nc process connects to external IP 34.30.29.1:443 (anomaly: ext_outbound). Step 2: the edge sequence is complex, but a possible causal chain is: bash writes to /tmp/.cache29 (sensitive), then executes nc, which connects to external IP. Step 3: openat(W) on sensitive file matches T1074; connect to external :443 matches T1047 C2. Step 4: the presence of unusual_comm=true and external_connect=true in meta suggests a possible web-shell or reverse proxy scenario."
+    },
+    {
+      "scenario": "attack_ext_030",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "python3's setuid call [T1068/HIGH] is concerning, but the presence of multiple bash and python3 processes interacting with various system resources suggests a complex system configuration rather than a malicious attack.",
+      "mitre_ttps": [
+        "T1036",
+        "T1068"
+      ],
+      "latency_ms": 7395.2,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but a pattern emerges where each process creates memory mappings (mmap) and opens files in /etc/ld.so.cache and other locations. Step 3: setuid call [T1068/HIGH] from python3 to itself indicates privilege escalation attempt. Step 4: while some edges are suspicious, the overall pattern is consistent with a complex system configuration or a legitimate security tool."
+    },
+    {
+      "scenario": "attack_ext_031",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 uses ptrace to attach to another process (T1055), indicating possible process injection or control.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 4970.1,
+      "cot": "Step 1: multiple bash and python3 processes interact with various system resources. Step 2: a complex sequence of mmap, openat(R), and execve edges indicates process creation and resource allocation. Step 3: the presence of ptrace (T1055) from python3 to another process is suspicious. Step 4: while some edges are consistent with normal process execution, the ptrace edge suggests potential malicious activity."
+    },
+    {
+      "scenario": "attack_ext_032",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache (T1027) then executes bash from memory (T1059), indicating a command and control flow.",
+      "mitre_ttps": [
+        "T1027",
+        "T1059"
+      ],
+      "latency_ms": 6651.4,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap edges form a chain from n0 to n1 to n2, then back to n1; openat(R) edges read /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION. Step 3: mmap on /etc/ld.so.cache matches T1027 (binary placement); execve of bash from memory matches T1059 (command and control). Step 4: the causal chain binary-placement \u2192 command-and-control is a malicious kill-chain."
+    },
+    {
+      "scenario": "attack_ext_033",
+      "ground_truth": "MALICIOUS",
+      "events": 228,
+      "nodes": 10,
+      "edges": 32,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "nc connects to external IP (T1071 C2) and performs mmap on /dev/null (T1055), which may indicate a malicious netcat usage or a legitimate use case gone wrong.",
+      "mitre_ttps": [
+        "T1036",
+        "T1055",
+        "T1071"
+      ],
+      "latency_ms": 7720.8,
+      "cot": "Step 1: multiple bash and nc processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but appears to involve memory mapping, file reading, and network connections. Step 3: mmap on /dev/null (T1055) and connect to external IP (T1071 C2) are suspicious; however, these actions are performed by nc processes, which may be legitimate netcat usage. Step 4: the presence of multiple bash and sleep processes with unusual memory access patterns raises suspicion, but the overall pattern is unclear."
+    },
+    {
+      "scenario": "attack_ext_034",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 connects to unusual port 31337 (T1071 C2), but no sensitive files are accessed; however, the presence of clone and multiple mmap syscalls suggests a possible process creation or memory mapping anomaly.",
+      "mitre_ttps": [
+        "T1071"
+      ],
+      "latency_ms": 7697.8,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash (n0) and then clone; another chain starts with openat(W) on /dev/null, reads /etc/ld.so.cache, and executes /usr/bin/python3 (n3). Step 3: the connect syscall from python3 to port 31337 is suspicious (T1071 C2), but no sensitive files are accessed. Step 4: the presence of clone and multiple mmap syscalls suggests a possible process creation or memory mapping anomaly."
+    },
+    {
+      "scenario": "attack_ext_035",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple bash processes interact with system resources in a complex manner, but no sensitive files are accessed and network communication is internal (RFC-1918).",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7223.6,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: unusual_comm=true indicates non-standard process names, which could be indicative of T1036. However, no sensitive files are accessed, and network communication is internal (RFC-1918). Step 4: the presence of multiple bash processes with complex memory interactions raises suspicion, but the overall pattern does not clearly indicate malicious activity."
+    },
+    {
+      "scenario": "attack_ext_036",
+      "ground_truth": "MALICIOUS",
+      "events": 170,
+      "nodes": 10,
+      "edges": 22,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash writes to sensitive /tmp/.cache36 (T1003), then executes nc which connects to external IP (T1071 C2) \u2014 a web-shell dropper kill-chain.",
+      "mitre_ttps": [
+        "T1190",
+        "T1003",
+        "T1071"
+      ],
+      "latency_ms": 7288.2,
+      "cot": "Step 1: multiple bash and cat processes interact with various memory regions (mmap) and files. Step 2: a chain of execve from /usr/bin/bash to /tmp/.cache36 (sensitive write), then to /usr/bin/nc, suggests a web-shell dropper (T1190). Step 3: the connect syscall to external IP 34.37.36.1:443 matches T1071 C2. Step 4: the unusual_comm signal and exec_after_net=true in meta further support this hypothesis."
+    },
+    {
+      "scenario": "attack_ext_037",
+      "ground_truth": "MALICIOUS",
+      "events": 502,
+      "nodes": 10,
+      "edges": 23,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3's setuid call to /home/sentinel/Paper1_ZeroTrustAgent (T1068) and multiple instances of bash and python3 interacting with system files suggest a malicious intent.",
+      "mitre_ttps": [
+        "T1068"
+      ],
+      "latency_ms": 6499.8,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence is complex, but a pattern emerges where each process creates a new instance of itself (e.g., n0 \u2192 n1) and interacts with system files (e.g., /etc/ld.so.cache). Step 3: setuid call from python3 to open /home/sentinel/Paper1_ZeroTrustAgent matches T1068. Step 4: the presence of unusual_comm=true in meta indicates non-standard process names, which raises suspicion."
+    },
+    {
+      "scenario": "attack_ext_038",
+      "ground_truth": "MALICIOUS",
+      "events": 178,
+      "nodes": 6,
+      "edges": 15,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache (T1055) and then executes bash again; python3 also reads ld.so.cache and attempts to inject code via ptrace attach on n4 \u2014 a clear indication of process injection.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 6839.3,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve from /usr/bin/bash (n0) and then from /usr/bin/python3 (n3). Step 3: the ptrace syscall on n4 from n5 matches T1055 process injection, indicating potential malicious activity. Step 4: the presence of multiple execve syscalls and a ptrace attach suggests an attempt to inject code into another process."
+    },
+    {
+      "scenario": "attack_ext_039",
+      "ground_truth": "MALICIOUS",
+      "events": 92,
+      "nodes": 3,
+      "edges": 6,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "bash reads /etc/ld.so.cache (T1016), maps memory, then executes new bash instance with mmap-ed memory (T1134 Code Injection).",
+      "mitre_ttps": [
+        "T1134",
+        "T1016"
+      ],
+      "latency_ms": 6414.6,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap edges form a chain from n0 to n1 to n2, then back to n1; openat(R) edges read /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION (locale file). Step 3: mmap and execve edges match T1134 Code Injection; openat(R) on locale files matches T1016. Step 4: the chain of memory mappings and subsequent execution is suspicious."
+    },
+    {
+      "scenario": "attack_ext_040",
+      "ground_truth": "MALICIOUS",
+      "events": 227,
+      "nodes": 10,
+      "edges": 33,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": true,
+      "reasoning": "multiple bash and nc processes interact with system resources in a complex way; while some edges match known TTPs (T1010, T1021, T1055, T1047), the overall pattern is not immediately malicious.",
+      "mitre_ttps": [
+        "T1036",
+        "T1010",
+        "T1021",
+        "T1055",
+        "T1047"
+      ],
+      "latency_ms": 10163.6,
+      "cot": "Step 1: multiple bash and nc processes interact with various system resources; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but appears to involve memory mapping, file reading, and network connections. Step 3: mmap on /etc/ld.so.cache matches T1010; openat(R) on locale archives matches T1021; listen on 0.0.0.0:0 matches T1055; connect to external IP matches T1047. Step 4: the presence of multiple nc processes and their interactions with system resources raises suspicion, but the pattern is not immediately malicious."
+    },
+    {
+      "scenario": "attack_ext_041",
+      "ground_truth": "MALICIOUS",
+      "events": 466,
+      "nodes": 7,
+      "edges": 16,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": true,
+      "reasoning": "python3 reads from /etc/ld.so.cache and executes itself; bash is executed via mmap-execve, then clones itself; however, connect to port 31337 (T1071, T1095) indicates probable C2 beaconing.",
+      "mitre_ttps": [
+        "T1071",
+        "T1095"
+      ],
+      "latency_ms": 8614.0,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: a chain of mmap syscalls is followed by execve to /usr/bin/bash (n0) and then clone; another chain starts with openat(W) on /dev/null, then reads from /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION, and finally executes python3. Step 3: the connect syscall to port 31337 is a high-suspicion signal for C2 beaconing (T1071, T1095). Step 4: while some edges are benign (e.g., reading locale files), the presence of an unusual outbound connection to port 31337 raises concerns."
+    },
+    {
+      "scenario": "attack_ext_042",
+      "ground_truth": "MALICIOUS",
+      "events": 169,
+      "nodes": 10,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": false,
+      "reasoning": "multiple bash and cat processes interact with system resources, but no sensitive files are accessed; nc connects to internal IP address 10.0.43.42:4042 \u2014 likely a legitimate internal lateral movement.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6812.1,
+      "cot": "Step 1: multiple bash and cat processes interact with various system resources; nc is used for network communication. Step 2: the edge sequence shows a complex interplay between memory mapping (mmap), file opening (openat), and process execution (execve). Step 3: unusual_comm=true indicates non-standard process names, which could be indicative of T1036. However, no sensitive files are accessed, and network communication is within RFC-1918 range."
+    },
+    {
+      "scenario": "benign_cat_hostname",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "nodes": 3,
+      "edges": 4,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "cat reads /etc/ld.so.cache (T1055) but lacks staged payload execution; likely just loading shared libs for its own use.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 5185.2,
+      "cot": "Step 1: cat process interacts with memory (mmap) and file system (/etc/ld.so.cache). Step 2: mmap edges precede openat(R) edge; openat(R) reads /etc/ld.so.cache. Step 3: mmap on memory followed by reading ld.so.cache matches T1055: Process Injection, but no execve from temp dir or suspicious ports. Step 4: the causal chain is consistent with cat process loading shared libraries."
+    },
+    {
+      "scenario": "benign_cat_os_release",
+      "ground_truth": "BENIGN",
+      "events": 11,
+      "nodes": 3,
+      "edges": 4,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "reasoning": "cat reads /etc/ld.so.cache and maps it into memory via mmap \u2014 a classic technique for directory traversal (T1055.001).",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 5647.3,
+      "cot": "Step 1: cat process interacts with memory (mmap) and file (/etc/ld.so.cache). Step 2: mmap edge precedes openat(R) on /etc/ld.so.cache, which is then mapped into memory. Step 3: this pattern matches T1055: Directory and Registry Manipulation (T1055.001), as cat reads the ld.so.cache file and maps it into memory."
+    },
+    {
+      "scenario": "benign_ext_001",
+      "ground_truth": "BENIGN",
+      "events": 46,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash reads ld.so.cache and locale data \u2014 normal dynamic linking behaviour matching T1003.",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "latency_ms": 4740.6,
+      "cot": "Step 1: three bash processes interact with memory and files. Step 2: mmap edges precede openat(R) edges; the latter read locale data and ld.so.cache. Step 3: mmap patterns suggest dynamic linking, while openat(R) on /etc/ld.so.cache matches T1003 (credential access). Step 4: the combined pattern is consistent with a legitimate process loading shared libraries."
+    },
+    {
+      "scenario": "benign_ext_002",
+      "ground_truth": "BENIGN",
+      "events": 107,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "bash processes access system files and memory mappings in a complex sequence; however, this is likely due to dynamic linking and locale setup rather than a malicious intent.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 6357.8,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory mappings. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 (directory traversal) is hinted at by the repeated access to /etc/ld.so.cache and locale archives; however, this is likely due to bash's dynamic linking and locale setup. Step 4: while some edges are suspicious, they do not form a coherent malicious pattern."
+    },
+    {
+      "scenario": "benign_ext_003",
+      "ground_truth": "BENIGN",
+      "events": 89,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.32,
+      "correct": true,
+      "reasoning": "multiple mmaps and openat(R)s on /etc/ld.so.cache and locale directories suggest memory-intensive operations; execve of whoami is likely legitimate access to its own binary or locale data.",
+      "mitre_ttps": [],
+      "latency_ms": 6696.6,
+      "cot": "Step 1: multiple bash and whoami processes appear; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 mmap for each process, with execve of whoami in between two sets of mmaps. Step 3: no sensitive files accessed, but multiple mmaps suggest memory-intensive operations. Step 4: while unusual, this pattern could be due to a legitimate memory-mapped file operation or a benign process like whoami accessing locale data."
+    },
+    {
+      "scenario": "benign_ext_004",
+      "ground_truth": "BENIGN",
+      "events": 57,
+      "nodes": 6,
+      "edges": 10,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "multiple bash processes execute normally (mmap \u2192 openat(R) \u2192 execve), and a separate hostname process also executes without issue.",
+      "mitre_ttps": [],
+      "latency_ms": 5974.6,
+      "cot": "Step 1: multiple bash processes interact with memory and files; a separate hostname process also appears. Step 2: the edge sequence is mmap \u2192 openat(R) \u2192 execve for each process (bash and hostname), indicating normal program execution. Step 3: no sensitive files accessed, no suspicious ports opened, no unusual syscall patterns. Step 4: all edges are consistent with normal system calls during process startup."
+    },
+    {
+      "scenario": "benign_ext_005",
+      "ground_truth": "BENIGN",
+      "events": 88,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "multiple bash and date processes interact with system libraries and locale data; while unusual_comm=true indicates non-standard process names (T1036), the pattern does not match any known APT kill-chains.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6549.2,
+      "cot": "Step 1: multiple bash processes and three date processes interact with various system files (ld.so.cache, locale data). Step 2: the edge sequence is complex, but appears to be a series of mmap and openat(R) operations on system libraries and configuration files. Step 3: no sensitive file access or execve from temp dirs; however, unusual_comm=true indicates non-standard process names (T1036). Step 4: while the pattern is unusual, it does not match any known APT kill-chains."
+    },
+    {
+      "scenario": "benign_ext_006",
+      "ground_truth": "BENIGN",
+      "events": 87,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash processes interact with system files and memory mappings via mmap and openat(R), but no clear evidence of malicious intent; uname processes appear normal.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 7005.4,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory mappings. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 process injection is possible via mmap (e.g., n0 to n1), but no clear evidence of malicious intent; uname processes appear normal. Step 4: while some edges are suspicious, the overall pattern does not clearly indicate a malicious kill-chain."
+    },
+    {
+      "scenario": "benign_ext_007",
+      "ground_truth": "BENIGN",
+      "events": 109,
+      "nodes": 8,
+      "edges": 22,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "multiple bash and head processes access system files with mmap() and openat(R) calls \u2014 normal system initialization or maintenance activity.",
+      "mitre_ttps": [],
+      "latency_ms": 6528.1,
+      "cot": "Step 1: multiple bash and head processes appear; unusual_comm=true indicates non-standard process names (possible T1036). Step 2: the edge sequence is complex, but appears to be a series of mmap() calls followed by openat(R) calls on various system files. Step 3: no sensitive files accessed, no execve from temp dirs, and no suspicious ports. Step 4: while unusual_comm=true raises suspicion, the syscall pattern does not match any known APT kill-chains."
+    },
+    {
+      "scenario": "benign_ext_008",
+      "ground_truth": "BENIGN",
+      "events": 89,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "multiple bash processes interact with system libraries and config files \u2014 likely system initialization or configuration steps, despite unusual_comm=true due to multiple non-standard bash names.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6358.7,
+      "cot": "Step 1: multiple bash processes interact with various system files; one df process also appears. Step 2: the edge sequence is complex, but all interactions are within expected system libraries and configuration files. Step 3: mmap and openat(R) on /etc/ld.so.cache and locale files match normal system initialization and configuration steps. Step 4: unusual_comm=true due to multiple bash processes with non-standard names (T1036), but the syscalls themselves appear benign."
+    },
+    {
+      "scenario": "benign_ext_009",
+      "ground_truth": "BENIGN",
+      "events": 135,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "bash processes interact with various system files (T1036), but all edges are consistent with normal system calls for locale file access and uptime execution \u2014 no suspicious causal chains or sensitive file access.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6568.8,
+      "cot": "Step 1: multiple bash processes interact with various system files; uptime is also present in three forms (EXEC, MEM, FILE). Step 2: the edge sequence shows mmap and openat(R) operations on various locale files and ld.so.cache. Step 3: unusual_comm=true indicates non-standard process names (T1036), but all edges are consistent with normal system calls for locale file access and uptime execution. Step 4: while T1036 is a possible match, the edge pattern does not indicate malicious intent."
+    },
+    {
+      "scenario": "benign_ext_010",
+      "ground_truth": "BENIGN",
+      "events": 87,
+      "nodes": 6,
+      "edges": 11,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "reasoning": "locale processes masquerade as bash by executing /usr/bin/locale and reading from /etc/ld.so.cache and /usr/lib/locale (T1036 Masquerading), with unusual_comm signal confirming non-standard process name.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6642.4,
+      "cot": "Step 1: multiple bash and locale processes appear; all file access is under /etc/ld.so.cache and /usr/lib/locale. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 execve in a loop, with some edges reading from /etc/ld.so.cache. Step 3: this pattern matches T1036 (Masquerading), where locale is masquerading as bash to execute code. Step 4: the unusual_comm signal further supports this hypothesis."
+    },
+    {
+      "scenario": "benign_ext_011",
+      "ground_truth": "BENIGN",
+      "events": 88,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.06,
+      "correct": true,
+      "reasoning": "bash memory-maps /etc/ld.so.cache and locale files, then executes wc \u2014 normal system library loading and locale initialization.",
+      "mitre_ttps": [],
+      "latency_ms": 5796.4,
+      "cot": "Step 1: multiple bash and wc processes appear; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows memory mapping of these files followed by execve of wc. Step 3: no sensitive files, no suspicious ports, but unusual_comm=true indicates non-standard process names (possible T1036). Step 4: all edges are consistent with normal system library loading and locale initialization."
+    },
+    {
+      "scenario": "benign_ext_012",
+      "ground_truth": "BENIGN",
+      "events": 88,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.06,
+      "correct": true,
+      "reasoning": "bash repeatedly maps /etc/ld.so.cache and locale files; head does the same \u2014 consistent with system library loading and locale initialization.",
+      "mitre_ttps": [],
+      "latency_ms": 6342.1,
+      "cot": "Step 1: multiple bash and head processes appear; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 mmap for each process, indicating repeated memory mapping of files. Step 3: no sensitive files accessed, no execve from temp dirs. Step 4: while unusual_comm=true indicates non-standard process names (head is typically used as a command-line tool), the syscall pattern suggests normal system library loading and locale initialization."
+    },
+    {
+      "scenario": "benign_ext_013",
+      "ground_truth": "BENIGN",
+      "events": 96,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "bash and grep processes map shared libraries and locale data \u2014 normal system initialization behaviour with no suspicious edges.",
+      "mitre_ttps": [],
+      "latency_ms": 5909.0,
+      "cot": "Step 1: multiple bash and grep processes appear; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 mmap for each process, indicating memory mapping of shared libraries and locale data. Step 3: no sensitive files accessed, no execve from temp dirs, and no suspicious ports. Step 4: all edges are consistent with normal system initialization and library loading."
+    },
+    {
+      "scenario": "benign_ext_014",
+      "ground_truth": "BENIGN",
+      "events": 97,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash processes exhibit complex memory management and cloning, but no malicious file access or execution; sort process is spawned normally, with mmap on common library cache and locale files.",
+      "mitre_ttps": [
+        "T1027",
+        "T1016"
+      ],
+      "latency_ms": 7142.6,
+      "cot": "Step 1: multiple bash processes interact with various system resources; a separate sort process is spawned. Step 2: the edge sequence shows complex memory management (mmap) and process cloning (clone), but no sensitive file access or execve from temp dirs. Step 3: mmap on /etc/ld.so.cache matches T1027, but this is a common library cache; openat(R) on locale files matches T1016, but these are normal system files. Step 4: the unusual_comm signal (non-standard process name 'sort') raises suspicion, but the syscall pattern itself appears benign."
+    },
+    {
+      "scenario": "benign_ext_015",
+      "ground_truth": "BENIGN",
+      "events": 110,
+      "nodes": 5,
+      "edges": 12,
+      "label": "BENIGN",
+      "confidence": 0.06,
+      "correct": true,
+      "reasoning": "bash processes load system libraries and locale files via mmap and openat(R) \u2014 a common pattern for dynamic linking.",
+      "mitre_ttps": [],
+      "latency_ms": 6019.1,
+      "cot": "Step 1: multiple bash processes interact with various system files (ld.so.cache, locale files). Step 2: the edge sequence is complex, but appears to be a series of mmap and openat(R) operations on system libraries and locale files. Step 3: no sensitive files accessed; no execve from temp dirs. Step 4: while unusual_comm=true indicates non-standard process names (cut), the syscall pattern suggests normal library loading and mapping."
+    },
+    {
+      "scenario": "benign_ext_016",
+      "ground_truth": "BENIGN",
+      "events": 110,
+      "nodes": 5,
+      "edges": 12,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "bash reads sensitive /proc/filesystems (T1089) and engages in complex memory mapping operations \u2014 indicative of potential malicious activity.",
+      "mitre_ttps": [
+        "T1089"
+      ],
+      "latency_ms": 5529.2,
+      "cot": "Step 1: multiple bash processes interact with various memory regions and files. Step 2: a chain of mmap syscalls is observed between different nodes, indicating memory mapping operations. Step 3: one edge reads /proc/filesystems (sensitive), which matches T1089. Step 4: the presence of sensitive file read and the complex memory mapping pattern raises suspicion."
+    },
+    {
+      "scenario": "benign_ext_017",
+      "ground_truth": "BENIGN",
+      "events": 91,
+      "nodes": 6,
+      "edges": 11,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "bash executes /usr/bin/file with execve, which injects into file processes that mmap various system files (T1055) and access locale data (T1021).",
+      "mitre_ttps": [
+        "T1055",
+        "T1021"
+      ],
+      "latency_ms": 6570.3,
+      "cot": "Step 1: multiple bash and file processes interact with various system files (ld.so.cache, locale). Step 2: the edge sequence is mmap \u2192 openat(R) \u2192 execve from /usr/bin/file \u2014 a complex memory-mapping pattern. Step 3: T1055 process injection via file (execve from /usr/bin/file), T1021 remote services (mmap of system files). Step 4: unusual_comm=true indicates non-standard process names, which raises suspicion."
+    },
+    {
+      "scenario": "benign_ext_018",
+      "ground_truth": "BENIGN",
+      "events": 87,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "multiple bash processes with mmap \u2192 openat(R) chains accessing /etc/ld.so.cache and locale directories; while unusual_comm=true indicates non-standard process name (T1036), the pattern does not match any known malicious patterns.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6948.1,
+      "cot": "Step 1: multiple bash processes and one readlink process; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 execve for readlink, then another mmap chain starting from a different node. Step 3: no sensitive files accessed, but unusual_comm=true indicates non-standard process name (T1036). Step 4: while the pattern is complex and unusual, it does not match any known APT kill-chains or malicious patterns."
+    },
+    {
+      "scenario": "benign_ext_019",
+      "ground_truth": "BENIGN",
+      "events": 103,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.08,
+      "correct": true,
+      "reasoning": "bash processes load libraries and set locales using stat and mmap syscalls \u2014 normal system initialization behaviour with no suspicious edges.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6238.2,
+      "cot": "Step 1: multiple bash processes and a single stat process; all file access is under /etc/ld.so.cache and locale directories. Step 2: the edge sequence shows mmap \u2192 openat(R) \u2192 execve in one chain, and another chain with similar pattern but different files. Step 3: unusual_comm=true indicates non-standard process name (T1036), but no sensitive files accessed or suspicious ports used. Step 4: the chains appear to be related to library loading and locale setup."
+    },
+    {
+      "scenario": "benign_ext_020",
+      "ground_truth": "BENIGN",
+      "events": 108,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "bash and find processes interact with system libraries via mmap and openat(R), but the sequence does not clearly indicate a malicious intent (e.g., no sensitive file access, no execve from temp dirs).",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 6675.5,
+      "cot": "Step 1: multiple bash and find processes interact with various system files (e.g., ld.so.cache, locale). Step 2: the edge sequence is complex, but appears to be a series of mmap and openat(R) calls for various system libraries. Step 3: some edges match T1055 process injection (e.g., clone syscall), but others are benign library loading (mmap). Step 4: while there are some suspicious edges, they do not form a clear malicious pattern."
+    },
+    {
+      "scenario": "benign_ext_021",
+      "ground_truth": "BENIGN",
+      "events": 149,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash reads various system files and maps memory for system libraries; getent processes read locale data and libc.so.6 \u2014 normal system behaviour with some unusual process names.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7178.3,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory mappings. Step 2: the edge sequence is complex, but appears to be a series of mmap and openat(R) calls for various system libraries and configuration files. Step 3: getent processes appear to be reading locale data and libc.so.6. Step 4: while unusual_comm=true indicates non-standard process names (T1036), the edge patterns do not suggest malicious intent."
+    },
+    {
+      "scenario": "benign_ext_022",
+      "ground_truth": "BENIGN",
+      "events": 88,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "multiple openat(R) calls to /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION suggest file discovery (T1055), but the lack of clear causal chain or malicious intent keeps confidence low.",
+      "mitre_ttps": [
+        "T1021",
+        "T1055"
+      ],
+      "latency_ms": 7783.3,
+      "cot": "Step 1: multiple bash and cat processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 (file and directory discovery) is evident in openat(R) calls to /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION; T1021 (remote operations on authorized ports) is not present, but the sequence of mmap syscalls suggests a possible memory-based attack. Step 4: while some edges are suspicious, they do not form a clear causal chain indicative of a malicious intent."
+    },
+    {
+      "scenario": "benign_ext_023",
+      "ground_truth": "BENIGN",
+      "events": 89,
+      "nodes": 6,
+      "edges": 11,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "bash and cat processes engage in complex memory mapping and file access patterns, including T1055 (file discovery) and possible data exfiltration via mmap syscalls.",
+      "mitre_ttps": [
+        "T1021",
+        "T1055"
+      ],
+      "latency_ms": 7237.8,
+      "cot": "Step 1: multiple bash and cat processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 (file and directory discovery) is evident in openat(R) calls to /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION; T1021 (remote operations on authorized ports) is not present, but the sequence of mmap syscalls suggests a possible data exfiltration attempt. Step 4: while some edges are consistent with normal system operation, others suggest potential malicious activity."
+    },
+    {
+      "scenario": "benign_ext_024",
+      "ground_truth": "BENIGN",
+      "events": 103,
+      "nodes": 8,
+      "edges": 23,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": false,
+      "reasoning": "bash reads sensitive files like /proc/filesystems and /usr/lib/locale/C.utf8/LC_IDENTIFICATION (T1003), while also creating memory mappings on ld.so.cache (T1016) \u2014 a complex pattern that warrants further investigation.",
+      "mitre_ttps": [
+        "T1003",
+        "T1016"
+      ],
+      "latency_ms": 8076.6,
+      "cot": "Step 1: multiple bash and head processes interact with various memory-mapped files (e.g., ld.so.cache) and open sensitive files (e.g., /proc/filesystems). Step 2: the edge sequence is complex, but it appears that each process creates a new mapping or opens a file in a chain of operations. Step 3: mmap on ld.so.cache matches T1016; openat(R) on sensitive files like /proc/filesystems and /usr/lib/locale/C.utf8/LC_IDENTIFICATION matches T1003. Step 4: the presence of unusual_comm=true (non-standard process name detected) raises suspicion, but the edge pattern is complex and does not clearly indicate a malicious intent."
+    },
+    {
+      "scenario": "benign_ext_025",
+      "ground_truth": "BENIGN",
+      "events": 718,
+      "nodes": 9,
+      "edges": 26,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "multiple bash processes interact with various system files and memory mappings in a complex sequence, but no sensitive files are accessed and no malicious patterns emerge.",
+      "mitre_ttps": [],
+      "latency_ms": 6305.2,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory mappings. Step 2: the edge sequence is complex, but appears to be a series of mmap() calls followed by openat(R) calls on various locale and cache files. Step 3: no sensitive files accessed; no execve from temp dirs. Step 4: while unusual_comm=true indicates non-standard process names (ps and head), the syscall pattern does not match any known TTPs."
+    },
+    {
+      "scenario": "benign_ext_026",
+      "ground_truth": "BENIGN",
+      "events": 687,
+      "nodes": 9,
+      "edges": 24,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash processes interact with various system files and memory regions in a complex pattern; however, the presence of head and ps as unusual_comm=true suggests possible T1036 (Masquerading) activity.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 7362.6,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: the edge sequence is complex, but appears to be a series of mmap() calls followed by openat(R) calls on various locale files. Step 3: no sensitive files accessed; no execve from temp dirs. Step 4: unusual_comm=true indicates non-standard process names (head and ps), which may indicate T1036."
+    },
+    {
+      "scenario": "benign_ext_027",
+      "ground_truth": "BENIGN",
+      "events": 171,
+      "nodes": 8,
+      "edges": 26,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "multiple bash and head processes with non-standard names (T1036) perform mmap() and openat() on system files \u2014 likely a benign process scanning system libraries.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 5791.1,
+      "cot": "Step 1: multiple bash and head processes appear; unusual_comm=true indicates non-standard process names (T1036). Step 2: the edge sequence is complex, but appears to be a series of mmap() calls followed by openat() calls on various system files. Step 3: no sensitive file access or execve from temp dirs. Step 4: while the process names are unusual, the syscall pattern does not match any known APT kill-chains."
+    },
+    {
+      "scenario": "benign_ext_028",
+      "ground_truth": "BENIGN",
+      "events": 192,
+      "nodes": 6,
+      "edges": 14,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash processes interact with various system files and memory mappings in a complex sequence; while unusual_comm=true raises suspicion, the syscalls are consistent with normal system file access and memory allocation for system maintenance or debugging.",
+      "mitre_ttps": [],
+      "latency_ms": 7504.3,
+      "cot": "Step 1: multiple bash processes with unusual names (unusual_comm=true) interact with various system files and memory mappings. Step 2: the edge sequence is complex, but appears to be a series of mmap and openat syscalls for system file access and memory allocation. Step 3: no sensitive files accessed; some edges match normal system file access patterns (e.g., /etc/ld.so.cache). Step 4: while unusual_comm=true raises suspicion, the syscall pattern is consistent with legitimate system maintenance or debugging activity."
+    },
+    {
+      "scenario": "benign_ext_029",
+      "ground_truth": "BENIGN",
+      "events": 209,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "bash processes interact with various system files and memory regions via mmap syscalls; journalctl reads systemd libraries \u2014 while unusual_comm is present, no malicious patterns emerge from the graph.",
+      "mitre_ttps": [],
+      "latency_ms": 7051.2,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: a chain of mmap syscalls is observed between bash and its child processes, as well as between journalctl and systemd libraries. Step 3: the presence of sensitive reads (openat(R) on /proc/filesystems) and unusual_comm (multiple bash instances) raise suspicion. Step 4: however, all edges are consistent with normal system operation and process interactions."
+    },
+    {
+      "scenario": "benign_ext_030",
+      "ground_truth": "BENIGN",
+      "events": 203,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "bash reads sensitive /proc/filesystems (T1082), but this is part of a larger process creation and file access chain; no clear malicious intent.",
+      "mitre_ttps": [
+        "T1036"
+      ],
+      "latency_ms": 6128.2,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: a chain of mmap syscalls is followed by execve of /usr/bin/hostnamectl. Step 3: openat(R) on /proc/filesystems (sensitive) matches T1082; other edges are consistent with normal process creation and file access. Step 4: the presence of unusual_comm=true suggests possible T1036, but the overall pattern is more benign."
+    },
+    {
+      "scenario": "benign_ext_031",
+      "ground_truth": "BENIGN",
+      "events": 203,
+      "nodes": 6,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": false,
+      "reasoning": "bash reads sensitive /proc/filesystems (T1089) and executes /usr/bin/timedatectl (T1055), which may be a lateral movement vector or privilege escalation attempt.",
+      "mitre_ttps": [
+        "T1089",
+        "T1055"
+      ],
+      "latency_ms": 6683.2,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: the edge sequence is complex, but appears to be a series of mmap calls followed by execve from /usr/bin/timedatectl. Step 3: openat(R) on /proc/filesystems (sensitive:true) matches T1089; execve from /usr/bin/timedatectl matches T1055. Step 4: the unusual_comm signal and sensitive reads raise suspicion, but the pattern is not immediately malicious."
+    },
+    {
+      "scenario": "benign_ext_032",
+      "ground_truth": "BENIGN",
+      "events": 219,
+      "nodes": 5,
+      "edges": 12,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "multiple bash processes interact with system resources in a complex way, but this could be normal system maintenance or cleanup; one loginctl process interacts with libc and its own memory in a way that is unusual but not necessarily malicious.",
+      "mitre_ttps": [],
+      "latency_ms": 8213.7,
+      "cot": "Step 1: multiple bash processes interact with various system resources; one loginctl process interacts with libc and its own memory. Step 2: the edge sequence is complex, but appears to be a mix of normal system calls (e.g., mmap, openat) and some unusual patterns (e.g., clone, mmap). Step 3: the presence of clone and multiple mmap syscalls in a short time frame suggests an attempt to evade detection or create a hidden process. However, this is not conclusive evidence of malicious activity. Step 4: while the pattern is suspicious, it does not match any specific MITRE ATT&CK technique."
+    },
+    {
+      "scenario": "benign_ext_033",
+      "ground_truth": "BENIGN",
+      "events": 83,
+      "nodes": 6,
+      "edges": 12,
+      "label": "BENIGN",
+      "confidence": 0.68,
+      "correct": true,
+      "reasoning": "bash uses mmap and clone extensively, but this is likely due to memory-intensive operations or process forking; ss executes normally from /usr/bin/ss.",
+      "mitre_ttps": [],
+      "latency_ms": 6563.7,
+      "cot": "Step 1: multiple bash processes interact with various system resources; an ss process also appears. Step 2: the edge sequence is complex, but it can be broken down into several causal chains. Step 3: mmap and clone syscalls are used extensively by bash, which may indicate a memory-intensive operation or a process forking. The execve syscall from /usr/bin/ss is normal behavior for the ss command. Step 4: while there are many edges, none of them appear to be malicious; however, the presence of multiple mmap and clone syscalls does raise some suspicion."
+    },
+    {
+      "scenario": "benign_ext_034",
+      "ground_truth": "BENIGN",
+      "events": 110,
+      "nodes": 9,
+      "edges": 24,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": false,
+      "reasoning": "bash processes interact with system files like /dev/null and /etc/ld.so.cache (T1059), but also read from other system files like /usr/lib/locale/C.utf8/LC_IDENTIFICATION; the unusual_comm signal is present.",
+      "mitre_ttps": [
+        "T1059"
+      ],
+      "latency_ms": 7948.5,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: the edge sequence is complex, but it appears to be a series of mmap() calls followed by openat() calls on various system files. Step 3: some edges match T1059 (command and control) due to the presence of /dev/null and /etc/ld.so.cache, but others are more benign. Step 4: the unusual_comm signal is present, indicating non-standard process names, which raises suspicion."
+    },
+    {
+      "scenario": "benign_ext_035",
+      "ground_truth": "BENIGN",
+      "events": 104,
+      "nodes": 9,
+      "edges": 26,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "multiple bash processes interact with system libraries and configuration files via mmap() and openat(), but no sensitive file access or malicious edge patterns are observed.",
+      "mitre_ttps": [],
+      "latency_ms": 5598.5,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: the edge sequence is complex, but appears to be a series of mmap() calls followed by openat() calls on various system libraries and configuration files. Step 3: no sensitive file access or execve from temp dirs. Step 4: while unusual_comm=true indicates non-standard process names (head, ip), the syscall pattern does not match any known APT kill-chains."
+    },
+    {
+      "scenario": "benign_ext_036",
+      "ground_truth": "BENIGN",
+      "events": 103,
+      "nodes": 7,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "setuid call from ping process (T1068) and complex memory mapping pattern with mmap calls between different nodes indicate potential privilege escalation and malicious activity.",
+      "mitre_ttps": [
+        "T1068"
+      ],
+      "latency_ms": 6250.0,
+      "cot": "Step 1: multiple bash and ping processes appear; all file access is under /etc/ld.so.cache, /usr/lib/locale/C.utf8/LC_IDENTIFICATION, and /usr/lib/locale/locale-archive. Step 2: the edge sequence shows a complex memory mapping pattern with mmap calls between different nodes. Step 3: setuid call from ping process (T1068) indicates potential privilege escalation. Step 4: unusual_comm=true due to non-standard process name 'ping' in addition to multiple bash processes."
+    },
+    {
+      "scenario": "benign_ext_037",
+      "ground_truth": "BENIGN",
+      "events": 175,
+      "nodes": 9,
+      "edges": 21,
+      "label": "BENIGN",
+      "confidence": 0.85,
+      "correct": true,
+      "reasoning": "multiple dpkg processes execute legitimate binaries and access expected files \u2014 likely a package manager operation.",
+      "mitre_ttps": [],
+      "latency_ms": 6057.5,
+      "cot": "Step 1: multiple bash and dpkg processes interact with various files; dpkg-query appears to be a legitimate process. Step 2: the edge sequence is complex, but it appears that each process is performing its intended function (e.g., bash is mapping memory, dpkg is executing). Step 3: no sensitive files are accessed, and no suspicious ports are opened. Step 4: while there are many edges, they all appear to be consistent with normal system behavior."
+    },
+    {
+      "scenario": "benign_ext_038",
+      "ground_truth": "BENIGN",
+      "events": 377,
+      "nodes": 12,
+      "edges": 39,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "bash reads sensitive /proc/self/fd (T1003), but this is part of a larger apt-cache/dpkg interaction that appears to be normal package management activity.",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "latency_ms": 7092.7,
+      "cot": "Step 1: multiple processes (bash, apt-cache, dpkg) interact with various files and memory regions. Step 2: a complex chain of mmap, openat(R), and clone syscalls is observed across the nodes. Step 3: T1003 (sensitive reads) is matched in edge n8 -> n3 (openat(R) on /proc/self/fd). Step 4: while unusual_comm=true indicates non-standard process names, the overall pattern appears to be related to package management and file access."
+    },
+    {
+      "scenario": "benign_ext_039",
+      "ground_truth": "BENIGN",
+      "events": 112,
+      "nodes": 6,
+      "edges": 11,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": false,
+      "reasoning": "execve from /usr/bin/python3 (T1055) and multiple large-dt_max-ms mmap syscalls suggest potential process injection or memory corruption \u2014 however, the context is unclear without further investigation.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 7332.9,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 process injection (execve from /usr/bin/python3) is present; however, it's unclear if this is malicious or part of a legitimate Python script. Step 4: the presence of multiple mmap syscalls with large dt_max_ms values raises suspicion, as this could be indicative of code injection or memory corruption."
+    },
+    {
+      "scenario": "benign_ext_040",
+      "ground_truth": "BENIGN",
+      "events": 128,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.42,
+      "correct": true,
+      "reasoning": "multiple bash and python3 processes interact with various files and memory regions, but the edge sequence does not clearly indicate malicious intent; T1055 process injection is possible via execve from /usr/bin/python3, but this is a common system file.",
+      "mitre_ttps": [
+        "T1003",
+        "T1055"
+      ],
+      "latency_ms": 7437.5,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 process injection is possible via execve from /usr/bin/python3 (n1 to n3) but no clear evidence of malicious intent; T1003 credential access matches the reading of /etc/ld.so.cache by multiple processes, but this is a benign system file. Step 4: while there are many edges and complex interactions, they do not form a clear malicious pattern."
+    },
+    {
+      "scenario": "benign_ext_041",
+      "ground_truth": "BENIGN",
+      "events": 126,
+      "nodes": 6,
+      "edges": 11,
+      "label": "BENIGN",
+      "confidence": 0.56,
+      "correct": true,
+      "reasoning": "execve from /usr/bin/python3 (T1055) is present, but the complex interplay between mmap and openat(R) syscalls across multiple nodes suggests a legitimate process injection or memory mapping scenario rather than a malicious one.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 7811.1,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and execve syscalls across different nodes. Step 3: T1055 process injection (execve from /usr/bin/python3) is present; however, it's unclear if this is malicious or part of a legitimate process. Step 4: the presence of multiple mmap syscalls with large n values suggests memory mapping of shared libraries, which is common in multi-process scenarios."
+    },
+    {
+      "scenario": "benign_ext_042",
+      "ground_truth": "BENIGN",
+      "events": 190,
+      "nodes": 9,
+      "edges": 18,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "execve from /usr/local/sbin/ls to /usr/local/bin/ls (T1059) is suspicious; combined with complex memory mapping and file access patterns in python3 processes, this suggests a potential payload execution.",
+      "mitre_ttps": [
+        "T1059"
+      ],
+      "latency_ms": 7226.7,
+      "cot": "Step 1: multiple bash and python3 processes interact with various files; ls also appears. Step 2: edges show a complex interplay between memory mapping (mmap) and file access (openat(R)). Step 3: mmap on /etc/ld.so.cache is common, but execve from /usr/local/sbin/ls to /usr/local/bin/ls is unusual (T1059). Step 4: the presence of multiple python3 processes with memory mapping and file access suggests a potential payload execution."
+    },
+    {
+      "scenario": "benign_ext_043",
+      "ground_truth": "BENIGN",
+      "events": 171,
+      "nodes": 6,
+      "edges": 12,
+      "label": "MALICIOUS",
+      "confidence": 0.93,
+      "correct": false,
+      "reasoning": "bash executes python3 with execve (T1055), which then maps various files (T1003) and injects into bash's memory space (clone syscall).",
+      "mitre_ttps": [
+        "T1055",
+        "T1003"
+      ],
+      "latency_ms": 7698.1,
+      "cot": "Step 1: two bash and three python3 processes interact with various files and memory regions. Step 2: the edge sequence shows a complex interplay between mmap, openat(R), and clone syscalls across multiple nodes. Step 3: T1055 process injection (execve from /usr/bin/python3) is present; T1003 credential dumping (openat(R) on /etc/ld.so.cache and /usr/lib/locale/C.utf8/LC_IDENTIFICATION) is also present. Step 4: the combination of process injection, credential dumping, and memory mapping suggests a malicious payload execution."
+    },
+    {
+      "scenario": "benign_ext_044",
+      "ground_truth": "BENIGN",
+      "events": 71,
+      "nodes": 6,
+      "edges": 12,
+      "label": "BENIGN",
+      "confidence": 0.32,
+      "correct": true,
+      "reasoning": "bash and openssl processes engage in complex memory management and library loading \u2014 some edges match normal system behaviour (e.g., openat(R) on ld.so.cache), but the overall pattern is unusual and warrants further investigation.",
+      "mitre_ttps": [],
+      "latency_ms": 6310.7,
+      "cot": "Step 1: multiple bash and openssl processes interact with various files and memory regions. Step 2: the edge sequence is complex, but appears to be a series of mmap calls followed by execve from /usr/bin/openssl. Step 3: no sensitive file access; some edges match normal system library loading (e.g., openat(R) on ld.so.cache). Step 4: while the pattern is unusual, it does not clearly indicate malicious intent."
+    },
+    {
+      "scenario": "benign_ext_045",
+      "ground_truth": "BENIGN",
+      "events": 72,
+      "nodes": 6,
+      "edges": 13,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "bash uses clone to inject into itself and then executes openssl from /dev/null (T1027), which suggests process injection and command and control activity.",
+      "mitre_ttps": [
+        "T1055",
+        "T1027"
+      ],
+      "latency_ms": 6310.4,
+      "cot": "Step 1: multiple bash processes interact with memory and files; an openssl process is executed from /dev/null. Step 2: the edge sequence shows a complex interaction between bash and openssl, including mmap and openat syscalls. Step 3: T1055 process injection (clone syscall) and T1027 command and control (execve of openssl), but no sensitive file access or unusual ports. Step 4: while suspicious, this pattern is consistent with an attacker using a legitimate tool for C2."
+    },
+    {
+      "scenario": "benign_ext_046",
+      "ground_truth": "BENIGN",
+      "events": 81,
+      "nodes": 11,
+      "edges": 23,
+      "label": "BENIGN",
+      "confidence": 0.01,
+      "correct": true,
+      "reasoning": "gunzip and gzip processes read and write various files, including /etc/ld.so.cache; echo appears to be a benign utility; no suspicious edges or file accesses.",
+      "mitre_ttps": [],
+      "latency_ms": 5896.2,
+      "cot": "Step 1: multiple bash processes interact with various files and memory regions; other processes (gunzip, echo, gzip) also appear. Step 2: the edge sequence is complex, but appears to be a series of file reads and writes by gunzip and gzip, with some mmap operations. Step 3: no sensitive files accessed, no suspicious ports opened, no execve from temp dirs. Step 4: while unusual_comm=true indicates non-standard process names (echo), the overall pattern is consistent with normal system operation."
+    },
+    {
+      "scenario": "benign_ext_047",
+      "ground_truth": "BENIGN",
+      "events": 88,
+      "nodes": 6,
+      "edges": 12,
+      "label": "MALICIOUS",
+      "confidence": 0.83,
+      "correct": false,
+      "reasoning": "bash executes /usr/bin/tr via execve, which then performs mmap and openat operations \u2014 a pattern consistent with process injection (T1055) and web-shell activity.",
+      "mitre_ttps": [
+        "T1190",
+        "T1105",
+        "T1059"
+      ],
+      "latency_ms": 7595.1,
+      "cot": "Step 1: multiple bash and tr processes interact with various memory regions (mmap) and files (openat). Step 2: the edge sequence is complex, but appears to be a series of mmap operations followed by openat calls. Step 3: some edges match T1055 process injection (e.g., n0 \u2192 execve /usr/bin/tr), while others are consistent with normal system calls (e.g., openat on locale files). Step 4: the unusual_comm signal is present, indicating non-standard process names (tr) may be indicative of a web-shell dropper hypothesis (T1190\u2192T1105\u2192T1059)."
+    },
+    {
+      "scenario": "benign_ext_048",
+      "ground_truth": "BENIGN",
+      "events": 89,
+      "nodes": 6,
+      "edges": 13,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "bash reads system configuration files and maps memory regions for system configuration; wc processes likely involved in text analysis or processing of system files.",
+      "mitre_ttps": [],
+      "latency_ms": 6006.4,
+      "cot": "Step 1: multiple bash processes interact with various system files and memory regions. Step 2: the edge sequence is complex, but appears to be a series of memory mappings (mmap) and file opens (openat(R)) for system configuration files. Step 3: the presence of wc processes suggests some form of text processing or analysis. Step 4: while unusual_comm=true indicates non-standard process names, the overall pattern does not suggest malicious intent."
+    },
+    {
+      "scenario": "benign_find_libs",
+      "ground_truth": "BENIGN",
+      "events": 41,
+      "nodes": 3,
+      "edges": 5,
+      "label": "MALICIOUS",
+      "confidence": 0.63,
+      "correct": false,
+      "reasoning": "find repeatedly opens /etc/ld.so.cache (T1055 process discovery), which could indicate an attempt to load a malicious shared library via mmap.",
+      "mitre_ttps": [
+        "T1055"
+      ],
+      "latency_ms": 5938.1,
+      "cot": "Step 1: find process interacts with /etc/ld.so.cache and its own memory mappings. Step 2: mmap edges precede openat(R) edges \u2014 likely loading shared libraries into memory before reading them. Step 3: T1055 (process discovery) is a possible match for the repeated openat(R) on /etc/ld.so.cache, but it's unclear if this is malicious or just find searching for files to process. Step 4: the presence of mmap edges and repeated openat(R) on ld.so.cache could be indicative of an attacker trying to load a malicious shared library."
+    },
+    {
+      "scenario": "benign_ls_usr",
+      "ground_truth": "BENIGN",
+      "events": 21,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.62,
+      "correct": true,
+      "reasoning": "ls processes load libraries via mmap (T1003) but this is common for dynamic linking; the sequence is still benign given the context.",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "latency_ms": 6194.9,
+      "cot": "Step 1: multiple ls processes interact with memory and files. Step 2: mmap edges precede read operations; the sequence is consistent with a process loading shared libraries. Step 3: openat(R) on /etc/ld.so.cache matches T1003, but this is a common library cache file; openat(R) on /usr/bin is also normal. Step 4: while some edges are suspicious, they are part of a larger pattern consistent with process initialization and shared library loading."
+    },
+    {
+      "scenario": "benign_python_json",
+      "ground_truth": "BENIGN",
+      "events": 75,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.93,
+      "correct": true,
+      "reasoning": "python3 maps shared libraries (T1003) and loads Python modules from /usr/lib/python3.10/encodings/__pycache__/ \u2014 typical Python process initialization.",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "latency_ms": 6130.8,
+      "cot": "Step 1: three python3 processes interact with memory and files. Step 2: mmap edges precede openat(R) edges, indicating memory mapping of shared libraries. Step 3: openat(R) on /etc/ld.so.cache matches T1003; subsequent mmaps likely load Python modules. Step 4: the pattern is consistent with normal Python process startup."
+    },
+    {
+      "scenario": "benign_python_math",
+      "ground_truth": "BENIGN",
+      "events": 52,
+      "nodes": 3,
+      "edges": 5,
+      "label": "BENIGN",
+      "confidence": 0.98,
+      "correct": true,
+      "reasoning": "python3 maps shared libraries (T1003) and loads its own modules from /usr/lib/python3.10/encodings/__pycache__/__init__.cpython-310.p \u2014 normal process startup.",
+      "mitre_ttps": [
+        "T1003"
+      ],
+      "latency_ms": 6273.5,
+      "cot": "Step 1: three python3 processes interact with memory and files. Step 2: mmap edges precede openat(R) edges, indicating memory mapping of shared libraries. Step 3: openat(R) on /etc/ld.so.cache matches T1003; subsequent mmaps likely load Python modules. Step 4: the pattern is consistent with normal Python process startup."
+    },
+    {
+      "scenario": "benign_which_bash",
+      "ground_truth": "BENIGN",
+      "events": 10,
+      "nodes": 3,
+      "edges": 4,
+      "label": "MALICIOUS",
+      "confidence": 0.85,
+      "correct": false,
+      "reasoning": "which reads /etc/ld.so.cache and then mmaps it multiple times \u2014 indicative of T1216 Dynamic Linker Hijacking.",
+      "mitre_ttps": [
+        "T1216"
+      ],
+      "latency_ms": 5822.5,
+      "cot": "Step 1: which process appears three times; all interactions are with /etc/ld.so.cache (dynamic linker cache). Step 2: the edge sequence is mmap \u2192 read cache \u2192 multiple mmaps of same cache. Step 3: this pattern matches T1216 Dynamic Linker Hijacking, where an attacker maps a malicious library over the system's dynamic linker cache to hijack the linking process."
+    }
+  ]
+}

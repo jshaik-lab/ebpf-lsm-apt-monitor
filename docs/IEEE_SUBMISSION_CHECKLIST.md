@@ -2,15 +2,74 @@
 
 **Target venue:** IEEE Transactions on Information Forensics and Security (TIFS)  
 **Page limit:** ≤14 pages (IEEEtran journal)  
-**Source of truth for numbers:** `results/evaluations/*.json`  
-**Last updated:** 2026-06-07
+**Source of truth:** `results/evaluations_gcp/*_gcp.json` + `MANIFEST.json`  
+**Operations runbook:** [RUNME.md](RUNME.md)  
+**Diagrams:** [sentinel_diagrams.html](sentinel_diagrams.html) (Results tab)  
+**Last updated:** 2026-06-08 (GCP full eval + `paper/main.tex` sync)
 
 ---
 
-## Definition of “submission-ready”
+## GCP platform (authoritative)
 
-All items in **Section A (Blockers)** must be checked before upload to IEEE Manuscript Central.  
-Sections B–F strengthen acceptability; G is optional polish.
+| Field | Value |
+|-------|--------|
+| Instance | `sentinel-gpu-vm` @ `34.74.43.57` (zone `us-east1-c`) |
+| Machine | g2-standard-4, NVIDIA L4 24 GB, 16 GB RAM |
+| OS / kernel | Ubuntu 24.04, `6.17.0-1018-gcp`, x86_64 |
+| Ollama | `llama3.1:8b` (full), `llama3.2:1b` (draft) |
+| Eval date | 2026-06-08 UTC |
+| Mock fallbacks | **0** on all cited LLM JSONs |
+
+**Deprecated:** Mac Docker pilots, IONOS `*_ionos.json` — do not cite.
+
+---
+
+## Paper ↔ GCP JSON sync matrix
+
+Every number below is from the **2026-06-08 GCP run** and is reflected in `paper/main.tex` (abstract, §V, limitations, conclusion).
+
+| Paper claim | GCP value | JSON file |
+|-------------|-----------|-----------|
+| IPG token reduction @ n=20 | **74.0%** (1122→292 tok avg) | `ipg_token_reduction_gcp.json` |
+| IPG token reduction full trace | **92.7%** (12185→885 tok avg) | `ipg_token_reduction_gcp.json` |
+| Dual-tier invocation reduction | **35.7%** (5/14 draft hits) | `dual_tier_reduction_gcp.json` |
+| Dual-tier accuracy | 12/14 dual vs **14/14** 8B-only | `dual_tier_reduction_gcp.json` |
+| MITRE scenarios (8B-only) | **14/14** correct | `scenario_results_gcp.json` |
+| Real strace TPR / FPR / Acc | **0.714 / 0.291 / 0.712** | `real_data_results_gcp.json` |
+| Real strace accuracy 95% CI | **[0.625, 0.798]**, n=104 | `real_data_results_gcp.json` |
+| Calibration ECE | **0.205**, n=104 | `calibration_results_gcp.json` |
+| LTL FPR (benign) | **0.0** (0/387 windows, 55 traces) | `ltl_fpr_real_gcp.json` |
+| PCABP real nginx | F1=**1.0** (controlled classes), 663 x86 sites | `pcabp_real_nginx_gcp.json` |
+| IPG build p50 / CWAE p50 | **0.184 ms / 0.888 ms** | `overhead_gcp.json` |
+| Detector throughput | **25,665 events/s** | `overhead_gcp.json` |
+| RSS (benchmark snapshot) | 48.1 MB (delta 0 in dry-run bench) | `overhead_gcp.json` |
+| DARPA hybrid behavioral (v5) | F1=**0.603**, TPR=0.44, FPR=0.02, Prec=0.957 | `darpa_tc_behavioral_v5_gcp.json` |
+| DARPA LLM-only (v4) | F1=**0.597**, TPR=0.46, FPR=0.08, Prec=0.852 | `darpa_tc_behavioral_v4_gcp.json` |
+| DARPA TI-aided (v8) † | F1=**0.915**, TPR=0.86, FPR=0.02, Prec=0.977 | `darpa_tc_v8_ti_aided_gcp.json` |
+| TI-aided errors (GCP) | **7 FN + 1 FP** (not prior Mac 3+4) | `darpa_tc_v8_ti_aided_gcp.json` |
+
+† TI-aided uses `[C2]`/`[MALWARE]` from same list as ground truth — not competitor-comparable.
+
+### Ablation (Table tab:ablation in paper)
+
+| Mode | F1 | TPR | FPR | LLM calls | Mean latency |
+|------|-----|-----|-----|-----------|--------------|
+| `llm_only` | 0.597 | 0.46 | 0.08 | 100 | 5674 ms |
+| `graph_only` | 0.611 | 0.44 | 0.00 | 0 | <1 ms |
+| `hybrid` | 0.603 | 0.44 | 0.02 | **1** | 60 ms |
+| `hybrid_ltl` | 0.611 | 0.44 | 0.00 | 1 | 60 ms |
+| `full` | 0.611 | 0.44 | 0.00 | 1 | 60 ms |
+
+Source: `darpa_ablation_gcp.json` (meta block missing — minor MANIFEST flag).
+
+### vs. published competitors (behavioral-only, no TI oracle)
+
+| System | Published F1 | SENTINEL behavioral |
+|--------|--------------|---------------------|
+| WATSON | 0.82 | 0.603 (hybrid) / 0.597 (LLM-only) |
+| UNICORN | 0.88 | below |
+| ProvDetector | 0.87 | below |
+| DEPIMPACT | 0.91 | below |
 
 ---
 
@@ -18,190 +77,116 @@ Sections B–F strengthen acceptability; G is optional polish.
 
 ### A1. Evaluation platform
 
-- [ ] Primary experiments run on **native Linux** (IONOS VPS XL or equivalent), not Mac-only Docker Desktop
-- [ ] Platform table in Section V: Ubuntu version, `uname -r`, CPU, RAM, Ollama model tags
-- [ ] Remove abstract/conclusion language: *“Live eBPF … deferred to follow-on work”* (once measured or scoped down)
+- [x] Primary experiments on **GCP GPU VM** (`sentinel-gpu-vm`)
+- [x] Platform string in JSON `meta.platform`
+- [x] Mac/IONOS results superseded in §V setup paragraph
+- [ ] Live eBPF on GCP VM with non-zero `user_ip` (optional; currently strace-replay path)
 
-### A2. Real syscall corpus (replace n=15)
+### A2. Real syscall corpus
 
-- [ ] Expand `capture_real_traces.sh` → **≥50 benign + ≥50 attack** traces (minimum **≥30/30** if time-bound)
-- [ ] Benign diversity: nginx, sshd, postgres, apt, cron, systemd, shells (not only `cat`/`which`)
-- [ ] Re-run: `make capture-traces` → `make eval-real` → `make eval-calibration`
-- [ ] Report TPR, FPR, precision, F1, **bootstrap 95% CIs**
-- [ ] Document/fix known FPs: `benign_python_json`, `benign_which_bash` (ablation before/after)
-- [ ] **Never cite MockClassifier results** in the paper
+- [x] **105 traces** (55 benign + 50 attack), native Linux strace on GCP
+- [x] `real_data_results_gcp.json` with bootstrap CIs
+- [x] `ollama_fallback_to_mock_count: 0`
+- [ ] Document/mitigate high FPR (**0.291**) — benign startup → MITRE prior bias
 
-**Current baseline:** n=15, FPR=0.286, CI [66.7%, 100%] — `real_data_results.json`
+### A3. DARPA TC E3 CADETS
 
-### A3. DARPA TC E3 CADETS (measured, not yet in paper)
-
-- [ ] Upload dataset to VPS: `ta1-cadets-e3-official.json.2`
-- [ ] Run `make eval-darpa-tc` (100 windows) and `make eval-darpa-tc-full` (400 windows)
-- [ ] Write **Section V-D** with dual-mode table:
-
-  | Mode | F1 | TPR | FPR | Files |
-  |------|-----|-----|-----|-------|
-  | Behavioral (`--strip-annotations`) | 0.568 | 0.42 | 0.06 | `darpa_tc_behavioral_v4.json` |
-  | TI-aided (v8) | 0.931 | 0.94 | 0.08 | `darpa_tc_v8_ti_aided.json` |
-
-- [ ] **Honesty paragraph:** TI-aided uses `[C2]`/`[MALWARE]` from same list as ground truth — not comparable to WATSON/UNICORN behavioral F1
-- [ ] Error analysis: 7 remaining v8 errors (3 FN, 4 FP)
-- [ ] Replace all TeX “DARPA planned follow-on” (~8 occurrences) with results or explicit out-of-scope
+- [x] Dataset on VM (`ta1-cadets-e3-official.json.2`)
+- [x] 100-window hybrid v5, LLM-only v4, TI-aided v8, 5-mode ablation
+- [x] §V-D table + honesty paragraph in `paper/main.tex`
+- [x] TI-aided GCP error count: **7 FN, 1 FP** (re-counted from GCP JSON)
+- [ ] Optional: 400-window `eval-darpa-tc-full` for tighter CIs
 
 ### A4. Paper ↔ JSON sync
 
-- [ ] Dual-tier: **35.7%** invocation reduction (not 94.7%) — `dual_tier_reduction.json`
-- [ ] IPG: **59.8%** token reduction at n=20 — `ipg_token_reduction.json`
-- [ ] Memory: **~60.6 MB** Python RSS (not <15 MB) — `claims_validation_summary.json`
-- [ ] Abstract contribution count matches intro + Section IV (currently inconsistent: “nine” vs body)
-- [ ] Remove/replace every grep hit: `planned`, `deferred`, `follow-on work` in `paper/main.tex`
+- [x] Dual-tier **35.7%** — not legacy 94.7%
+- [x] IPG **74.0% / 92.7%** — not legacy 59.8% / 64.1%
+- [x] DARPA F1 **0.603 / 0.597 / 0.915** — not legacy 0.568 / 0.625 / 0.931
+- [x] Real-data **n=104** — not legacy n=15 pilot
+- [ ] RSS wording in paper vs `overhead_gcp.json` (48.1 MB bench snapshot)
+- [ ] Contribution count: intro lists **5** items; conclusion says **eight** — reconcile
+- [x] No `planned` / `deferred` / `follow-on` in body (only historical comment on n=15)
 
 ### A5. Scientific narrative
 
-- [ ] One clear thesis: framework + honest DARPA dual-mode + evidence-grounded enforcement
-- [ ] Do **not** claim behavioral SOTA on DARPA vs WATSON/UNICORN without TI caveat
-- [ ] Prominent **Limitations** subsection: mimicry ceiling (24/25 nginx_backdoor windows), calibration, PCABP synthetic eval
+- [x] Behavioral F1 below WATSON/UNICORN — honest mimicry ceiling
+- [x] TI-aided circularity in Limitations (L2)
+- [x] Ablation: graph-first resolves 99/100 windows without LLM
 
 ### A6. IEEE submission metadata
 
-- [ ] Author/affiliation filled (`paper/main.tex` ~lines 68–76)
+- [ ] Author/affiliation (`paper/main.tex` ~lines 68–76)
 - [ ] `\thanks{}` funding acknowledgement
-- [ ] Manuscript date placeholders replaced
-- [ ] `cd paper && pdflatex && bibtex && pdflatex ×2` — clean build
-- [ ] `chktex main.tex` — address critical warnings
+- [ ] Manuscript date placeholders
+- [ ] **PDF build** (run locally — see below)
+- [ ] `chktex main.tex`
 - [ ] Page count ≤14
 
----
+**Build command (Mac with MacTeX / TeX Live):**
 
-## B. Strongly recommended (major revision risk if skipped)
+```bash
+cd paper
+export PATH="/Library/TeX/texbin:$PATH"   # MacTeX
+pdflatex -interaction=nonstopmode main
+bibtex main
+pdflatex -interaction=nonstopmode main
+pdflatex -interaction=nonstopmode main
+chktex main.tex
+# Page count:
+pdfinfo main.pdf | grep Pages
+open main.pdf
+```
 
-### B1. Dual-tier + scenarios on Linux
-
-- [ ] Re-run `make eval-scenarios` with Ollama on Linux VPS
-- [ ] Report draft vs full **latency p50/p99** on Linux
-- [ ] Document 2 draft FNs (T1210, T1078) and 1× 8B FN (T1041) in Section V-B
-
-### B2. CoVe / hallucination (real LLM)
-
-- [ ] `OllamaClassifier` populates structured `evidence_refs` / event linkage
-- [ ] Fix or replace stale `src/python/evaluation/hallucination_eval.py` (wrong imports)
-- [ ] Measure: hallucination_rate, downgrade count, enforcements with verified `event_id`s
-- [ ] Replace “zero hallucinations” with measured N/M bound
-
-### B3. LTL on real benign workloads
-
-- [ ] Run SymbolicGuardian on **≥50 benign real windows**
-- [ ] Report LTL FPR (current: 0 FP on **3 synthetic** scenarios only)
-- [ ] Keep red-team / evasion scenarios in §Security Analysis
-
-### B4. Confidence calibration
-
-- [ ] n≥200 predictions for ECE (current: n=15, ECE=0.174)
-- [ ] Temperature scaling ablation (`sentinel/llm/temperature.py`)
-- [ ] Reliability diagram figure in paper
-
-### B5. Baselines (honesty)
-
-- [ ] Falco: run real Falco OR relabel as “rule-inspired Python baseline”
-- [ ] N-gram LR: fix train/test split contamination in `evaluate_baselines.py`
-- [ ] Tracee: `make eval-tracee` on Linux if cited
-
-### B6. Overhead on Linux
-
-- [ ] `make benchmark-overhead` on VPS
-- [ ] `make benchmark-sysbench` (optional, supports <3% CPU claim for non-LLM path)
-- [ ] Ollama E2E latency table (Linux)
+Or: `bash scripts/build_paper.sh` (added to repo).
 
 ---
 
-## C. Per-contribution completion
+## B. Strongly recommended
 
-| # | Contribution | Code | Paper | Eval action |
-|---|--------------|------|-------|-------------|
-| 1 | LSM-eBPF TOCTOU | `src/bpf/sentinel.c` | ✓ | Live attach smoke test on Linux |
-| 2 | IPG | `sentinel/ipg.py` | ✓ | Re-run token eval; n≥6 traces |
-| 3 | Dual-tier LLM | `sentinel/llm/base.py` | ✓ | Linux Ollama re-measure |
-| 4 | SSL/TLS uprobe | partial | ✓ | `make eval-tls` — cite or demote |
-| 5 | CWAE | `sentinel/enforcement.py` | ✓ | Overhead on Linux |
-| 6 | CoVe | `sentinel/cove.py` | ✓ | Ollama measurement (B2) |
-| 7 | LTL guardian | `sentinel/ltl.py` | ✓ | Real benign FPR (B3) |
-| 8 | PCABP | `sentinel/pcabp/` | ✓ | Synthetic caveat + x86 nginx map on VPS; live `user_ip` ideal |
-| 9 | EGTE | `sentinel/egte.py` | **✗ not in main.tex** | **Either:** Section IV-G + calibration eval **or** remove from claims |
+| Item | Status | GCP artifact |
+|------|--------|--------------|
+| Scenarios 14/14 on Ollama | ✅ | `scenario_results_gcp.json` |
+| Dual-tier 35.7% + draft FN analysis | ✅ | `dual_tier_reduction_gcp.json` |
+| LTL 0 FPR on real benign | ✅ | `ltl_fpr_real_gcp.json` (387 windows) |
+| Calibration ECE | 🟡 | ECE=0.205, n=104 — severely miscalibrated |
+| CoVe Ollama measurement | ⬜ | MockClassifier still in some paths |
+| Falco / N-gram baseline honesty | ⬜ | Relabel or fix contamination |
+| Ollama per-window latency table | ⬜ | Extract from `gcp_chain.log` |
 
 ---
 
-## D. Live eBPF (kernel credibility)
+## C. Per-contribution (GCP measured)
 
-Pick one path:
-
-**Path 1 — Full (preferred):**
-- [ ] `make up-ebpf` on Linux VPS (privileged)
-- [ ] Events → IPG → Ollama → audit log with non-zero `user_ip` (PCABP)
-- [ ] Document `CONFIG_BPF_LSM`, hook attach success
-
-**Path 2 — Narrow claims:**
-- [ ] Paper states: userspace pipeline validated on strace-equivalent events; BPF in appendix as prototype
-- [ ] No live enforcement claims in abstract
-
----
-
-## E. Reproducibility & engineering
-
-- [ ] `REPRO.md`: VPS setup, Ollama install, eval command sequence, expected runtime
-- [ ] `make test` passes (`requirements-dev.txt`)
-- [ ] `make lint` / `make type-check` clean (or document known exceptions)
-- [ ] Tag Git release matching submission date
-- [ ] Update stale `docs/ACTION_PLAN.md`
-- [ ] DARPA dataset availability statement (public TC E3 link)
+| # | Contribution | Paper § | GCP evidence |
+|---|--------------|---------|--------------|
+| 1 | LSM-eBPF TOCTOU | IV-A | Prototype `sentinel.c`; strace validation |
+| 2 | IPG | IV-B | 74.0% @ n=20 |
+| 3 | Hybrid graph-first + dual-tier | IV-C | Ablation + 35.7% |
+| 4 | LTL + PCABP floors | IV-E, IV-H | 0/387 FPR; PCABP F1=1.0 controlled |
+| 5 | CWAE + CoVe fusion | IV-D, IV-F | overhead_gcp; CoVe needs Ollama eval |
+| — | EGTE | (demoted) | Code only; disabled by default |
+| — | SSL/TLS uprobe | partial | Cite or demote in revision |
 
 ---
 
-## F. Related work & differentiation
+## D–G. Unchanged scope
 
-- [ ] CP-in-security / selective prediction (brief — differentiate EGTE if kept)
-- [ ] Provenance APT: WATSON, UNICORN, ProvDetector, DEPIMPACT — behavioral compare via DARPA only
-- [ ] Falco/Tetragon tracepoint vs LSM — your TOCTOU argument
-- [ ] CoVe — cite prior NLP work; your contribution = eBPF `event_id` grounding
-
----
-
-## G. Optional (acceptability boost)
-
-- [ ] EGTE: benign calibration JSONL ≥100 windows; empirical over-escalation rate vs α
-- [ ] TOCTOU micro-benchmark: symlink race, LSM vs tracepoint (small n)
-- [ ] Zenodo artifact / supplementary JSON bundle
-- [ ] Second reviewer pass: external colleague read
-
----
-
-## Quick reference — key result files
-
-| File | Use in paper |
-|------|----------------|
-| `real_data_results.json` | Table: real strace eval |
-| `dual_tier_reduction.json` | Section V-B |
-| `ipg_token_reduction.json` | Compression table |
-| `darpa_tc_behavioral_v4.json` | DARPA behavioral |
-| `darpa_tc_v8_ti_aided.json` | DARPA TI-aided (caveat) |
-| `pcabp_results.json` | PCABP (synthetic caveat) |
-| `calibration_results.json` | ECE / reliability |
-| `claims_validation_summary.json` | Overhead audit |
-| `baseline_comparison.json` | Fix before citing |
-| `red_team_results.json` | §Security Analysis |
+- **Live eBPF:** optional Path 1; Path 2 (strace-replay) is current paper scope.
+- **Repro:** [REPRO.md](REPRO.md), [RUNME.md](RUNME.md), `MANIFEST.json` ✅
+- **Zenodo / git tag:** pending submission date.
 
 ---
 
 ## Progress tracker
 
-| Section | Status | Notes |
-|---------|--------|-------|
-| A Blockers | 🟡 In progress | SSH key generated; authorize on VPS (docs/IONOS_SSH_SETUP.md) |
-| B Recommended | ⬜ | Pending VPS eval runs |
-| C Contributions | 🟡 | DARPA in paper; EGTE noted as optional/disabled |
-| D eBPF | ⬜ | After SSH + bootstrap |
-| E Repro | ✅ | docs/REPRO.md, scripts/bootstrap_ionos.sh |
-| F Related work | 🟡 | DARPA competitor table in paper |
-| G Optional | ⬜ | |
+| Section | Status |
+|---------|--------|
+| GCP eval chain | ✅ Complete 2026-06-08 |
+| `paper/main.tex` numbers | ✅ Synced to GCP JSONs |
+| Documentation | ✅ RUNME, REPRO, diagrams, CLAUDE.md |
+| PDF build | 🟡 Run locally (`pdflatex` not in agent sandbox) |
+| Author metadata | ⬜ |
+| CoVe real-LLM eval | ⬜ |
 
 **GitHub:** https://github.com/jshaik-lab/Paper1_ZeroTrustAgent  
 **Submission target date:** _______________

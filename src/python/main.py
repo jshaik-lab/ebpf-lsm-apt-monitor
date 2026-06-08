@@ -83,6 +83,8 @@ def main(config: str, mode: str | None, dry_run: bool | None, verbose: bool) -> 
 
     _configure_logging(cfg.log_level, cfg.log_format)
 
+    # SentinelAgent orchestrates BPF/simulation I/O and delegates detection to
+    # AgentPipeline (Detector → Analyzer → Auditor, Option A hybrid stack).
     from sentinel.agent import SentinelAgent
     agent = SentinelAgent(cfg)
     asyncio.run(agent.run())

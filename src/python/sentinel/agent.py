@@ -1,13 +1,10 @@
 """SENTINEL main async orchestrator.
 
-Event flow:
+Event flow (AgentPipeline — Option A):
   SimulationSource / BPFSource
-    → asyncio.Queue
-    → per-PID sliding window (deque)
-    → EntropyTracker (gate)
-    → IPGBuilder (Algorithm 1)
-    → DualTierClassifier (Algorithm 2)
-    → CWAEEngine (Algorithm 3)
+    → DetectorAgent (entropy + PCABP static triage)
+    → AnalyzerAgent (IPG + provenance_score + gray-zone LLM + PCABP)
+    → AuditorAgent (CoVe + LTL + fuse_scores + CWAE)
 """
 from __future__ import annotations
 
@@ -26,31 +23,19 @@ from sentinel import metrics as m
 from sentinel.api import app as fastapi_app, register_agent
 from sentinel.bpf import BPFLoader, EventStruct
 from sentinel.config import SentinelConfig
-from sentinel.enforcement import CWAEEngine
-from sentinel.ipg import IPGBuilder
-from sentinel.llm import make_classifier
-from sentinel.llm.base import DualTierClassifier
-from sentinel.models import KernelEvent, ThreatDecision
+from sentinel.agents.pipeline import AgentPipeline
+from sentinel.models import KernelEvent
 
 logger = structlog.get_logger(__name__)
 
 ENTROPY_WINDOW = 64
 SC_TYPES       = 16
 
-# Hard-trigger resource patterns — these bypass the entropy gate entirely.
-# An attacker who uses only FILE_R syscalls (entropy=0) still gets caught if
-# they touch any of these paths.  Fixes EVASION-01 (entropy evasion) and
-# EVASION-03 (slow-and-low with single sensitive read per window).
-_HARD_TRIGGER_RESOURCES = (
-    "/etc/shadow", "/etc/sudoers", "/.ssh/id_rsa", "/.ssh/id_ed25519",
-    "/.ssh/authorized_keys", ".aws/credentials", "ssl/private",
-    "/var/backups/shadow", "/proc/self/mem", "/dev/mem",
-)
+from sentinel.triggers import HARD_TRIGGER_RESOURCES, FLAGGED_PID_TTL_SECONDS
 
-# Suspicious-PID TTL: once a PID is labelled MALICIOUS, all events from that
-# PID (and its direct children) bypass the entropy gate for this many seconds.
-# Fixes EVASION-04 (kill-chain split) when parent PID is caught first.
-_FLAGGED_PID_TTL_SECONDS = 120
+# Back-compat aliases for tests importing from sentinel.agent
+_HARD_TRIGGER_RESOURCES = HARD_TRIGGER_RESOURCES
+_FLAGGED_PID_TTL_SECONDS = FLAGGED_PID_TTL_SECONDS
 
 
 class EntropyTracker:
@@ -160,50 +145,46 @@ class SentinelAgent:
     """Async main orchestrator — ties together all SENTINEL subsystems."""
 
     def __init__(self, config: SentinelConfig):
-        self.config      = config
-        self._classifier: DualTierClassifier = make_classifier(config.llm)
-        self._ipg        = IPGBuilder()
-        self._entropy    = EntropyTracker(
-            window_size=ENTROPY_WINDOW,
-            low=config.processing.entropy.low_threshold,
-            high=config.processing.entropy.high_threshold,
-        )
-        self._loader     = BPFLoader(
+        self.config     = config
+        self._loader    = BPFLoader(
             obj_path=config.bpf.obj_path,
             poll_interval_ms=config.bpf.poll_interval_ms,
         )
-        self._cwae: Optional[CWAEEngine] = None
-        self._windows: Dict[int, Deque[KernelEvent]] = defaultdict(
-            lambda: deque(maxlen=config.processing.syscall_window_size)
-        )
-        # Track child→parent relationships for cross-PID stitching
+        self._pipeline: Optional[AgentPipeline] = None
+        # Kept for unit tests (test_evasion_fixes.py) — runtime uses DetectorAgent.
         self._ppid_map: Dict[int, int] = {}
-        # Pending TLS payloads keyed by PID (from simulation or live uprobes)
-        self._tls_intents: Dict[int, str] = {}
-        # PIDs labelled MALICIOUS (value = expiry timestamp). Child PIDs of a
-        # flagged parent also bypass the entropy gate — fixes EVASION-04.
         self._flagged_pids: Dict[int, float] = {}
-        self._sem        = asyncio.Semaphore(config.processing.max_concurrent_llm)
         self._recent: Deque[Dict] = deque(maxlen=200)
-        self._stats      = {
-            "events": 0, "llm_invoked": 0, "enforced": 0,
+        self._stats = {
+            "events": 0,
             "start_time": time.time(),
         }
-        self.is_running  = False
+        self.is_running = False
 
     # ── Public API for /status and /decisions ──────────────────────────────────
 
     def get_stats(self) -> Dict:
-        return {
+        out: Dict = {
             **self._stats,
-            "uptime_s":   round(time.time() - self._stats["start_time"]),
-            "mode":       self.config.mode,
+            "uptime_s":    round(time.time() - self._stats["start_time"]),
+            "mode":        self.config.mode,
             "llm_backend": self.config.llm.backend,
-            "dry_run":    self.config.enforcement.dry_run,
-            "active_pids": len(self._windows),
-            "llm_tier":   self._classifier.stats,
-            "enforcement": self._cwae.enforcement_stats if self._cwae else {},
+            "dry_run":     self.config.enforcement.dry_run,
+            "pipeline":    "AgentPipeline",
+            "llm_invoked": 0,
+            "enforced":    0,
+            "active_pids": 0,
+            "llm_tier":    {},
+            "enforcement": {},
         }
+        if self._pipeline is not None:
+            ps = self._pipeline.stats()
+            out["llm_invoked"] = ps["analyzer"].get("llm_invocations", 0)
+            out["enforced"]    = ps["auditor"].get("enforced", 0)
+            out["active_pids"] = ps["detector"].get("active_pids", 0)
+            out["llm_tier"]    = ps.get("classifier", {})
+            out["pipeline_stats"] = ps
+        return out
 
     def get_recent_decisions(self, limit: int = 100) -> List[Dict]:
         items = list(self._recent)
@@ -212,12 +193,11 @@ class SentinelAgent:
     # ── Lifecycle ──────────────────────────────────────────────────────────────
 
     async def run(self) -> None:
-        self._cwae = CWAEEngine(
+        self._pipeline = AgentPipeline.from_config(
+            self.config,
             enforce_map_fd=self._loader.get_enforce_map_fd(),
-            xdp_quarantine_fd=self._loader.get_xdp_quarantine_fd(),
-            audit_log_path=self.config.enforcement.audit_log,
-            incident_log_path=self.config.enforcement.incident_log,
-            dry_run=self.config.enforcement.dry_run,
+            xdp_fd=self._loader.get_xdp_quarantine_fd(),
+            on_audit_entry=self._record_decision,
         )
         register_agent(self)
 
@@ -235,13 +215,15 @@ class SentinelAgent:
             mode=self.config.mode,
             llm_backend=self.config.llm.backend,
             dry_run=self.config.enforcement.dry_run,
+            pipeline="AgentPipeline",
         )
 
         try:
-            async with asyncio.TaskGroup() as tg:
-                tg.create_task(self._event_loop(), name="event-loop")
-                tg.create_task(self._api_server(), name="api-server")
-                tg.create_task(self._stats_reporter(), name="stats-reporter")
+            async with self._pipeline:
+                async with asyncio.TaskGroup() as tg:
+                    tg.create_task(self._event_loop(), name="event-loop")
+                    tg.create_task(self._api_server(), name="api-server")
+                    tg.create_task(self._stats_reporter(), name="stats-reporter")
         except asyncio.CancelledError:
             pass
         finally:
@@ -262,12 +244,8 @@ class SentinelAgent:
             await self._simulation_loop()
 
     async def _simulation_loop(self) -> None:
-        from sentinel.simulation import SimulationSource, SCENARIOS
+        from sentinel.simulation import SimulationSource
         source = SimulationSource(self.config.simulation)
-        # Pre-populate TLS intents for scenarios that have simulated TLS payloads
-        for scenario in SCENARIOS:
-            if scenario.tls_payload is not None:
-                self._tls_intents[scenario.tls_payload.pid] = scenario.tls_payload.payload
         async for event in source.events():
             await self._handle_event(event)
 
@@ -330,7 +308,7 @@ class SentinelAgent:
         from sentinel.models import SyscallType
         if event.sc_type == int(SyscallType.PRCTL):
             return True
-        return any(p in event.resource for p in _HARD_TRIGGER_RESOURCES)
+        return any(p in event.resource for p in HARD_TRIGGER_RESOURCES)
 
     def _is_flagged_pid(self, pid: int) -> bool:
         """True when this PID (or its parent) was recently labelled MALICIOUS.
@@ -350,7 +328,7 @@ class SentinelAgent:
         return ppid is not None and ppid in self._flagged_pids
 
     def _flag_pid(self, pid: int) -> None:
-        expiry = time.monotonic() + _FLAGGED_PID_TTL_SECONDS
+        expiry = time.monotonic() + FLAGGED_PID_TTL_SECONDS
         self._flagged_pids[pid] = expiry
 
     # ── Main event handler ─────────────────────────────────────────────────────
@@ -359,120 +337,37 @@ class SentinelAgent:
         self._stats["events"] += 1
         m.events_total.inc()
 
-        # Record parent relationship for cross-PID stitching
         if event.ppid > 1:
             self._ppid_map[event.pid] = event.ppid
 
-        self._entropy.update(event.pid, event.sc_type)
-        win = self._windows[event.pid]
-        win.append(event)
-
-        m.active_pids.set(len(self._windows))
-
-        # ── Layer 1: hard-trigger bypass (EVASION-01, EVASION-03) ─────────────
-        # Sensitive resource access fires LLM immediately regardless of window
-        # size or entropy.  The window may be short — that is fine; even a
-        # single-event window that reads /etc/shadow is actionable.
-        if self._is_hard_trigger(event):
-            logger.debug("hard_trigger_bypass", pid=event.pid, resource=event.resource)
-            self._stats["llm_invoked"] += 1
-            asyncio.create_task(
-                self._run_inference(event.pid, event.comm, list(win),
-                                    self._entropy.entropy(event.pid)),
-                name=f"infer-hard-{event.pid}",
+        if self._pipeline is not None:
+            await self._pipeline.push_event(event)
+            m.active_pids.set(
+                self._pipeline.stats()["detector"].get("active_pids", 0)
             )
-            return
 
-        # ── Layer 2: flagged-parent bypass (EVASION-04) ───────────────────────
-        # Child of a recently-MALICIOUS PID always gets LLM review once the
-        # window has at least one event.
-        if self._is_flagged_pid(event.pid) and len(win) >= 1:
-            logger.debug("flagged_parent_bypass", pid=event.pid,
-                         parent=self._ppid_map.get(event.pid))
-            self._stats["llm_invoked"] += 1
-            asyncio.create_task(
-                self._run_inference(event.pid, event.comm, list(win),
-                                    self._entropy.entropy(event.pid)),
-                name=f"infer-flagged-{event.pid}",
-            )
-            return
-
-        # ── Layer 3: normal entropy gate (Algorithm 2 Tier-1) ─────────────────
-        if len(win) < self.config.processing.syscall_window_size:
-            return
-
-        should_invoke, H = self._entropy.should_invoke_llm(
-            event.pid, event.comm, event.sc_type
-        )
-        if not should_invoke:
-            return
-
-        self._stats["llm_invoked"] += 1
-        asyncio.create_task(
-            self._run_inference(event.pid, event.comm, list(win), H),
-            name=f"infer-{event.pid}",
-        )
-
-    async def _run_inference(
-        self,
-        pid:    int,
-        comm:   str,
-        window: List[KernelEvent],
-        H:      float,
-    ) -> None:
-        async with self._sem:
-            # Item 4: stitch parent-process events for cross-PID provenance
-            ppid = self._ppid_map.get(pid)
-            if ppid and ppid in self._windows and len(self._windows[ppid]) > 0:
-                window = self._ipg.inject_parent_events(
-                    window, list(self._windows[ppid]), max_parent=5
-                )
-
-            G = self._ipg.build(window)
-
-            # Item 2: inject TLS-captured LLM intent node if available for this PID
-            tls_payload = self._tls_intents.get(pid)
-            if tls_payload:
-                self._ipg.inject_tls_intent(G, comm, tls_payload)
-
-            ipg_text = self._ipg.serialize(G)
-
-            t0 = time.perf_counter()
-            decision: ThreatDecision = await self._classifier.classify(ipg_text, H)
-            latency = time.perf_counter() - t0
-
-            m.llm_calls_total.labels(tier=decision.model_used).inc()
-            m.llm_latency_seconds.observe(latency)
-            m.llm_reduction_ratio.set(self._classifier.invocation_reduction_rate)
-
-            self._recent.append({
-                "ts":         decision.ts_ns,
-                "pid":        pid,
-                "comm":       comm,
-                "label":      decision.label,
-                "confidence": decision.confidence,
-                "reasoning":  decision.reasoning,
-                "mitre_ttps": decision.mitre_ttps,
-                "model_used": decision.model_used,
-                "latency_ms": round(decision.latency_ms, 1),
-            })
-
-            if decision.label == "MALICIOUS":
-                self._stats["enforced"] += 1
-                for ttp in decision.mitre_ttps:
-                    m.threats_total.labels(ttp=ttp).inc()
-
-                # Flag this PID so child processes bypass entropy gate (EVASION-04 fix)
-                self._flag_pid(pid)
-
-                assert self._cwae is not None
-                rec = await self._cwae.enforce(pid, comm, decision)
-
-                from sentinel.models import TIER_LABELS
-                m.enforcement_total.labels(action=TIER_LABELS[rec.tier]).inc()
-                m.enforcement_latency_seconds.observe(rec.latency_us / 1e6)
-            else:
-                logger.debug("benign_pid", pid=pid, comm=comm, conf=round(decision.confidence, 3))
+    def _record_decision(self, entry: dict) -> None:
+        """Callback from AuditorAgent — feeds /decisions API and Prometheus."""
+        self._recent.append({
+            "ts":         entry.get("ts"),
+            "pid":        entry.get("pid"),
+            "comm":       entry.get("comm"),
+            "label":      entry.get("label"),
+            "confidence": entry.get("confidence"),
+            "reasoning":  entry.get("reasoning"),
+            "mitre_ttps": entry.get("mitre_ttps", []),
+            "model_used": entry.get("cove", {}).get("draft_label", "pipeline"),
+            "latency_ms": entry.get("latency", {}).get("total_ms"),
+            "tier":       entry.get("tier"),
+        })
+        llm_ms = entry.get("latency", {}).get("llm_ms", 0)
+        if llm_ms and llm_ms > 0:
+            m.llm_latency_seconds.observe(llm_ms / 1000.0)
+        if entry.get("label") == "MALICIOUS":
+            for ttp in entry.get("mitre_ttps", []):
+                m.threats_total.labels(ttp=ttp).inc()
+            tier = entry.get("tier", "LOG_ONLY")
+            m.enforcement_total.labels(action=tier).inc()
 
     # ── Background tasks ───────────────────────────────────────────────────────
 
@@ -493,10 +388,10 @@ class SentinelAgent:
     async def _stats_reporter(self) -> None:
         while self.is_running:
             await asyncio.sleep(30)
+            s = self.get_stats()
             logger.info(
                 "stats",
-                events=self._stats["events"],
-                llm_invoked=self._stats["llm_invoked"],
-                enforced=self._stats["enforced"],
-                reduction_pct=round(self._classifier.invocation_reduction_rate * 100, 1),
+                events=s["events"],
+                llm_invoked=s.get("llm_invoked", 0),
+                enforced=s.get("enforced", 0),
             )

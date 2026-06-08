@@ -26,7 +26,7 @@ class LLMConfig(BaseModel):
     draft_model:          str   = "llama3.2:3b"
     full_model:           str   = "llama3.1:8b"
     draft_conf_threshold: float = 0.90
-    timeout_seconds:      int   = 30
+    timeout_seconds:      int   = 180
     max_retries:          int   = 3
 
 

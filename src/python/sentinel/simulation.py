@@ -206,56 +206,6 @@ _BENIGN_SCENARIOS = [s for s in SCENARIOS if s.expected == "BENIGN"]
 #   4. WindowSplit     — split kill-chain across two PIDs
 
 EVASION_SCENARIOS: List[Scenario] = [
-    # ── LOLBins: legitimate tool used for malicious purpose ─────────────────
-    # python3, curl, wget are whitelisted in Falco and N-gram baselines.
-    # SENTINEL detects via resource context: /etc/shadow is a hard trigger.
-    # Key differentiator: resource-aware IPG beats syscall-type-only baselines.
-    Scenario("EVASION-05", "LOLBins (python3 reads shadow via subprocess)", "MALICIOUS", [
-        _e(0,  25000, "python3", E.EXEC,    "/usr/bin/python3"),
-        _e(1,  25000, "python3", E.EXEC,    "/bin/sh"),           # subprocess.run
-        _e(2,  25000, "sh",      E.EXEC,    "/usr/bin/cat"),
-        _e(3,  25000, "cat",     E.FILE_R,  "/etc/shadow"),       # HARD TRIGGER
-        _e(4,  25000, "python3", E.NET_CON, "93.184.216.34:443"), # exfil
-    ]),
-
-    # ── Obfuscation: base64-encoded payload ─────────────────────────────────
-    # Command: echo 'Y2F0IC9ldGMvc2hhZG93' | base64 -d | bash
-    # strace captures: bash→base64→bash→cat→/etc/shadow (hard trigger fires)
-    Scenario("EVASION-06", "Obfuscated cmd (base64 → shadow read)", "MALICIOUS", [
-        _e(0,  26000, "bash",   E.EXEC,   "/usr/bin/bash"),
-        _e(1,  26000, "bash",   E.EXEC,   "/usr/bin/base64"),
-        _e(2,  26000, "base64", E.FILE_R, "/dev/stdin"),
-        _e(3,  26000, "bash",   E.EXEC,   "/usr/bin/bash"),       # decoded shell
-        _e(4,  26000, "bash",   E.EXEC,   "/usr/bin/cat"),
-        _e(5,  26000, "cat",    E.FILE_R, "/etc/shadow"),         # HARD TRIGGER
-    ]),
-
-    # ── Time-bomb: delayed execution within same window ──────────────────────
-    # 18 benign events, then 2 malicious on events 19–20 (window boundary).
-    # With window_size=20, the completed window contains the attack signal.
-    Scenario("EVASION-07", "Delayed execution (time-bomb at window boundary)", "MALICIOUS", [
-        _e(0,  27000, "daemon", E.FILE_R,  "/etc/hostname"),
-        _e(1,  27000, "daemon", E.FILE_R,  "/etc/resolv.conf"),
-        _e(2,  27000, "daemon", E.NET_LIS, "0.0.0.0:8080"),
-        _e(3,  27000, "daemon", E.FILE_W,  "/var/log/daemon.log"),
-        _e(4,  27000, "daemon", E.FILE_R,  "/etc/hosts"),
-        _e(5,  27000, "daemon", E.FILE_R,  "/proc/self/status"),
-        _e(6,  27000, "daemon", E.FILE_R,  "/etc/nsswitch.conf"),
-        _e(7,  27000, "daemon", E.FILE_R,  "/etc/timezone"),
-        _e(8,  27000, "daemon", E.FILE_W,  "/var/log/daemon.log"),
-        _e(9,  27000, "daemon", E.FILE_R,  "/proc/self/fd"),
-        _e(10, 27000, "daemon", E.FILE_R,  "/etc/locale.conf"),
-        _e(11, 27000, "daemon", E.FILE_R,  "/usr/share/locale/en"),
-        _e(12, 27000, "daemon", E.NET_LIS, "0.0.0.0:8080"),
-        _e(13, 27000, "daemon", E.FILE_W,  "/var/log/daemon.log"),
-        _e(14, 27000, "daemon", E.FILE_R,  "/proc/net/tcp"),
-        _e(15, 27000, "daemon", E.FILE_R,  "/etc/hostname"),
-        _e(16, 27000, "daemon", E.FILE_R,  "/etc/os-release"),
-        _e(17, 27000, "daemon", E.FILE_R,  "/proc/cpuinfo"),
-        # Attack begins at event 18 — falls within window of 20
-        _e(18, 27000, "daemon", E.FILE_R,  "/etc/shadow"),        # HARD TRIGGER
-        _e(19, 27000, "daemon", E.NET_CON, "185.220.101.1:4444"), # C2
-    ]),
     # Strategy 1: Entropy evasion — attacker issues only one syscall type
     # Shannon entropy of a uniform single-type sequence = 0.0, below entropy_low=1.2
     # SENTINEL's tier-1 gate skips LLM invocation entirely → evasion succeeds
@@ -387,6 +337,87 @@ EVASION_SCENARIOS: List[Scenario] = [
         # Injected shellcode calls connect() — ip is from heap, not nginx .text
         _e_injected(3, 30000, "nginx", E.NET_CON, "185.220.101.1:4444"),
         _e_legit(4,  30000, "nginx", E.FILE_W,  "/var/log/nginx/access.log"),
+    ]),
+
+    # Strategy 11: TOCTOU race — attacker swaps a benign /tmp/safe symlink to
+    # /etc/shadow between syscall entry and LSM hook resolution.  eBPF tracepoints
+    # at sys_enter_openat see "/tmp/safe"; LSM hook fires post-resolution and
+    # observes the real target "/etc/shadow".  SENTINEL (LSM path) catches the
+    # resolved resource; a tracepoint-only detector would log "/tmp/safe" (false
+    # negative).  Modelled here as two concurrent PIDs: the opener and the swapper.
+    Scenario("EVASION-11", "TOCTOU race (symlink swap /tmp/safe → /etc/shadow)", "MALICIOUS", [
+        # PID 31000: attacker's opener — opens /tmp/safe (logged at tracepoint)
+        _e(0,  31000, "opener",  E.EXEC,   "/tmp/opener"),
+        _e(1,  31000, "opener",  E.FILE_R, "/tmp/safe"),        # tracepoint sees this
+        # PID 31001: concurrent swapper — swaps symlink during open() gap
+        _e(1,  31001, "swapper", E.EXEC,   "/tmp/swapper"),
+        _e(2,  31001, "swapper", E.FILE_W, "/tmp/safe"),        # symlink overwrite
+        # LSM hook on PID 31000 resolves /tmp/safe → /etc/shadow after swap:
+        _e(3,  31000, "opener",  E.FILE_R, "/etc/shadow"),      # HARD TRIGGER (LSM truth)
+        _e(4,  31000, "opener",  E.NET_CON, "185.220.101.1:443"),
+    ]),
+
+    # Strategy 12: Container escape via mount namespace manipulation.
+    # Attacker inside a container writes a SUID binary into /proc/1/root/ (host /)
+    # via a bind-mount pivot.  Requires CAP_SYS_ADMIN inside the container.
+    # SENTINEL catches via: mmap(PROT_EXEC) + setuid + exec from /tmp path (LTL AX-4).
+    Scenario("EVASION-12", "Container escape (mount namespace pivot + SUID write)", "MALICIOUS", [
+        _e(0,  32000, "runc",    E.EXEC,   "/usr/bin/nsenter"),
+        _e(1,  32000, "nsenter", E.MMAP,   "PROT_EXEC|PROT_WRITE"),   # shellcode stage
+        _e(2,  32000, "nsenter", E.FILE_W, "/proc/1/root/tmp/escape"), # host write
+        _e(3,  32000, "nsenter", E.SETUID, "uid=0"),                   # privilege claim
+        _e(4,  32000, "nsenter", E.EXEC,   "/tmp/escape"),             # LTL AX-4 (exec /tmp)
+        _e(5,  32000, "escape",  E.NET_CON, "185.220.101.1:9001"),
+    ]),
+
+    # Strategy 13: Supply chain compromise — malicious pip package runs post-install
+    # hook that downloads and executes a backdoor.  The package install process
+    # (python3 setup.py) is normally trusted; SENTINEL catches via exec from /tmp
+    # and C2 connection originating from python3.
+    Scenario("EVASION-13", "Supply chain (malicious pip post-install hook)", "MALICIOUS", [
+        _e(0,  33000, "pip",     E.EXEC,    "/usr/bin/pip"),
+        _e(1,  33000, "pip",     E.NET_CON, "pypi.org:443"),            # legitimate download
+        _e(2,  33000, "pip",     E.EXEC,    "/usr/bin/python3"),
+        _e(3,  33000, "python3", E.NET_CON, "185.220.101.1:443"),       # C2 from setup hook
+        _e(4,  33000, "python3", E.FILE_W,  "/tmp/.pkg_payload"),
+        _e(5,  33000, "python3", E.EXEC,    "/tmp/.pkg_payload"),       # LTL AX-4
+        _e(6,  33000, "python3", E.FILE_R,  "/home/user/.ssh/id_rsa"),  # credential access
+    ]),
+
+    # Strategy 14: DNS rebinding — attacker registers a domain that initially
+    # resolves to a benign IP (passes allowlist checks) but after TTL expiry
+    # re-resolves to a C2 IP.  SENTINEL catches via temporal correlation of
+    # connect() to a previously-benign domain now pointing to a threat-intel hit.
+    # Simulated as two connects: first to 8.8.8.8 (benign), then to 185.x (C2).
+    Scenario("EVASION-14", "DNS rebinding (benign domain → C2 IP after TTL)", "MALICIOUS", [
+        _e(0,  34000, "webapp",  E.NET_CON, "8.8.8.8:53"),              # legit DNS
+        _e(1,  34000, "webapp",  E.NET_CON, "93.184.216.34:443"),       # benign resolved IP
+        _e(5,  34000, "webapp",  E.NET_CON, "8.8.8.8:53"),              # DNS re-query after TTL
+        _e(6,  34000, "webapp",  E.NET_CON, "185.220.101.1:443"),       # C2 — rebind complete
+        _e(7,  34000, "webapp",  E.FILE_W,  "/tmp/.dns_beacon"),
+    ]),
+
+    # Strategy 15: Multi-stage APT with dormancy — attacker maintains a long
+    # dwell time, executing benign-looking operations between attack stages to
+    # avoid sliding-window and entropy-based detection.  Each individual window
+    # looks benign; detection requires cross-window temporal correlation via the
+    # LTL BüchiMonitor (AX-2: shadow → connect within 10 events, even with gaps).
+    Scenario("EVASION-15", "Multi-stage APT dormancy (cross-window kill-chain)", "MALICIOUS", [
+        # Stage 1: initial access via web exploit (window 1 — looks like web traffic)
+        _e(0,  35000, "nginx",  E.NET_LIS, "0.0.0.0:80"),
+        _e(1,  35000, "nginx",  E.EXEC,    "/usr/bin/bash"),            # RCE via nginx
+        _e(2,  35000, "bash",   E.FILE_R,  "/etc/hostname"),            # recon
+        # Dormancy gap — many benign events to flush entropy state
+        _e(3,  35000, "bash",   E.FILE_R,  "/etc/resolv.conf"),
+        _e(4,  35000, "bash",   E.FILE_R,  "/proc/self/status"),
+        _e(5,  35000, "bash",   E.FILE_R,  "/etc/os-release"),
+        _e(6,  35000, "bash",   E.FILE_R,  "/etc/timezone"),
+        _e(7,  35000, "bash",   E.FILE_R,  "/etc/localtime"),
+        # Stage 2: credential harvest (window 2 — /etc/shadow is hard trigger)
+        _e(8,  35000, "bash",   E.FILE_R,  "/etc/shadow"),              # HARD TRIGGER + AX-2 arm
+        _e(9,  35000, "bash",   E.FILE_W,  "/tmp/.creds"),              # staging
+        # Stage 3: exfiltration (AX-2 Büchi fires: shadow → connect within 10 events)
+        _e(10, 35000, "bash",   E.NET_CON, "185.220.101.1:4444"),       # C2 — AX-2 trigger
     ]),
 
     # Strategy 7: Delayed execution (time-bomb) — attack event at window boundary

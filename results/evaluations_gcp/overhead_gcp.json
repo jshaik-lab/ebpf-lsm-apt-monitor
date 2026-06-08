@@ -1,0 +1,135 @@
+{
+  "ipg_ms": {
+    "n": 1000,
+    "mean": 0.206,
+    "p50": 0.184,
+    "p95": 0.281,
+    "p99": 0.306,
+    "min": 0.176,
+    "max": 14.479,
+    "stdev": 0.453
+  },
+  "mock_classifier_ms": {
+    "n": 1000,
+    "mean": 0.013,
+    "p50": 0.013,
+    "p95": 0.013,
+    "p99": 0.021,
+    "min": 0.013,
+    "max": 0.063,
+    "stdev": 0.002
+  },
+  "dual_tier_draft_ms": {
+    "n": 1000,
+    "mean": 0.026,
+    "p50": 0.026,
+    "p95": 0.03,
+    "p99": 0.035,
+    "min": 0.025,
+    "max": 0.071,
+    "stdev": 0.003
+  },
+  "cwae_ms": {
+    "n": 1000,
+    "mean": 0.887,
+    "p50": 0.888,
+    "p95": 0.92,
+    "p99": 0.932,
+    "min": 0.641,
+    "max": 1.996,
+    "stdev": 0.051
+  },
+  "detector_throughput": {
+    "events": 1000,
+    "elapsed_s": 0.039,
+    "events_per_s": 25665,
+    "signals_emitted": 529,
+    "signal_rate": 0.529
+  },
+  "memory": {
+    "rss_before_mb": 48.1,
+    "rss_after_mb": 48.1,
+    "delta_mb": 0.0,
+    "meta": {
+      "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+      "system": "Linux",
+      "kernel": "6.17.0-1018-gcp",
+      "machine": "x86_64",
+      "hostname": "sentinel-gpu-vm",
+      "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+      "ram_gb": 15.6,
+      "python": "3.12.3",
+      "backend": "ollama",
+      "model_full": "llama3.1:8b",
+      "model_draft": "llama3.2:1b",
+      "timeout_seconds": 300,
+      "git_sha": "unknown",
+      "started_utc": "2026-06-08T15:46:38Z",
+      "ollama_fallback_to_mock_count": 0
+    }
+  },
+  "e2e_pipeline": {
+    "events": 100,
+    "push_ms": 1.02,
+    "total_ms": 51.65,
+    "audited": 13,
+    "pipeline_stats": {
+      "detector": {
+        "events": 100,
+        "signals": 8,
+        "skipped": 92,
+        "pids_evicted": 0,
+        "active_pids": 18
+      },
+      "analyzer": {
+        "analyzed": 8,
+        "llm_invocations": 8,
+        "pids_evicted": 0,
+        "llm_tier": {
+          "draft_hits": 0,
+          "full_hits": 5,
+          "reduction_%": 0.0,
+          "fast_path": "fixed",
+          "accept_threshold": 0.9
+        }
+      },
+      "auditor": {
+        "audited": 8,
+        "enforced": 5,
+        "hallucination_downgrades": 0,
+        "clean_evidence": 8,
+        "ltl_violations": 0,
+        "cove_retractions": 0,
+        "egte_caps": 0
+      },
+      "classifier": {
+        "draft_hits": 0,
+        "full_hits": 5,
+        "reduction_%": 0.0,
+        "fast_path": "fixed",
+        "accept_threshold": 0.9
+      },
+      "queue_depths": {
+        "detector_out": 0,
+        "analyzer_out": 0
+      }
+    }
+  },
+  "meta": {
+    "platform": "GCP g2-standard-4 NVIDIA L4 Ubuntu 6.17.0-1018-gcp",
+    "system": "Linux",
+    "kernel": "6.17.0-1018-gcp",
+    "machine": "x86_64",
+    "hostname": "sentinel-gpu-vm",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+    "ram_gb": 15.6,
+    "python": "3.12.3",
+    "backend": "ollama",
+    "model_full": "llama3.1:8b",
+    "model_draft": "llama3.2:1b",
+    "timeout_seconds": 300,
+    "git_sha": "unknown",
+    "started_utc": "2026-06-08T15:46:38Z",
+    "ollama_fallback_to_mock_count": 0
+  }
+}

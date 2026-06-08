@@ -2,7 +2,7 @@
   "trace": "attack_T1003_shadow.log",
   "ground_truth": "MALICIOUS",
   "technique": "T1003",
-  "command": ,
+  "command": "bash -c 'cat /etc/shadow 2>/dev/null; cat /etc/passwd'",
   "label_source": "researcher_at_capture_time",
   "capture_mode": "docker_ubuntu_22.04",
   "label_rationale": "Label assigned from command intent before LLM classification"

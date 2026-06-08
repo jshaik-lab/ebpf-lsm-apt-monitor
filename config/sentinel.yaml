@@ -13,7 +13,7 @@ llm:
   draft_model: llama3.2:1b
   full_model: llama3.1:8b
   draft_conf_threshold: 0.90
-  timeout_seconds: 30
+  timeout_seconds: 300
   max_retries: 3
 
 processing:

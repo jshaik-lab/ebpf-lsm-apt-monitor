@@ -1,5 +1,11 @@
 # IONOS VPS SSH Setup — 74.208.76.97
 
+> **⚠️ DEPRECATED (2026-06-08):** IONOS is no longer the authoritative evaluation platform.
+> Use **GCP** (`sentinel-gpu-vm`, `34.74.43.57`) per [RUNME.md](RUNME.md).
+> Do not cite `*_ionos.json` results in the paper.
+
+> **Full runbook:** [RUNME.md](RUNME.md) — deployment, evals, and validation status.
+
 SSH key generated on your Mac for this project. **Add it to the VPS once** (pick one method).
 
 ## Public key (paste into IONOS panel)

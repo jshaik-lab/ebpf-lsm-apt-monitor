@@ -161,7 +161,7 @@ stop_instance() {
 }
 
 remote_bootstrap() {
-  _gcp_log "Ensuring remote venv + Ollama..."
+  _gcp_log "Ensuring remote venv + Ollama + PCABP bloom filter..."
   gcp_ssh "GCP_REMOTE_DIR=$GCP_REMOTE_DIR bash -s" <<'REMOTE'
 set -euo pipefail
 cd ~/"$GCP_REMOTE_DIR"
@@ -169,14 +169,22 @@ if [[ ! -d .venv ]]; then
   python3 -m venv .venv
 fi
 source .venv/bin/activate
+echo "[bootstrap] pip install..."
 pip install -q -r requirements-dev.txt 2>/dev/null || pip install -r requirements-dev.txt
 sudo systemctl start ollama 2>/dev/null || true
 mkdir -p results/evaluations_gcp results/evaluations results/logs data/input/real_traces data/darpa
+PCABP_OUT="src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl"
+if [[ ! -f "$PCABP_OUT" ]]; then
+  echo "[bootstrap] rebuilding PCABP bloom filter from /usr/sbin/nginx..."
+  python3 scripts/rebuild_pcabp_x86.py
+fi
+echo "[bootstrap] done"
 REMOTE
 }
 
 remote_eval_running() {
-  gcp_ssh "pgrep -f 'run_gcp_eval_chain|run_gcp_eval_resume|evaluate_darpa|measure_scenarios|evaluate_red_team' >/dev/null" 2>/dev/null
+  gcp_ssh "bash -c 'pid=\$(cat /tmp/sentinel_gcp_eval.pid 2>/dev/null || echo); [[ -n \"\$pid\" ]] && kill -0 \"\$pid\" 2>/dev/null && tr \"\\0\" \" \" < /proc/\$pid/cmdline 2>/dev/null | grep -q run_gcp_eval'" \
+    2>/dev/null
 }
 
 print_remote_progress() {

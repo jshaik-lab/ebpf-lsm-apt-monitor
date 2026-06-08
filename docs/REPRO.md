@@ -11,7 +11,7 @@
 | IP | `34.74.43.57` |
 | SSH user | `sentinel` |
 | SSH key | `~/.ssh/id_ed25519_sentinel` |
-| GitHub | https://github.com/jshaik-lab/Paper1_ZeroTrustAgent |
+| GitHub | https://github.com/jshaik-lab/ebpf-lsm-apt-monitor |
 | Ollama models | `llama3.1:8b`, `llama3.2:1b` |
 | Result bundle | `results/evaluations_gcp/*_gcp.json` + `MANIFEST.json` |
 
@@ -33,7 +33,7 @@ See [GCP_SETUP_GUIDE.md](GCP_SETUP_GUIDE.md) for VM specs, cost, and key managem
 ## 2. Bootstrap (first time)
 
 ```bash
-cd ~/Paper1_ZeroTrustAgent
+cd ~/ebpf-lsm-apt-monitor
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 pip install tiktoken pyelftools capstone
@@ -50,7 +50,7 @@ Expected duration: **20–40 minutes** (Ollama model downloads dominate).
 ## 3. Full evaluation chain
 
 ```bash
-cd ~/Paper1_ZeroTrustAgent
+cd ~/ebpf-lsm-apt-monitor
 source .venv/bin/activate
 export PYTHONPATH=src/python
 export SENTINEL__LLM__BACKEND=ollama
@@ -106,7 +106,7 @@ python3 src/python/evaluate_darpa_ablation.py \
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

@@ -125,12 +125,13 @@ make paper-build             # validate + PDF (scripts/build_paper.sh)
 
 ### A6. IEEE submission metadata
 
-- [ ] Author/affiliation (`paper/main.tex` ~lines 68–76)
-- [ ] `\thanks{}` funding acknowledgement
-- [ ] Manuscript date placeholders
+- [x] Author/affiliation (`paper/main.tex` lines 82–92): Juharasha Shaik, Independent Researcher, Fremont CA
+- [x] `\thanks{}` funding acknowledgement (no external funding; corresponding author + email)
+- [x] Manuscript received date (June 08, 2026 — update at submission if needed)
+- [x] **ORCID iD** — [0009-0003-7291-360X](https://orcid.org/0009-0003-7291-360X) in `main.tex`
 - [ ] **PDF build** (run locally — see below)
 - [ ] `chktex main.tex`
-- [ ] Page count ≤14
+- [x] Page count ≤13 (**10 pages** after trim pass, 2026-06-08)
 
 **Build command (Mac with MacTeX / TeX Live):**
 
@@ -194,9 +195,9 @@ Or: `bash scripts/build_paper.sh` (added to repo).
 | GCP eval chain | ✅ Complete 2026-06-08 |
 | `paper/main.tex` numbers | ✅ Synced to GCP JSONs |
 | Documentation | ✅ RUNME, REPRO, diagrams, CLAUDE.md |
-| PDF build | 🟡 Run locally (`pdflatex` not in agent sandbox) |
-| Author metadata | ⬜ |
+| PDF build | ✅ 10 pages, validate 15/15 |
+| Author metadata | ✅ Complete (incl. ORCID) |
 | CoVe real-LLM eval | ⬜ |
 
-**GitHub:** https://github.com/jshaik-lab/Paper1_ZeroTrustAgent  
+**GitHub:** https://github.com/jshaik-lab/ebpf-lsm-apt-monitor  
 **Submission target date:** _______________

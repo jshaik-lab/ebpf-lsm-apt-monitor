@@ -3,12 +3,12 @@
 # Run on sentinel-gpu-vm after: git pull, venv, Ollama models pulled.
 #
 # Usage:
-#   cd ~/Paper1_ZeroTrustAgent
+#   cd ~/ebpf-lsm-apt-monitor
 #   bash scripts/cleanup_stale_results.sh   # first boot after wipe
 #   bash scripts/run_gcp_eval_chain.sh 2>&1 | tee results/evaluations_gcp/gcp_chain.log
 #
 # Sync back to Mac:
-#   rsync -avz sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+#   rsync -avz sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
 #     ./results/evaluations_gcp/
 
 set -euo pipefail

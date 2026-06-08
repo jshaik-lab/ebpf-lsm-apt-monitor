@@ -48,7 +48,7 @@ gcloud compute instances add-metadata sentinel-gpu-vm \
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 
@@ -102,7 +102,7 @@ ollama pull llama3.2:1b
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

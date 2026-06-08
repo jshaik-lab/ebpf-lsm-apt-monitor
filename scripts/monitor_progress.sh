@@ -65,7 +65,7 @@ else:
 
     # VPS remote
     ssh -i "$KEY" -o BatchMode=yes -o ConnectTimeout=10 "$VPS" 'bash -s' <<REMOTE
-APP=/home/sentinel/Paper1_ZeroTrustAgent
+APP=/home/sentinel/ebpf-lsm-apt-monitor
 if pgrep -f measure_scenarios.py >/dev/null 2>&1; then
   DONE=\$(grep -cE '^\[OK\]|^\[FAIL\]' "\$APP/results/evaluations/scenario_results_linux.log" 2>/dev/null || echo 0)
   MOCK=\$(grep -c ollama_fallback_to_mock "\$APP/results/evaluations/scenario_results_linux.log" 2>/dev/null || echo 0)

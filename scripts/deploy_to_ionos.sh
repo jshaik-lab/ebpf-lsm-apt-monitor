@@ -5,7 +5,7 @@
 set -euo pipefail
 
 HOST="${IONOS_HOST:-sentinel-ionos}"
-REPO="https://github.com/jshaik-lab/Paper1_ZeroTrustAgent.git"
+REPO="https://github.com/jshaik-lab/ebpf-lsm-apt-monitor.git"
 ROOT="${IONOS_ROOT:-root@74.208.76.97}"
 KEY="${IONOS_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -35,7 +35,7 @@ ssh -i "$KEY" "$ROOT" "bash /root/bootstrap_ionos.sh '$REPO'"
 
 echo "=== First validation runs ==="
 ssh -i "$KEY" "$ROOT" "sudo -u sentinel bash -lc '
-  cd ~/Paper1_ZeroTrustAgent
+  cd ~/ebpf-lsm-apt-monitor
   source .venv/bin/activate
   make eval-scenarios
   make capture-traces
@@ -46,7 +46,7 @@ ssh -i "$KEY" "$ROOT" "sudo -u sentinel bash -lc '
 
 echo "=== Download results to Mac ==="
 mkdir -p "$PROJECT_ROOT/results/evaluations_linux"
-scp -i "$KEY" -r "$ROOT:/home/sentinel/Paper1_ZeroTrustAgent/results/evaluations/*" \
+scp -i "$KEY" -r "$ROOT:/home/sentinel/ebpf-lsm-apt-monitor/results/evaluations/*" \
   "$PROJECT_ROOT/results/evaluations_linux/" 2>/dev/null || true
 
 echo "Deploy complete. See results/evaluations_linux/ on Mac."

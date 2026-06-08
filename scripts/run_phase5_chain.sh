@@ -4,7 +4,7 @@
 
 set -uo pipefail
 
-cd /home/sentinel/Paper1_ZeroTrustAgent
+cd /home/sentinel/ebpf-lsm-apt-monitor
 source .venv/bin/activate
 
 export SENTINEL_EVAL_PLATFORM="IONOS VPS XL Ubuntu 24.04 $(uname -r); Ollama llama3.1:8b timeout=300s"

@@ -7,7 +7,7 @@ GCP_ZONE="${GCP_ZONE:-us-east1-c}"
 GCP_INSTANCE="${GCP_INSTANCE:-sentinel-gpu-vm}"
 GCP_SSH_USER="${GCP_SSH_USER:-sentinel}"
 GCP_SSH_KEY="${GCP_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
-GCP_REMOTE_DIR="${GCP_REMOTE_DIR:-Paper1_ZeroTrustAgent}"
+GCP_REMOTE_DIR="${GCP_REMOTE_DIR:-ebpf-lsm-apt-monitor}"
 GCP_SSH_OPTS="${GCP_SSH_OPTS:--o StrictHostKeyChecking=no -o ConnectTimeout=15 -o ServerAliveInterval=30}"
 
 # Load user overrides

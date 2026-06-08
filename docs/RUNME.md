@@ -9,7 +9,7 @@
 | [IEEE_SUBMISSION_CHECKLIST.md](IEEE_SUBMISSION_CHECKLIST.md) | Submission blockers tracker |
 | [sentinel_diagrams.html](sentinel_diagrams.html) | Architecture + data-flow diagrams |
 
-**GitHub:** https://github.com/jshaik-lab/Paper1_ZeroTrustAgent
+**GitHub:** https://github.com/jshaik-lab/ebpf-lsm-apt-monitor
 
 ---
 
@@ -66,7 +66,7 @@ DARPA evaluation uses the same hybrid logic via `evaluate_darpa_tc.py --detector
 ## Mac setup (dev only)
 
 ```bash
-cd Paper1_ZeroTrustAgent
+cd ebpf-lsm-apt-monitor
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 make dirs
@@ -78,7 +78,7 @@ Deploy code to GCP:
 
 ```bash
 rsync -avz --exclude .venv --exclude results --exclude .git \
-  ./ sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/
+  ./ sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/
 ```
 
 ### One-command automated pipeline (Mac → GCP → Mac)
@@ -139,7 +139,7 @@ ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
 ### 2. Bootstrap (first time or after OS update)
 
 ```bash
-cd ~/Paper1_ZeroTrustAgent
+cd ~/ebpf-lsm-apt-monitor
 git pull   # or rsync from Mac
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
@@ -160,13 +160,13 @@ From Mac:
 
 ```bash
 rsync -avP "/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2" \
-  sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/data/darpa/
+  sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/data/darpa/
 ```
 
 ### 5. Run full eval chain (~6–10 hours with DARPA)
 
 ```bash
-cd ~/Paper1_ZeroTrustAgent
+cd ~/ebpf-lsm-apt-monitor
 source .venv/bin/activate
 bash scripts/run_gcp_eval_chain.sh 2>&1 | tee results/evaluations_gcp/gcp_chain.log
 ```
@@ -177,7 +177,7 @@ Or via Makefile: `make eval-gcp-chain`
 
 ```bash
 # From Mac
-rsync -avz sentinel@35.196.1.103:~/Paper1_ZeroTrustAgent/results/evaluations_gcp/ \
+rsync -avz sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

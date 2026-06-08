@@ -4,9 +4,9 @@
 # Usage: bash bootstrap_ionos.sh [GITHUB_REPO_URL]
 set -euo pipefail
 
-REPO_URL="${1:-https://github.com/jshaik-lab/Paper1_ZeroTrustAgent.git}"
+REPO_URL="${1:-https://github.com/jshaik-lab/ebpf-lsm-apt-monitor.git}"
 INSTALL_USER="${INSTALL_USER:-sentinel}"
-APP_DIR="/home/${INSTALL_USER}/Paper1_ZeroTrustAgent"
+APP_DIR="/home/${INSTALL_USER}/ebpf-lsm-apt-monitor"
 
 log() { echo "[bootstrap] $*"; }
 

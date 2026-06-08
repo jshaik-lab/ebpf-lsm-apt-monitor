@@ -1,7 +1,7 @@
 # Option A Implementation Prompt (copy-paste for AI agent)
 
 Use this prompt in Cursor Agent, Claude Code on GCP, or any coding agent.
-Repository: `Paper1_ZeroTrustAgent` (SENTINEL → IEEE TIFS).
+Repository: `ebpf-lsm-apt-monitor` (SENTINEL → IEEE TIFS).
 
 ---
 

@@ -199,12 +199,13 @@ def _real_data() -> str | None:
     ]:
         if err := _require_metric(tex, label, val, 3):
             return err
-    if "0.273" not in tex:
-        return "production headline FPR 0.273 missing"
+    headline_fpr = _fmt_metric(theta12["fpr"], 3)
+    if headline_fpr not in tex and f"\\textbf{{{headline_fpr}}}" not in tex:
+        return f"production headline FPR {headline_fpr} missing"
     return None
 
 
-@check("LTL FPR (7 traces / 13 windows)")
+@check("LTL FPR (55 traces / 399 windows)")
 def _ltl() -> str | None:
     j = _load("ltl_fpr_real_gcp.json")
     tex = _tex()
@@ -262,7 +263,7 @@ def _ablation() -> str | None:
     if hybrid["mean_latency_ms"] > 500:
         return f"hybrid mean_latency_ms={hybrid['mean_latency_ms']} too high"
     for mode, f1_paper in [
-        ("llm_only", "0.603"),
+        ("llm_only", "0.597"),
         ("graph_only", "0.611"),
         ("hybrid", "0.603"),
         ("hybrid_ltl", "0.611"),
@@ -273,7 +274,7 @@ def _ablation() -> str | None:
     return _require_fragments(
         tex,
         "ablation latency",
-        ["7484\\,", "75\\,", _json_cite("darpa_ablation_gcp.json")],
+        ["5713\\,", "61\\,", _json_cite("darpa_ablation_gcp.json")],
     )
 
 
@@ -345,8 +346,8 @@ def _headlines() -> str | None:
             "0.915",
             "57.5\\%",
             "83.3\\%",
-            "TPR\\,=\\,0.714",
-            "FPR\\,=\\,0.273",
+            "TPR\\,=\\,0.760",
+            "FPR\\,=\\,0.236",
         ],
     )
 

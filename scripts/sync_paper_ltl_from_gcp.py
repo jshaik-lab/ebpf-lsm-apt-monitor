@@ -12,12 +12,13 @@ TEX = ROOT / "paper" / "main.tex"
 LTL = ROOT / "results" / "evaluations_gcp" / "ltl_fpr_real_gcp.json"
 
 OLD_BLOCK = re.compile(
-    r"On seven benign strace traces from.*?eval host\.",
+    r"On 55 benign strace traces from \\texttt\{data/input/real\\_traces\}.*?"
+    r"\\texttt\{ltl\\_fpr\\_real\\_gcp\.json\}\.",
     re.DOTALL,
 )
 
 OLD_XREF = re.compile(
-    r"the LTL FPR subset \(\\S\\ref\{sec:ltl\}, 0/\d+ benign windows on .*?\)",
+    r"the LTL FPR (?:result|subset) \(\\S\\ref\{sec:ltl\}, 0/\d+ benign windows[^)]*\)",
 )
 
 
@@ -26,8 +27,9 @@ def _ltl_body(j: dict) -> str:
     n_win = j["n_windows"]
     return (
         f"On {n_tr} benign strace traces from \\texttt{{data/input/real\\_traces}} "
-        f"present on the GCP VM at eval time, the Symbolic Guardian raises "
-        f"\\textbf{{zero violations}} across {n_win} sliding 20-event windows:\n"
+        f"captured on the GCP VM (full 105-trace corpus; \\S\\ref{{sec:eval_real}}), "
+        f"the Symbolic Guardian raises \\textbf{{zero violations}} across {n_win} "
+        f"sliding 20-event windows:\n"
         f"FPR\\,$=$\\,{j['fpr']:.3f}, bootstrap 95\\% CI\\,$=$\\,"
         f"[{j['fpr_ci_95'][0]:.3f}, {j['fpr_ci_95'][1]:.3f}]. JSON:\n"
         f"\\texttt{{ltl\\_fpr\\_real\\_gcp.json}}."
@@ -36,7 +38,7 @@ def _ltl_body(j: dict) -> str:
 
 def _ltl_xref(j: dict) -> str:
     return (
-        f"the LTL FPR subset (\\S\\ref{{sec:ltl}}, 0/{j['n_windows']} benign windows "
+        f"the LTL FPR result (\\S\\ref{{sec:ltl}}, 0/{j['n_windows']} benign windows "
         f"on {j['n_traces']} traces in \\texttt{{ltl\\_fpr\\_real\\_gcp.json}})"
     )
 

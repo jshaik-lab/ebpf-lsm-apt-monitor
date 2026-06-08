@@ -10,7 +10,7 @@
 ## Repository Structure
 
 ```
-Paper1_ZeroTrustAgent/
+ebpf-lsm-apt-monitor/
 ├── paper/
 │   ├── main.tex            ← Full IEEE two-column LaTeX paper (996 lines)
 │   └── bibliography.bib    ← BibTeX references (26 entries)

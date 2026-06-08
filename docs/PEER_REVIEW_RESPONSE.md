@@ -47,7 +47,7 @@
 **Regenerate on GCP:**
 ```bash
 ssh sentinel@34.74.43.57
-cd ~/Paper1_ZeroTrustAgent && git pull
+cd ~/ebpf-lsm-apt-monitor && git pull
 bash scripts/run_gcp_eval_chain.sh
 ```
 Then rsync `results/evaluations_gcp/` back to Mac for paper build only.

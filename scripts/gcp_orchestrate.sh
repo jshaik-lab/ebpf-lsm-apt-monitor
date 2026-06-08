@@ -144,13 +144,18 @@ ls -lh "$ROOT/results/evaluations_gcp/"*.json 2>/dev/null | tee -a "$ORCH_LOG" |
 gcp_ssh "ls ~/${GCP_REMOTE_DIR}/data/input/real_traces/*.log 2>/dev/null | wc -l" \
   | tee -a "$ORCH_LOG" || true
 
-log "=== Syncing paper LTL paragraph from GCP JSON ==="
-python3 "$ROOT/scripts/sync_paper_ltl_from_gcp.py" | tee -a "$ORCH_LOG" || true
-
 log "=== Validating paper ↔ GCP JSON sync ==="
+python3 "$ROOT/scripts/sync_paper_ltl_from_gcp.py" | tee -a "$ORCH_LOG" || true
 if ! python3 "$ROOT/scripts/validate_paper_claims.py" | tee -a "$ORCH_LOG"; then
   log "ERROR: validate_paper_claims.py failed — fix paper/main.tex or re-run eval before citing numbers"
   exit 1
 fi
 
-log "=== Done. Rebuild PDF: bash scripts/build_paper.sh ==="
+log "=== Building paper PDF ==="
+if bash "$ROOT/scripts/build_paper.sh" 2>&1 | tee -a "$ORCH_LOG"; then
+  log "PDF ready: paper/main.pdf"
+else
+  log "WARNING: paper build failed — see orchestrate.log"
+fi
+
+log "=== Done ==="

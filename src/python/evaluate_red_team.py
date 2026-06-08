@@ -27,13 +27,16 @@ Scenarios:
 
 All scenarios are MALICIOUS ground truth. Detection = label==MALICIOUS OR ltl_violations>0
 OR pcabp_score >= pcabp_threshold.
-Uses MockClassifier (no Ollama required). Replace with OllamaClassifier for paper numbers.
+
+Paper evals require Ollama (llama3.1:8b). MockClassifier is disabled.
 
 Run:
     PYTHONPATH=src/python python3 src/python/evaluate_red_team.py
+    PYTHONPATH=src/python python3 src/python/evaluate_red_team.py --out results/evaluations_gcp/red_team_results_gcp.json
 """
 from __future__ import annotations
 
+import argparse
 import asyncio
 import json
 import math
@@ -47,9 +50,10 @@ sys.path.insert(0, "src/python")
 from sentinel.agent import _HARD_TRIGGER_RESOURCES, _FLAGGED_PID_TTL_SECONDS
 from sentinel.enforcement import CWAEEngine, EnforcementTier
 from sentinel.ipg import IPGBuilder
-from sentinel.llm.mock import MockClassifier
+from sentinel.llm.ollama import OllamaClassifier
 from sentinel.ltl import SymbolicGuardian, RuntimeMonitor, BuchiMonitor
 from sentinel.models import KernelEvent, SyscallType
+from sentinel.provenance import get_ollama_fallback_count, make_meta, require_gcp_eval
 from sentinel.simulation import EVASION_SCENARIOS
 
 # PCABP imports — optional; gracefully degrade if weights not built yet.
@@ -242,12 +246,44 @@ async def evaluate_evasion(scenario, classifier, builder) -> dict:
 
 
 async def main() -> None:
-    classifier = MockClassifier(tier="draft")
-    builder    = IPGBuilder()
+    ap = argparse.ArgumentParser(description="SENTINEL red-team evasion evaluation (Ollama only)")
+    ap.add_argument(
+        "--out",
+        default=OUT_FILE,
+        help=f"Output JSON path (default: {OUT_FILE})",
+    )
+    ap.add_argument(
+        "--model",
+        default="llama3.1:8b",
+        help="Ollama model (default: llama3.1:8b)",
+    )
+    ap.add_argument(
+        "--ollama-url",
+        default="http://localhost:11434",
+        help="Ollama base URL",
+    )
+    args = ap.parse_args()
+
+    if "evaluations_gcp" in args.out:
+        require_gcp_eval("red-team evaluation (evaluations_gcp)")
+
+    classifier = OllamaClassifier(
+        base_url=args.ollama_url,
+        model=args.model,
+        timeout=120,
+        max_retries=2,
+    )
+    if not await classifier.health():
+        print(f"ERROR: Ollama model {args.model!r} not available at {args.ollama_url}")
+        print("  Start Ollama and run: ollama pull llama3.1:8b")
+        sys.exit(1)
+    classifier_name = f"OllamaClassifier ({args.model})"
+
+    builder = IPGBuilder()
 
     print(SEP)
     print("SENTINEL — Adversarial Red Team Evaluation (Section V-E)")
-    print(f"Classifier: MockClassifier (heuristic; replace with Ollama for paper)")
+    print(f"Classifier: {classifier_name} (mock disabled)")
     print(f"Scenarios: {len(EVASION_SCENARIOS)} evasion strategies (all MALICIOUS GT)")
     print(f"Detection layers: Hard-trigger | Parent-PID | Entropy+LLM | LTL Guardian | PCABP")
     print(f"PCABP threshold: {PCABP_THRESHOLD} | PCABP module: {'available' if _PCABP_AVAILABLE else 'heuristic fallback'}")
@@ -348,7 +384,10 @@ Interpretation:
         "n_ltl_only":     n_ltl_only,
         "n_pcabp_only":   n_pcabp_only,
         "detection_rate": round(n_detected / max(len(results), 1), 4),
-        "classifier":     "mock (heuristic)",
+        "classifier":     classifier_name,
+        "backend":        "ollama",
+        "model":          args.model,
+        "meta":           make_meta(),
         "ltl_guardian":   "SymbolicGuardian (RuntimeMonitor + BuchiMonitor)",
         "pcabp_threshold": PCABP_THRESHOLD,
         "pcabp_module":   "available" if _PCABP_AVAILABLE else "heuristic fallback",
@@ -366,10 +405,16 @@ Interpretation:
     }
 
     import pathlib
-    pathlib.Path(OUT_FILE).parent.mkdir(parents=True, exist_ok=True)
-    with open(OUT_FILE, "w") as f:
+    pathlib.Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    with open(args.out, "w") as f:
         json.dump(summary, f, indent=2)
-    print(f"Results → {OUT_FILE}")
+
+    fallbacks = get_ollama_fallback_count()
+    if fallbacks > 0:
+        print(f"ERROR: {fallbacks} Ollama→mock fallbacks detected; result invalid for paper.")
+        sys.exit(1)
+
+    print(f"Results → {args.out}  (ollama_fallback_to_mock_count=0)")
 
 
 if __name__ == "__main__":

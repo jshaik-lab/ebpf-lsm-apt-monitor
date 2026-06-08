@@ -73,6 +73,7 @@ def main() -> int:
         "entries":   entries,
         "integrity_rules": [
             "Every entry tagged for paper citation must have meta.ollama_fallback_to_mock_count == 0",
+            "Every entry must have meta.system != 'Darwin' (GCP VM only)",
             "Every entry must have meta.backend == 'ollama' OR be a non-LLM measurement",
             "meta.machine must equal 'x86_64' for VPS-platform attestation",
             "git_sha should match a tagged submission commit",
@@ -93,6 +94,10 @@ def main() -> int:
             flags.append(f"backend={meta['backend']}")
         elif meta.get("backend") == "unknown":
             flags.append("backend=unknown (non-LLM eval?)")
+        if meta.get("system") == "Darwin":
+            flags.append("MAC_HOST_REJECT")
+        if meta.get("platform") and "MacBook" in str(meta.get("platform")):
+            flags.append("MAC_PLATFORM_REJECT")
         if meta.get("ollama_fallback_to_mock_count", 0) > 0:
             flags.append(f"MOCK_FALLBACKS={meta['ollama_fallback_to_mock_count']}")
         if meta.get("machine") and meta["machine"] != "x86_64":

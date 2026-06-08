@@ -9,15 +9,18 @@ __pycache__/
 dist/
 build/
 
-# ── Results / logs (project-local output, not committed) ──────────────────────
-# Keep directory structure (.gitkeep), not the generated content
-results/logs/*.jsonl
+# ── Results / logs ────────────────────────────────────────────────────────────
+# Paper source of truth: results/evaluations_gcp/*_gcp.json (GCP VM only).
+# Never commit Mac/local staging outputs:
+results/evaluations/*.json
+results/evaluations/*.log
+results/evaluations/red_team_results*.json
+scripts/toctou/build/
+
+# Logs (generated content)
 results/logs/memdump_*.txt
 results/logs/*.log
-
-# Evaluation JSON results ARE committed (they document paper results)
-# If you want to exclude them too, uncomment:
-# results/evaluations/*.json
+results/logs/*.jsonl
 
 # ── Data / traces ─────────────────────────────────────────────────────────────
 # DARPA TC dataset (multi-GB; upload separately — see docs/REPRO.md)

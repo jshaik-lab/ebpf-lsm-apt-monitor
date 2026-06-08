@@ -58,14 +58,17 @@ help:
 	@echo "  eval-scenarios  Evaluate on 14 simulation scenarios"
 	@echo "  eval-tls        Measure TLS injection confidence lift"
 	@echo "  eval-baselines  Falco + N-gram LR vs SENTINEL comparison table"
-	@echo "  eval-red-team       Adversarial evasion evaluation (15 scenarios, mock LLM)
-  eval-red-team-full  Red team with Ollama llama3.1:8b (paper numbers)"
+	@echo "  eval-red-team       Adversarial evasion evaluation (15 scenarios, mock LLM)"
+	@echo "  eval-red-team-full  Red team with Ollama llama3.1:8b (paper numbers)"
+	@echo "  eval-toctou         TOCTOU symlink race micro-benchmark"
+	@echo "  eval-fpr-breakdown  False-positive breakdown on real_data_results.json"
+	@echo "  eval-entropy-sensitivity  Theta_low sweep on real traces"
 	@echo "  eval-calibration ECE + reliability diagram data"
 	@echo "  eval-tracee     Tracee (Aqua Security) baseline comparison"
 	@echo "  eval-ipg-tokens IPG token reduction vs raw strace (tiktoken; n=6 real traces)"
-	@echo "  eval-adfa-ld        ADFA-LD syscall traces evaluation (needs --dataset path)
-  eval-synthetic      Synthetic multi-host corpus generation + eval (no external data)
-  eval-darpa-tc       DARPA TC E3 CADETS evaluation (100 windows, needs Ollama + SSD)"
+	@echo "  eval-adfa-ld    ADFA-LD syscall traces evaluation (needs --dataset path)"
+	@echo "  eval-synthetic  Synthetic multi-host corpus generation + eval"
+	@echo "  eval-darpa-tc   DARPA TC E3 CADETS evaluation (100 windows, needs Ollama + SSD)"
 	@echo "  eval-darpa-tc-full  Full 400-window DARPA TC evaluation for paper submission"
 	@echo "  eval-all        Run all evaluations except eval-real (no Ollama needed)"
 	@echo "  benchmark-overhead  CPU/memory/latency overhead measurements"
@@ -200,13 +203,21 @@ eval-baselines: dirs
 	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_baselines.py
 
 eval-red-team: dirs
-	@echo "Adversarial red team evaluation (15 scenarios, mock LLM) → $(EVAL_DIR)/red_team_results.json"
-	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_red_team.py
+	@echo "Adversarial red team evaluation (Ollama llama3.1:8b) → $(EVAL_DIR)/red_team_results.json"
+	@echo "Requires: Ollama running with llama3.1:8b (mock disabled)"
+	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_red_team.py --out $(EVAL_DIR)/red_team_results.json
 
-eval-red-team-full: dirs
-	@echo "Adversarial red team evaluation (Ollama llama3.1:8b) → $(EVAL_DIR)/red_team_results_ollama.json"
-	@echo "Requires: Ollama running with llama3.1:8b"
-	PYTHONPATH=$(SRC) $(PYTHON) $(SRC)/evaluate_red_team.py --ollama --out $(EVAL_DIR)/red_team_results_ollama.json
+eval-red-team-full: eval-red-team
+	@cp $(EVAL_DIR)/red_team_results.json $(EVAL_DIR)/red_team_results_ollama.json 2>/dev/null || true
+
+eval-toctou: dirs
+	@echo "ERROR: run on GCP VM only: bash scripts/run_gcp_eval_chain.sh" && exit 1
+
+eval-fpr-breakdown: dirs
+	@echo "ERROR: run on GCP VM only: bash scripts/run_gcp_eval_chain.sh" && exit 1
+
+eval-entropy-sensitivity: dirs
+	@echo "ERROR: run on GCP VM only: bash scripts/run_gcp_eval_chain.sh" && exit 1
 
 eval-adfa-ld: dirs
 	@echo "ADFA-LD evaluation → $(EVAL_DIR)/adfa_ld_results.json"

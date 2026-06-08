@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import time
 from typing import Any, Dict, List
 
@@ -185,7 +186,16 @@ class OllamaClassifier(BaseClassifier):
                 if attempt < self._retries - 1:
                     await asyncio.sleep(wait)
 
-        logger.error("ollama_fallback_to_mock", model=self._model, attempts=self._retries)
+        logger.error("ollama_classify_failed", model=self._model, attempts=self._retries)
+        allow_mock = os.environ.get("SENTINEL__LLM__ALLOW_MOCK_FALLBACK", "").lower() in (
+            "1", "true", "yes",
+        )
+        if not allow_mock:
+            raise RuntimeError(
+                f"Ollama classify failed after {self._retries} attempts "
+                f"(model={self._model}); mock fallback is disabled for paper evals. "
+                "Set SENTINEL__LLM__ALLOW_MOCK_FALLBACK=1 only for local dev."
+            )
         from sentinel.llm.mock import MockClassifier
         from sentinel.provenance import record_ollama_fallback
         record_ollama_fallback()

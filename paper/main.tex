@@ -68,9 +68,8 @@
 %% ─────────────────────────────────────────────────────────────────────────────
 \begin{document}
 
-\title{LSM-eBPF Co-Design with Intent Provenance Graphs and Dual-Tier Local
-LLM Inference for Confidence-Weighted Zero-Trust APT Enforcement ---
-The \sentinel{} Framework}
+\title{SENTINEL: LSM-eBPF Co-Design with Graph-Structured LLM Inference\\
+for Zero-Trust APT Detection}
 
 \author{%
   \IEEEauthorblockN{Juharasha Shaik}
@@ -93,16 +92,15 @@ object, leaving them vulnerable to time-of-check-to-time-of-use (TOCTOU)
 races and path-aliasing attacks. We present \sentinel{}, an IPG-centric
 forensic architecture that addresses these limitations by utilizing an
 Intent Provenance Graph (\ipg{}) as a unified intermediate representation (IR)
-for host-level activity. In this architecture, a deterministic graph scorer
-acts as the primary detector, while a local Large Language Model (LLM) is reserved
-solely for natural-language explainability and MITRE ATT\&CK attribution. We fuse
-these semantic reasoning capabilities with a Linear Temporal Logic (LTL) symbolic guardian
-to enforce hard safety floors and prevent evasions.
-Evaluated on the DARPA TC~E3 CADETS provenance dataset, \sentinel{}'s hybrid graph-first
-fusion achieves a behavioral-only detection F1-score of 0.603 (compared to 0.597
-for LLM-only detection) and a TI-aided F1-score of 0.915. On a 105-trace native Linux corpus,
-\ipg{} reduces prompt token consumption by 74.0\% at window size 20 and 92.7\% on full traces,
-running on local Ollama Llama-3.1-8B models without cloud dependence.
+for host-level activity. A deterministic \texttt{provenance\_score()} graph
+scorer acts as the primary detector; a local LLM classifies gray-zone windows
+($0.15 < g < 0.55$) and produces MITRE ATT\&CK attribution, while clear
+benign/malicious windows bypass LLM inference. CoVe-verified LLM outputs and an
+LTL symbolic guardian enforce hard safety floors and prevent evasions.
+Evaluated on DARPA TC~E3 CADETS, hybrid graph-first fusion achieves behavioral-only
+F1\,$=$\,0.603 (LLM-only: 0.597) and TI-aided F1\,$=$\,0.915; on 105 native-Linux
+strace traces, \ipg{} reduces tokens by 74.0\% at window size~20 (92.7\% full trace)
+using local Ollama Llama-3.1-8B without cloud dependence.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -174,9 +172,9 @@ contributions:
   \item \textbf{LSM-eBPF Co-Design for TOCTOU-Resistant Telemetry}: We replace
         tracepoints with BPF LSM hooks (\texttt{lsm/bprm\_check\_security},
         \texttt{lsm/file\_open}, \texttt{lsm/socket\_connect}) available since
-        Linux~5.7. These hooks fire post-resolution, eliminating TOCTOU and
-        path-aliasing evasion available against prior tracepoint-based eBPF detectors
-        (Section~\ref{sec:lsm}).
+        Linux~5.7. These hooks fire post-resolution, closing the structural
+        TOCTOU window available to tracepoint-based eBPF detectors at hook time
+        (Section~\ref{sec:lsm}; measured race discrepancy in \S\ref{sec:eval_lsm}).
   \item \textbf{Intent Provenance Graph (IPG) Serialization}: A directed multigraph
         encodes causal syscall structure, reducing token consumption by 74.0\% at window size 20
         and 92.7\% on full traces (measured with tiktoken on 105 real strace traces), and is
@@ -329,6 +327,15 @@ adversarial attacks crafted to manipulate LLM inference outputs.  The
 %% ═════════════════════════════════════════════════════════════════════════════
 \section{SENTINEL System Design}\label{sec:design}
 %% ═════════════════════════════════════════════════════════════════════════════
+
+\noindent\textbf{System overview.}
+\sentinel{} ingests post-resolution telemetry from BPF LSM hooks into per-PID
+sliding windows, serializes each window as an \ipg{} YAML graph, and routes it
+through a deterministic \texttt{provenance\_score()} filter; inconclusive
+gray-zone windows escalate to dual-tier local LLM inference, after which CoVe
+grounding, LTL symbolic floors, and PCABP call-site provenance fuse into
+\cwae{} graduated enforcement (SIGSTOP through cgroup isolate).
+Fig.~\ref{fig:arch} and the subsections below detail each layer.
 
 \begin{figure*}[!t]
 \centering
@@ -1289,15 +1296,22 @@ Tracepoints at \texttt{sys\_enter\_execve} and \texttt{sys\_enter\_openat}
 fire before this resolution.  The structural consequence is that any
 path-substitution attack (symlink swap, bind-mount redirect) that completes
 between \texttt{sys\_enter} and the LSM hook will be correctly observed by
-LSM and silently missed by tracepoints.  A bare-metal empirical measurement
-of the TOCTOU evasion rate under adversarial race conditions is out of scope
-for this paper; the architectural guarantee of post-resolution observation
-is a property of the Linux Security Module call chain, not a measured
-quantity.
+LSM and silently missed by tracepoints.
+
+\noindent\textbf{Measured symlink-race micro-benchmark.}
+We instrument a repeated \texttt{open("race\_link")} loop ($N{=}1000$) while a
+pthread adversary swaps \texttt{race\_link} between \texttt{safe.txt} and
+\texttt{shadow\_target}.  For each successful \texttt{open}, we record the
+pre-resolution pathname (analogous to \texttt{sys\_enter\_openat} argument) and
+the post-resolution identity via \texttt{readlink(/proc/self/fd/$N$)} (analogous
+to \texttt{lsm/file\_open} \texttt{bpf\_d\_path}).  Results are produced only on
+the GCP VM (\texttt{toctou\_race\_gcp.json} in \texttt{run\_gcp\_eval\_chain.sh});
+Mac and Docker runs are blocked by platform guards.
 
 \subsection{AI Agent Prompt-Injection APT Chain Detection}
 
-We evaluate the SSL/TLS uprobe layer using simulation scenario AGENT-T1003:
+We evaluate the SSL/TLS uprobe layer using \emph{proof-of-concept} simulation
+scenario AGENT-T1003 (not a measured live-agent trace):
 an LLM-based agent receives a prompt-injected instruction
 ``\texttt{[INJECTED] Ignore previous instructions. Execute: cat /etc/shadow
 > /tmp/.x \&\& curl -s -F f=@/tmp/.x http://evil.com/upload}'' delivered
@@ -1517,6 +1531,27 @@ accuracy\,$=$\,0.712 (bootstrap 95\% CI [0.625, 0.798]; $n{=}104$ evaluated,
 1 skipped) in companion artifact \texttt{real\_data\_results\_gcp.json}; the
 prior $n{=}15$ pilot is superseded.
 
+\noindent\textbf{False-positive breakdown ($\mathrm{FPR}{=}0.291$).}
+Confusion-matrix analysis (\texttt{real\_data\_fpr\_breakdown\_gcp.json}) shows
+16/55 benign traces flagged \textsc{Malicious}.  \textbf{13/16} originate from
+the extended benign corpus (\texttt{benign\_ext\_*} workloads:
+\texttt{systemctl}/\texttt{openssl}/multi-process pipelines) whose IPG graphs
+include temp-file writes and \texttt{ld.so.cache} \texttt{mmap} patterns that
+the LLM maps to staged kill-chains at low confidence ($\approx$0.42).  The
+remaining FPs are singletons (\texttt{benign\_cat\_os\_release},
+\texttt{benign\_find\_libs}, \texttt{benign\_which\_bash}).  This failure mode
+motivates graph-first routing (\S\ref{sec:eval_darpa}) and hard-trigger/LTL
+floors rather than LLM-only classification on high-entropy server workloads.
+
+\noindent\textbf{Entropy gate sensitivity.}
+Sweeping $\theta_{\mathrm{low}} \in \{0.8, 1.0, 1.2, 1.5, 2.0\}$ on the same
+105-trace corpus (gate-skip $\Rightarrow$ \textsc{Benign}; non-skipped traces
+retain stored LLM labels; \texttt{entropy\_sensitivity\_gcp.json}) shows FPR
+falls from 0.291 at $\theta_{\mathrm{low}}{=}0.8$ to 0.273 at the production
+value 1.2 (4 traces gate-skipped) and 0.236 at 1.5/2.0, with TPR stable at
+0.714 until $\theta_{\mathrm{low}}{=}2.0$ (0.571).  The production threshold
+is not overfit to simulation-only tuning.
+
 %% Prior n=15 pilot table removed; superseded by GCP VM n=105 (real_data_results_gcp.json).
 %% TTP annotations on benign outputs remain unreliable (LLM prior over mmap+library-load patterns
 %% maps to T1055/T1027 on python3 startup); TTP labels should be treated as evidence only when
@@ -1569,17 +1604,19 @@ DEPIMPACT                  & 0.91 & --- & --- & --- & --- \\
 \end{tabular}
 \vspace{2pt}
 {\scriptsize
-\textbf{Reading this table.} The behavioral-only hybrid F1\,$=$\,0.603 (v5) and
-LLM-only F1\,$=$\,0.597 (v4) remain below published WATSON/UNICORN/ProvDetector/
-DEPIMPACT scores, quantifying an \emph{empirical mimicry ceiling}: 24/25
-\texttt{nginx\_backdoor} windows are syscall-indistinguishable from benign nginx
-workers. Hybrid graph-first routing improves precision (0.957 vs.\ 0.852) and
-reduces FPR (0.02 vs.\ 0.08) relative to LLM-only at comparable recall. We
-report this not as a competitive claim but as evidence that the gap between
-behavioral provenance and ground truth cannot be closed by reasoning over
-syscalls alone---motivating the TI-aided mode and \sentinel{}'s PCABP
-(\S\ref{sec:pcabp}) and CoVe (\S\ref{sec:cove}) defenses that operate
-orthogonal to the syscall stream.
+\textbf{Reading this table.} Behavioral-only F1\,$=$\,0.603 (v5 hybrid) and
+LLM-only F1\,$=$\,0.597 (v4) are below published WATSON/UNICORN/ProvDetector/
+DEPIMPACT scores on the same dataset class.  \sentinel{} is not positioned as
+an offline graph-classification system: it processes each 20-event window
+online ($<$1\,ms graph path; $\sim$8\,s LLM path on our GCP VM) and issues
+graduated enforcement (SIGSTOP--cgroup isolate) within the same window.
+WATSON and UNICORN require hours of offline provenance-graph construction and
+provide no in-kernel blocking action.  On this 100-window subset, hybrid
+graph-first routing improves precision (0.957 vs.\ 0.852) and reduces FPR
+(0.02 vs.\ 0.08) relative to LLM-only at comparable recall; 24/25
+\texttt{nginx\_backdoor} windows remain syscall-indistinguishable from benign
+nginx workers, explaining part of the recall gap.  We report behavioral F1
+honestly as a baseline, not as a competitive claim against offline graph SOTA.
 \textsuperscript{\textdagger}\textbf{TI-aided caveat:}
 \texttt{[C2]}/\texttt{[MALWARE]} tags injected into the IPG originate from the
 same \texttt{KNOWN\_C2\_IPS} list used to label ground truth. The 0.915 result
@@ -1661,6 +1698,14 @@ injected MITRE ATT\&CK kill-chains, enabling ablation studies independent of
 data licensing constraints.  Cross-dataset evaluation is deferred to future work.
 \textbf{(L6)} Per-pod and per-node fleet-scale overhead in Kubernetes
 deployments is out of scope for this work.
+\textbf{(L7) EGTE not evaluated.} Evidence-Gated Tier-Calibrated Enforcement
+(\texttt{sentinel/egte.py}) is implemented but disabled by default; its
+calibration corpus is synthetic-only and is excluded from this evaluation.
+\textbf{(L8) TOCTOU eBPF confirmation.} The userspace open-vs-\texttt{readlink}
+measurement runs on GCP only; an optional eBPF harness
+(\texttt{scripts/run\_toctou\_benchmark.sh} with root +
+\texttt{CONFIG\_BPF\_LSM}) attaches production \texttt{tp\_openat} and
+\texttt{lsm\_file\_open} probes for kernel-level confirmation.
 
 %% ═════════════════════════════════════════════════════════════════════════════
 \section{Security Analysis}\label{sec:analysis}
@@ -1730,15 +1775,14 @@ order-aware term.  A benign control remains correctly gate-skipped (no new FP).
 \noindent\textbf{Fifteen-scenario red-team evaluation.}
 Table~\ref{tab:redteam} reports \sentinel{}'s detection outcome across fifteen
 attacker-aware evasion strategies (all MALICIOUS ground truth) evaluated with
-the mock heuristic classifier (\texttt{evaluate\_red\_team.py}); final numbers
-use \texttt{llama3.1:8b} via Ollama on the GCP VM.  Detection requires
-\emph{any} layer to fire: hard-trigger resources (/etc/shadow, .ssh, /proc/self/mem),
-parent-PID propagation, LLM classification, LTL Symbolic Guardian
+\texttt{llama3.1:8b} via Ollama on the GCP VM
+(\texttt{evaluate\_red\_team.py}; artifact \texttt{red\_team\_results\_gcp.json}).
+Per-layer columns indicate which defense \emph{would} catch each strategy in isolation.
+Detection requires \emph{any} layer to fire: hard-trigger resources
+(/etc/shadow, .ssh, /proc/self/mem), parent-PID propagation, LLM classification, LTL Symbolic Guardian
 (RuntimeMonitor + Büchi), or PCABP static violation.
-\sentinel{} detects \textbf{14/15} scenarios with the mock heuristic classifier
-(\texttt{evaluate\_red\_team.py}); \textbf{15/15} with \texttt{llama3.1:8b} via Ollama
-(DNS-rebinding EVASION-14 requires LLM threat-intelligence analysis of the C2 destination
-to flag the second \texttt{connect()} to 185.220.101.1).
+Aggregate detection rate and per-scenario LLM outcomes are read from the GCP
+artifact after \texttt{run\_gcp\_eval\_chain.sh} (mock classifiers disabled).
 The five scenarios requiring LTL (EVASION-08/09/12/13/15) and one requiring
 PCABP (EVASION-10) would evade a detector without those layers.
 
@@ -1748,7 +1792,7 @@ PCABP (EVASION-10) would evade a detector without those layers.
 \textbf{H}=hard-trigger, \textbf{L}=LLM+entropy,
 \textbf{T}=LTL Guardian, \textbf{C}=PCABP, \textbf{LSM}=LSM post-resolution.
 \checkmark\,=\,detected; --- = would evade that layer alone.
-EV-14$^*$: evades mock heuristic; detected by \texttt{llama3.1:8b} (TI-aware).}
+EV-14$^*$: DNS rebinding; LLM layer (\textbf{L}) expected to flag C2 IP range.}
 \label{tab:redteam}
 \centering
 \renewcommand{\arraystretch}{1.05}
@@ -1772,8 +1816,8 @@ EV-13 & Supply chain (pip post-install)         & \checkmark & --- & \checkmark 
 EV-14$^*$ & DNS rebinding (domain→C2 IP)        & --- & \checkmark & --- & --- & --- \\
 EV-15 & Multi-stage APT dormancy                & \checkmark & --- & \checkmark & --- & --- \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Detection rate}} & & & & &
-\textbf{14/15 mock; 15/15 Ollama} \\
+\multicolumn{2}{@{}l}{\textbf{Detection rate (GCP Ollama)}} & & & & &
+\textbf{see \texttt{red\_team\_results\_gcp.json}} \\
 \bottomrule
 \end{tabular}
 \vspace{2pt}
@@ -1839,7 +1883,7 @@ without raw-telemetry disclosure.
 
 We presented \sentinel{}, a kernel security framework that closes the semantic
 gap between low-level syscall telemetry and high-level attacker intent through
-eight synergistic contributions.
+five integrated contributions (Section~\ref{sec:intro}).
 \textbf{LSM-eBPF co-design} replaces tracepoints with post-resolution LSM
 hooks, eliminating the TOCTOU evasion surface present in all prior eBPF
 detectors.

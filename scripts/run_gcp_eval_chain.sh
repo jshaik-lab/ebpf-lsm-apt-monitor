@@ -31,6 +31,13 @@ export SENTINEL__LLM__DRAFT_MODEL=llama3.2:1b
 export SENTINEL__LLM__TIMEOUT_SECONDS=300
 export SENTINEL_EVAL_PLATFORM="GCP g2-standard-4 NVIDIA L4 Ubuntu $(uname -r)"
 export SENTINEL_GIT_SHA="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+export SENTINEL_REQUIRE_GCP=1
+
+# Hard block if accidentally invoked from Mac (e.g. synced script run locally).
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  echo "ERROR: run_gcp_eval_chain.sh must run on GCP sentinel-gpu-vm, not Mac." >&2
+  exit 1
+fi
 
 OUT=results/evaluations_gcp
 DARPA="${DARPA_PATH:-data/darpa/ta1-cadets-e3-official.json.2}"
@@ -71,6 +78,10 @@ run "pcabp-real-nginx" \
       PCABP_CSM_PATH="src/python/sentinel/pcabp/nginx_callsites_x86_64_gcp.pkl" \
   python3 scripts/pcabp_real_nginx.py
 
+# ── Phase 1b: TOCTOU micro-benchmark (non-LLM) ───────────────────────────────
+run "toctou-race-benchmark" \
+  bash scripts/run_toctou_benchmark.sh --userspace 1000 "$OUT/toctou_race_gcp.json"
+
 # ── Phase 2: LLM evaluations ─────────────────────────────────────────────────
 run "eval-scenarios (14 MITRE)" \
   python3 src/python/measure_scenarios.py
@@ -86,6 +97,21 @@ run "capture-real-traces" \
 run "eval-real (≥50 benign + ≥50 attack)" \
   python3 src/python/evaluate_real_data.py
 meta results/evaluations/real_data_results.json "$OUT/real_data_results_gcp.json"
+
+run "real-data-fpr-breakdown" \
+  python3 scripts/analyze_real_data_fpr.py \
+    "$OUT/real_data_results_gcp.json" \
+    --out "$OUT/real_data_fpr_breakdown_gcp.json"
+
+run "entropy-threshold-sensitivity" \
+  python3 scripts/entropy_threshold_sensitivity.py \
+    --traces data/input/real_traces \
+    --labels "$OUT/real_data_results_gcp.json" \
+    --out "$OUT/entropy_sensitivity_gcp.json"
+
+run "red-team-ollama (15 evasion scenarios)" \
+  python3 src/python/evaluate_red_team.py \
+    --out "$OUT/red_team_results_gcp.json"
 
 run "eval-calibration (ECE)" \
   python3 src/python/measure_calibration.py

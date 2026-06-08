@@ -10,6 +10,7 @@ import os
 import platform
 import socket
 import subprocess
+import sys
 import time
 from typing import Any
 
@@ -23,6 +24,43 @@ def record_ollama_fallback() -> None:
 
 def get_ollama_fallback_count() -> int:
     return _FALLBACK_COUNT
+
+
+def is_gcp_eval_host() -> bool:
+    """True only on the GCP evaluation VM (never on Mac)."""
+    if platform.system() == "Darwin":
+        return False
+    plat = os.environ.get("SENTINEL_EVAL_PLATFORM", "")
+    if "GCP" in plat.upper():
+        return True
+    host = socket.gethostname().lower()
+    if "sentinel-gpu" in host:
+        return True
+    try:
+        import urllib.request
+        req = urllib.request.Request(
+            "http://metadata.google.internal/computeMetadata/v1/instance/name",
+            headers={"Metadata-Flavor": "Google"},
+        )
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            name = resp.read().decode().strip().lower()
+            if "sentinel" in name or "gcp" in name:
+                return True
+    except Exception:
+        pass
+    return False
+
+
+def require_gcp_eval(context: str = "paper-grade evaluation") -> None:
+    """Abort if not running on GCP (blocks Mac/Docker/local Linux reruns)."""
+    if is_gcp_eval_host():
+        return
+    sys.exit(
+        f"ERROR: {context} must run on GCP sentinel-gpu-vm only.\n"
+        "  Mac is for code edits and `make test` only.\n"
+        "  SSH to the VM and run: bash scripts/run_gcp_eval_chain.sh\n"
+        f"  (hostname={socket.gethostname()}, platform={platform.system()})"
+    )
 
 
 def _git_sha() -> str:

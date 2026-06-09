@@ -56,4 +56,5 @@ paper/*.pdf
 
 # ── IDE / local tooling ───────────────────────────────────────────────────────
 .cursor/
+.claude/
 .sentinel_deploy_meta

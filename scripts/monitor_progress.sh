@@ -3,10 +3,18 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck disable=SC1091
+source "$ROOT/scripts/gcp_env.sh"
+
 LOG="$ROOT/results/evaluations/progress_monitor.log"
 INTERVAL="${1:-120}"
-KEY="${IONOS_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
-VPS="${GCP_HOST:-sentinel@<GCP-VM-IP>}"
+KEY="${GCP_SSH_KEY}"
+VPS="${GCP_HOST}"
+
+if [[ -z "${GCP_VM_IP:-}" ]]; then
+  echo "ERROR: GCP_VM_IP not set. Add it to ~/.config/sentinel/gcp.env" >&2
+  exit 1
+fi
 DARPA_SRC="/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2"
 DARPA_SIZE=$(stat -f%z "$DARPA_SRC" 2>/dev/null || stat -c%s "$DARPA_SRC" 2>/dev/null || echo 0)
 

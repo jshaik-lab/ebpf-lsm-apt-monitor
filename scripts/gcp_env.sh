@@ -10,8 +10,19 @@ GCP_SSH_KEY="${GCP_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
 GCP_REMOTE_DIR="${GCP_REMOTE_DIR:-ebpf-lsm-apt-monitor}"
 GCP_SSH_OPTS="${GCP_SSH_OPTS:--o StrictHostKeyChecking=no -o ConnectTimeout=15 -o ServerAliveInterval=30}"
 
-# Load user overrides
+# IPs are NOT stored in git — load from ~/.config/sentinel/gcp.env
+# GCP IP changes each time the VM restarts — get it with:
+#   gcloud compute instances describe sentinel-gpu-vm --zone=us-east1-c \
+#     --format='get(networkInterfaces[0].accessConfigs[0].natIP)'
+GCP_VM_IP="${GCP_VM_IP:-}"
+IONOS_VPS_IP="${IONOS_VPS_IP:-}"
+
+# Load user overrides first so IPs are available for derived variables below
 if [[ -f "$HOME/.config/sentinel/gcp.env" ]]; then
   # shellcheck disable=SC1091
   source "$HOME/.config/sentinel/gcp.env"
 fi
+
+# Derived convenience variables (built after overrides are loaded)
+GCP_HOST="${GCP_HOST:-${GCP_SSH_USER}@${GCP_VM_IP}}"
+IONOS_HOST="${IONOS_HOST:-root@${IONOS_VPS_IP}}"

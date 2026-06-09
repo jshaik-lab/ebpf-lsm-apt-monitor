@@ -1,0 +1,16 @@
+# Copy this file to ~/.config/sentinel/gcp.env and fill in your values.
+# This file is NEVER committed to git — IPs stay local only.
+#
+# Get current GCP VM IP after starting it:
+#   gcloud compute instances describe sentinel-gpu-vm --zone=us-east1-c \
+#     --format='get(networkInterfaces[0].accessConfigs[0].natIP)'
+
+GCP_VM_IP=<your-gcp-vm-ip>
+IONOS_VPS_IP=<your-ionos-vps-ip>
+
+# Optional overrides (defaults come from scripts/gcp_env.sh):
+# GCP_PROJECT=your-project-id
+# GCP_ZONE=us-east1-c
+# GCP_INSTANCE=sentinel-gpu-vm
+# GCP_SSH_USER=sentinel
+# GCP_SSH_KEY=~/.ssh/id_ed25519_sentinel

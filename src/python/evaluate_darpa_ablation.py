@@ -134,7 +134,7 @@ async def main() -> None:
     cached_results = None
     for cache_path in [
         Path("/home/sentinel/ebpf-lsm-apt-monitor/results/evaluations/darpa_tc_behavioral_v4_test_n100.json"),
-        Path("/Users/jshaik/projects/EB1A/IEEETechnicalPapers/ebpf-lsm-apt-monitor/results/evaluations_gcp/darpa_tc_behavioral_v5_gcp.json"),
+        Path("results/evaluations_gcp/darpa_tc_behavioral_v5_gcp.json"),
         Path("results/evaluations/darpa_tc_behavioral_v4_test_n100.json")
     ]:
         if cache_path.exists():

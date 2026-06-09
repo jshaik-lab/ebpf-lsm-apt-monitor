@@ -1,6 +1,6 @@
 # Action Plan: Paper 1 (SENTINEL — IEEE TIFS)
 
-**Path:** `/Users/jshaik/projects/EB1A/IEEETechnicalPapers/ebpf-lsm-apt-monitor`  
+**Repo:** https://github.com/jshaik-lab/ebpf-lsm-apt-monitor  
 **Status:** GCP evaluation complete (2026-06-08). Paper synced to measured JSONs.
 
 ---

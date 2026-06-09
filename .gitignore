@@ -15,6 +15,7 @@ build/
 results/evaluations/*.json
 results/evaluations/*.log
 results/evaluations/red_team_results*.json
+results/evaluations_gcp/*.log
 scripts/toctou/build/
 
 # Logs (generated content)

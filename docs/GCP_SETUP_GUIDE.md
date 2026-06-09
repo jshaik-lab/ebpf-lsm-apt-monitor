@@ -29,7 +29,7 @@ To stay within the $20.00/month budget, the compute resources (vCPU, RAM, GPU) m
 ### Connection Details
 *   **Target IP**: `35.196.1.103` (ephemeral — refresh after each `gcloud compute instances start`)
 *   **SSH User**: `sentinel`
-*   **Local Private Key**: `/Users/jshaik/.ssh/id_ed25519_sentinel`
+*   **Local Private Key**: `~/.ssh/id_ed25519_sentinel`
 
 ### How to SSH from your local Mac terminal:
 ```bash

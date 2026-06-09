@@ -1,5 +1,7 @@
 # SENTINEL — IEEE Paper & Implementation
 
+> **Submission notice**: This work has been submitted to IEEE Transactions on Information Forensics and Security for possible publication. Copyright may be transferred without notice.
+
 **Full title**:
 > Autonomous Kernel Observability: Integrating eBPF-Driven System Call Sequencing with Local Large Language Models for Intent-Based Zero Trust Enforcement — The SENTINEL Framework
 

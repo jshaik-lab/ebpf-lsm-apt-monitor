@@ -53,3 +53,7 @@ paper/*.pdf
 .DS_Store
 .DS_Store?
 ._*
+
+# ── IDE / local tooling ───────────────────────────────────────────────────────
+.cursor/
+.sentinel_deploy_meta

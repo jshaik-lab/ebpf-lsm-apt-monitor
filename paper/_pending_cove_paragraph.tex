@@ -1,0 +1,23 @@
+%% Pending CoVe ablation paragraph — drop into §V-H (DARPA section) once
+%% darpa_tc_v8_ti_aided_ionos.json contains cove_ablation_summary block.
+%% Replace each {{...}} placeholder with the value from the JSON.
+
+\noindent\textbf{CoVe ablation.}
+On the {{n_paired}} TI-aided DARPA windows, paired evaluation with and without
+the CoVe verification loop (\S\ref{sec:cove}) shows that CoVe corrects
+{{raw_wrong_cove_correct}} windows that the raw LLM mis-classified and
+downgrades {{raw_correct_cove_wrong}} windows that the raw LLM got right; an
+exact two-sided McNemar's test gives $p\,=\,{{mcnemar_pvalue}}$.
+With CoVe enabled the system achieves
+F1\,$=$\,{{cove_f1}} (95\% CI [{{cove_f1_lo}}, {{cove_f1_hi}}]) vs.\
+F1\,$=$\,{{raw_f1}} without. The mean per-window hallucination rate ---
+defined as the fraction of LLM evidence references that fail to match any
+\texttt{event\_id} in the IPG window --- is {{mean_hallucination_rate}};
+across all windows, {{total_verified_claims}} claims were grounded against
+real \texttt{event\_id}s and {{total_retracted_claims}} were retracted as
+unverifiable. The retracted set is the operationally-relevant measure of
+SENTINEL's anti-hallucination contribution: every enforcement action under
+the CoVe-on configuration is backed by at least one verified
+\texttt{KernelEvent.event\_id}.
+JSON: \texttt{darpa\_tc\_v8\_ti\_aided\_ionos.json}, key
+\texttt{cove\_ablation\_summary}.

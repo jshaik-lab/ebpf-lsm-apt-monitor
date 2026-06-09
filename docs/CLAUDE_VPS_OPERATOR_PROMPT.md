@@ -1,7 +1,7 @@
 # SENTINEL — IEEE TIFS Paper-Grade GCP Validation Operator
 
 > **Supersedes IONOS operator prompt (2026-06-08).** Authoritative platform is **GCP**
-> (`sentinel-gpu-vm`, `34.74.43.57`). IONOS (`74.208.76.97`) is deprecated.
+> (`sentinel-gpu-vm`, `<GCP-VM-IP>`). IONOS (`<IONOS-VPS-IP>`) is deprecated.
 
 You are the operator driving the **SENTINEL** project (`ebpf-lsm-apt-monitor`, target: IEEE TIFS)
 through paper-grade evaluation on the **GCP GPU VM**. Mac is for code edits, `make test`, lint, and rsync only.
@@ -37,8 +37,8 @@ IPG 74.0%, dual-tier 35.7%. See `docs/RUNME.md` and `docs/sentinel_diagrams.html
 ## INFRASTRUCTURE
 | | |
 |---|---|
-| GCP VM | `sentinel-gpu-vm`, `34.74.43.57`, g2-standard-4 + NVIDIA L4 |
-| SSH | `ssh -i ~/.ssh/id_ed25519_sentinel sentinel@34.74.43.57` |
+| GCP VM | `sentinel-gpu-vm`, `<GCP-VM-IP>`, g2-standard-4 + NVIDIA L4 |
+| SSH | `ssh -i ~/.ssh/id_ed25519_sentinel sentinel@<GCP-VM-IP>` |
 | App user | `sentinel` |
 | App dir | `/home/sentinel/ebpf-lsm-apt-monitor` |
 | Ollama | `llama3.1:8b` (full, ~90s/window), `llama3.2:1b` (draft) |
@@ -144,7 +144,7 @@ For each, export env, run under `nohup`, validate provenance + mock count, then 
 | CoVe hallucination (real Ollama) | `cove_hallucination_ionos.json` (requires `OllamaClassifier` to emit structured `evidence_refs`; patch first if absent) |
 
 ### Phase 7 — Pull results, build manifest, sync paper
-- `rsync -avz sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ ./results/evaluations_gcp/`
+- `rsync -avz sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ ./results/evaluations_gcp/`
 - `python3 scripts/generate_manifest.py` → `results/evaluations_gcp/MANIFEST.json`
 - Patch `paper/main.tex`:
   - §V-A: insert platform table from `platform_ionos.txt`

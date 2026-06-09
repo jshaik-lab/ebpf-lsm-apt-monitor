@@ -46,7 +46,7 @@
 
 **Regenerate on GCP:**
 ```bash
-ssh sentinel@34.74.43.57
+ssh sentinel@<GCP-VM-IP>
 cd ~/ebpf-lsm-apt-monitor && git pull
 bash scripts/run_gcp_eval_chain.sh
 ```

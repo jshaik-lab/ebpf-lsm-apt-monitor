@@ -31,7 +31,7 @@
 |------|--------|
 | Instance | `sentinel-gpu-vm` |
 | Zone | `us-east1-c` |
-| IP | `35.196.1.103` |
+| IP | `<GCP-VM-IP>` |
 | SSH user | `sentinel` |
 | SSH key | `~/.ssh/id_ed25519_sentinel` |
 | Machine | g2-standard-4 + NVIDIA L4 24 GB |
@@ -43,7 +43,7 @@
 gcloud compute instances start sentinel-gpu-vm --zone=us-east1-c
 
 # SSH
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@<GCP-VM-IP>
 
 # Stop VM (save compute cost — disk billing continues ~$10/mo)
 gcloud compute instances stop sentinel-gpu-vm --zone=us-east1-c
@@ -78,7 +78,7 @@ Deploy code to GCP:
 
 ```bash
 rsync -avz --exclude .venv --exclude results --exclude .git \
-  ./ sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/
+  ./ sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/
 ```
 
 ### One-command automated pipeline (Mac → GCP → Mac)
@@ -133,7 +133,7 @@ Progress is logged to `results/evaluations_gcp/orchestrate.log` and mirrored fro
 
 ```bash
 gcloud compute instances start sentinel-gpu-vm --zone=us-east1-c
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@<GCP-VM-IP>
 ```
 
 ### 2. Bootstrap (first time or after OS update)
@@ -160,7 +160,7 @@ From Mac:
 
 ```bash
 rsync -avP "/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2" \
-  sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/data/darpa/
+  sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/data/darpa/
 ```
 
 ### 5. Run full eval chain (~6–10 hours with DARPA)
@@ -177,7 +177,7 @@ Or via Makefile: `make eval-gcp-chain`
 
 ```bash
 # From Mac
-rsync -avz sentinel@35.196.1.103:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
+rsync -avz sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

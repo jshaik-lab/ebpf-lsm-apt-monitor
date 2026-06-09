@@ -216,7 +216,7 @@ Do **not** block Phase 1 on this.
 | `overhead_gcp.json` | Non-LLM latency |
 | `calibration_results_gcp.json` | ECE 0.192 |
 
-Replace all `*_ionos.json`, `IONOS VPS`, `74.208.76.97` with GCP platform string from meta.
+Replace all `*_ionos.json`, `IONOS VPS`, `<IONOS-VPS-IP>` with GCP platform string from meta.
 
 #### New ablation table (Section V)
 

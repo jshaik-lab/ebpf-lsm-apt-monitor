@@ -8,7 +8,7 @@
 #   bash scripts/run_gcp_eval_chain.sh 2>&1 | tee results/evaluations_gcp/gcp_chain.log
 #
 # Sync back to Mac:
-#   rsync -avz sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
+#   rsync -avz sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
 #     ./results/evaluations_gcp/
 
 set -euo pipefail

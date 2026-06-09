@@ -13,7 +13,7 @@
 
 | Field | Value |
 |-------|--------|
-| Instance | `sentinel-gpu-vm` @ `34.74.43.57` (zone `us-east1-c`) |
+| Instance | `sentinel-gpu-vm` @ `<GCP-VM-IP>` (zone `us-east1-c`) |
 | Machine | g2-standard-4, NVIDIA L4 24 GB, 16 GB RAM |
 | OS / kernel | Ubuntu 24.04, `6.17.0-1018-gcp`, x86_64 |
 | Ollama | `llama3.1:8b` (full), `llama3.2:1b` (draft) |

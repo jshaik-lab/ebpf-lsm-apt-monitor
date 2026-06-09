@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 > [!IMPORTANT]
-   > **DO NOT RUN ANY WORKLOADS, COMMANDS, OR TESTS ON THE IONOS VPS (`74.208.76.97`) unless the user explicitly requests it.**
+   > **DO NOT RUN ANY WORKLOADS, COMMANDS, OR TESTS ON THE IONOS VPS (`<IONOS-VPS-IP>`) unless the user explicitly requests it.**
    > All execution, benchmarks, and evaluations must run ONLY on Google Cloud Platform (GCP) or local environments. This rule is absolute and applies across all subagents and tasks.
 
 ## What This Is

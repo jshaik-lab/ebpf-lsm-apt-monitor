@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bootstrap_ionos.sh — IONOS VPS baseline for SENTINEL (Ubuntu 24.04)
-# Run as root on 74.208.76.97 after SSH is configured.
+# Run as root on <IONOS-VPS-IP> after SSH is configured.
 # Usage: bash bootstrap_ionos.sh [GITHUB_REPO_URL]
 set -euo pipefail
 

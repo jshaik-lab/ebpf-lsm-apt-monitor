@@ -8,14 +8,14 @@
 |-------|--------|
 | Provider | Google Cloud Platform |
 | Instance | `sentinel-gpu-vm` (zone `us-east1-c`) |
-| IP | `34.74.43.57` |
+| IP | `<GCP-VM-IP>` |
 | SSH user | `sentinel` |
 | SSH key | `~/.ssh/id_ed25519_sentinel` |
 | GitHub | https://github.com/jshaik-lab/ebpf-lsm-apt-monitor |
 | Ollama models | `llama3.1:8b`, `llama3.2:1b` |
 | Result bundle | `results/evaluations_gcp/*_gcp.json` + `MANIFEST.json` |
 
-**Deprecated:** IONOS VPS (`74.208.76.97`) — do not cite `*_ionos.json` results. See [IONOS_SSH_SETUP.md](IONOS_SSH_SETUP.md) (archived).
+**Deprecated:** IONOS VPS (`<IONOS-VPS-IP>`) — do not cite `*_ionos.json` results. See [IONOS_SSH_SETUP.md](IONOS_SSH_SETUP.md) (archived).
 
 ---
 
@@ -23,7 +23,7 @@
 
 ```bash
 gcloud compute instances start sentinel-gpu-vm --zone=us-east1-c
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@34.74.43.57
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@<GCP-VM-IP>
 ```
 
 See [GCP_SETUP_GUIDE.md](GCP_SETUP_GUIDE.md) for VM specs, cost, and key management.
@@ -106,7 +106,7 @@ python3 src/python/evaluate_darpa_ablation.py \
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
+  sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

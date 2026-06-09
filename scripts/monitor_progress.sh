@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 LOG="$ROOT/results/evaluations/progress_monitor.log"
 INTERVAL="${1:-120}"
 KEY="${IONOS_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
-VPS="${GCP_HOST:-sentinel@34.74.43.57}"
+VPS="${GCP_HOST:-sentinel@<GCP-VM-IP>}"
 DARPA_SRC="/Volumes/Extreme SSD/DARPA_TC/cadets/ta1-cadets-e3-official.json.2"
 DARPA_SIZE=$(stat -f%z "$DARPA_SRC" 2>/dev/null || stat -c%s "$DARPA_SRC" 2>/dev/null || echo 0)
 

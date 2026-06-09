@@ -27,13 +27,13 @@ To stay within the $20.00/month budget, the compute resources (vCPU, RAM, GPU) m
 ## 3. SSH Configuration & Connection Details
 
 ### Connection Details
-*   **Target IP**: `35.196.1.103` (ephemeral — refresh after each `gcloud compute instances start`)
+*   **Target IP**: `<GCP-VM-IP>` (ephemeral — refresh after each `gcloud compute instances start`)
 *   **SSH User**: `sentinel`
 *   **Local Private Key**: `~/.ssh/id_ed25519_sentinel`
 
 ### How to SSH from your local Mac terminal:
 ```bash
-ssh -i ~/.ssh/id_ed25519_sentinel sentinel@35.196.1.103
+ssh -i ~/.ssh/id_ed25519_sentinel sentinel@<GCP-VM-IP>
 ```
 
 ### How to add/update SSH keys via GCP Cloud Shell:
@@ -48,7 +48,7 @@ gcloud compute instances add-metadata sentinel-gpu-vm \
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
+  sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 
@@ -102,7 +102,7 @@ ollama pull llama3.2:1b
 
 ```bash
 rsync -avz -e "ssh -i ~/.ssh/id_ed25519_sentinel" \
-  sentinel@34.74.43.57:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
+  sentinel@<GCP-VM-IP>:~/ebpf-lsm-apt-monitor/results/evaluations_gcp/ \
   ./results/evaluations_gcp/
 ```
 

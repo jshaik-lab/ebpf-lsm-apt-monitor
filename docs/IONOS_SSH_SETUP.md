@@ -1,7 +1,7 @@
-# IONOS VPS SSH Setup — 74.208.76.97
+# IONOS VPS SSH Setup — <IONOS-VPS-IP>
 
 > **⚠️ DEPRECATED (2026-06-08):** IONOS is no longer the authoritative evaluation platform.
-> Use **GCP** (`sentinel-gpu-vm`, `34.74.43.57`) per [RUNME.md](RUNME.md).
+> Use **GCP** (`sentinel-gpu-vm`, `<GCP-VM-IP>`) per [RUNME.md](RUNME.md).
 > Do not cite `*_ionos.json` results in the paper.
 
 > **Full runbook:** [RUNME.md](RUNME.md) — deployment, evals, and validation status.
@@ -15,7 +15,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbUy5jtJl8/6c1Bi4XzcXNgPdvyJ1Vznxwd9ym54Ume
 ```
 
 Private key: `~/.ssh/id_ed25519_sentinel`  
-SSH config host: `sentinel-ionos` → `root@74.208.76.97`
+SSH config host: `sentinel-ionos` → `root@<IONOS-VPS-IP>`
 
 ## Method A — IONOS Cloud Panel (preferred)
 
@@ -38,7 +38,7 @@ mkdir -p /root/.ssh && chmod 700 /root/.ssh && echo 'ssh-ed25519 AAAAC3NzaC1lZDI
 
 ```bash
 ssh sentinel-ionos 'uname -a'
-# or: ssh -i ~/.ssh/id_ed25519_sentinel root@74.208.76.97 uname -a
+# or: ssh -i ~/.ssh/id_ed25519_sentinel root@<IONOS-VPS-IP> uname -a
 ```
 
 ## After SSH works

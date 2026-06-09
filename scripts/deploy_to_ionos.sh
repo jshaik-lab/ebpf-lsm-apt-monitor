@@ -6,7 +6,7 @@ set -euo pipefail
 
 HOST="${IONOS_HOST:-sentinel-ionos}"
 REPO="https://github.com/jshaik-lab/ebpf-lsm-apt-monitor.git"
-ROOT="${IONOS_ROOT:-root@74.208.76.97}"
+ROOT="${IONOS_ROOT:-root@<IONOS-VPS-IP>}"
 KEY="${IONOS_SSH_KEY:-$HOME/.ssh/id_ed25519_sentinel}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"

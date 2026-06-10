@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export PYTHONPATH="${PYTHONPATH:-}/code/src/python"
-
+cd /code
 RESULTS_DIR="/results"
 mkdir -p "$RESULTS_DIR"
 
@@ -10,13 +9,18 @@ echo "============================================================"
 echo "SENTINEL — Simulation Mode + Unit Tests"
 echo "============================================================"
 
-echo ""
-echo "[1/2] Running unit tests (no LLM/kernel needed)..."
-python -m pytest src/python/tests/ -v --tb=short \
-    --junitxml="$RESULTS_DIR/test_results.xml" || true
+echo "[1/2] Running unit tests..."
+TESTS_DIR=$(find . -type d -name "tests" 2>/dev/null | grep -v __pycache__ | head -1)
+if [ -z "$TESTS_DIR" ]; then
+    echo "WARNING: no tests/ directory found, skipping"
+else
+    echo "Tests found at: $TESTS_DIR"
+    PYTHONPATH=/code/src/python python -m pytest "$TESTS_DIR" -v --tb=short \
+        --junitxml="$RESULTS_DIR/test_results.xml" || true
+fi
 
-echo ""
 echo "[2/2] Running simulation mode (mock LLM)..."
+PYTHONPATH=/code/src/python \
 SENTINEL__MODE=simulation \
 SENTINEL__LLM__BACKEND=mock \
 python src/python/main.py \
@@ -25,5 +29,7 @@ python src/python/main.py \
     --max-events 50 \
     > "$RESULTS_DIR/simulation_output.log" 2>&1 || true
 
-echo ""
-echo "Done. Results saved to $RESULTS_DIR/"
+echo "Simulation log:"
+cat "$RESULTS_DIR/simulation_output.log" || true
+
+echo "Done. Results in $RESULTS_DIR/"
